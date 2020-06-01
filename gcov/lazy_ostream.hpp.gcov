@@ -40,7 +40,7 @@
         -:   35:
         -:   36:class lazy_ostream {
         -:   37:public:
-       12:   38:    static lazy_ostream&    instance()                                              { static lazy_ostream inst; return inst; }
+       16:   38:    static lazy_ostream&    instance()                                              { static lazy_ostream inst; return inst; }
         -:   39:
         -:   40:    friend std::ostream&    operator<<( std::ostream& ostr, lazy_ostream const& o ) { return o( ostr ); }
         -:   41:
@@ -48,15 +48,15 @@
         -:   43:    bool                    empty() const                                           { return m_empty; }
         -:   44:
         -:   45:    // actual printing interface; to be accessed only by this class and children
-        6:   46:    virtual std::ostream&   operator()( std::ostream& ostr ) const                  { return ostr; }
+        8:   46:    virtual std::ostream&   operator()( std::ostream& ostr ) const                  { return ostr; }
         -:   47:protected:
-       14:   48:    explicit                lazy_ostream( bool empty = true ) : m_empty( empty )    {}
+       18:   48:    explicit                lazy_ostream( bool empty = true ) : m_empty( empty )    {}
         -:   49:
         -:   50:    // protected destructor to make sure right one is called
         -:   51:#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
         -:   52:public:
         -:   53:#endif
-       14:   54:    BOOST_TEST_PROTECTED_VIRTUAL ~lazy_ostream()                                    {}
+       18:   54:    BOOST_TEST_PROTECTED_VIRTUAL ~lazy_ostream()                                    {}
         -:   55:
         -:   56:private:
         -:   57:    // Data members
@@ -66,17 +66,17 @@
         -:   61://____________________________________________________________________________//
         -:   62:
         -:   63:template<typename T>
-       12:   64:class lazy_ostream_impl : public lazy_ostream {
+       16:   64:class lazy_ostream_impl : public lazy_ostream {
         -:   65:public:
-       12:   66:    lazy_ostream_impl( lazy_ostream const& prev, T value )
+       16:   66:    lazy_ostream_impl( lazy_ostream const& prev, T value )
         -:   67:    : lazy_ostream( false )
         -:   68:    , m_prev( prev )
-       12:   69:    , m_value( value )
-       12:   70:    {}
+       16:   69:    , m_value( value )
+       16:   70:    {}
         -:   71:private:
-        6:   72:    virtual std::ostream&   operator()( std::ostream& ostr ) const
+        8:   72:    virtual std::ostream&   operator()( std::ostream& ostr ) const
         -:   73:    {
-        6:   74:        return m_prev(ostr) << m_value;
+        8:   74:        return m_prev(ostr) << m_value;
         -:   75:    }
         -:   76:
         -:   77:    // Data members
@@ -88,9 +88,9 @@
         -:   83:
         -:   84:template<typename T>
         -:   85:inline lazy_ostream_impl<T const&>
-       12:   86:operator<<( lazy_ostream const& prev, T const& v )
+       16:   86:operator<<( lazy_ostream const& prev, T const& v )
         -:   87:{
-       12:   88:    return lazy_ostream_impl<T const&>( prev, v );
+       16:   88:    return lazy_ostream_impl<T const&>( prev, v );
         -:   89:}
         -:   90:
         -:   91://____________________________________________________________________________//

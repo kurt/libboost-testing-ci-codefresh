@@ -116,14 +116,14 @@
         -:  111:
         -:  112:public:
         -:  113:
-       20:  114:    shared_count(): pi_(0) // nothrow
+       26:  114:    shared_count(): pi_(0) // nothrow
         -:  115:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
         -:  116:        , id_(shared_count_id)
         -:  117:#endif
         -:  118:    {
-       20:  119:    }
+       26:  119:    }
         -:  120:
-        8:  121:    template<class Y> explicit shared_count( Y * p ): pi_( 0 )
+       10:  121:    template<class Y> explicit shared_count( Y * p ): pi_( 0 )
         -:  122:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
         -:  123:        , id_(shared_count_id)
         -:  124:#endif
@@ -132,7 +132,7 @@
         -:  127:
         -:  128:        try
         -:  129:        {
-        8:  130:            pi_ = new sp_counted_impl_p<Y>( p );
+       10:  130:            pi_ = new sp_counted_impl_p<Y>( p );
         -:  131:        }
     =====:  132:        catch(...)
         -:  133:        {
@@ -151,7 +151,7 @@
         -:  146:        }
         -:  147:
         -:  148:#endif
-        8:  149:    }
+       10:  149:    }
         -:  150:
         -:  151:#if defined( BOOST_MSVC ) && BOOST_WORKAROUND( BOOST_MSVC, <= 1200 )
         -:  152:    template<class Y, class D> shared_count( Y * p, D d ): pi_(0)
@@ -443,13 +443,13 @@
         -:  438:
         -:  439:#endif
         -:  440:
-       28:  441:    ~shared_count() // nothrow
-       28:  442:    {
-       28:  443:        if( pi_ != 0 ) pi_->release();
+       36:  441:    ~shared_count() // nothrow
+       36:  442:    {
+       36:  443:        if( pi_ != 0 ) pi_->release();
         -:  444:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
         -:  445:        id_ = 0;
         -:  446:#endif
-       28:  447:    }
+       36:  447:    }
         -:  448:
         -:  449:    shared_count(shared_count const & r): pi_(r.pi_) // nothrow
         -:  450:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
@@ -488,12 +488,12 @@
         -:  483:        return *this;
         -:  484:    }
         -:  485:
-        8:  486:    void swap(shared_count & r) // nothrow
+       10:  486:    void swap(shared_count & r) // nothrow
         -:  487:    {
-        8:  488:        sp_counted_base * tmp = r.pi_;
-        8:  489:        r.pi_ = pi_;
-        8:  490:        pi_ = tmp;
-        8:  491:    }
+       10:  488:        sp_counted_base * tmp = r.pi_;
+       10:  489:        r.pi_ = pi_;
+       10:  490:        pi_ = tmp;
+       10:  491:    }
         -:  492:
         -:  493:    long use_count() const // nothrow
         -:  494:    {

@@ -53,13 +53,13 @@
         -:   48:
         -:   49:template<typename CharT1, typename Tr,typename CharT2>
         -:   50:inline std::basic_ostream<CharT1,Tr>&
-        6:   51:operator<<( std::basic_ostream<CharT1,Tr>& os, basic_cstring<CharT2> const& str )
+        8:   51:operator<<( std::basic_ostream<CharT1,Tr>& os, basic_cstring<CharT2> const& str )
         -:   52:{
-        6:   53:    CharT1 const* const beg = reinterpret_cast<CharT1 const*>( str.begin() ); // !!
-        6:   54:    CharT1 const* const end = reinterpret_cast<CharT1 const*>( str.end() );
-        6:   55:    os << std::basic_string<CharT1,Tr>( beg, end - beg );
+        8:   53:    CharT1 const* const beg = reinterpret_cast<CharT1 const*>( str.begin() ); // !!
+        8:   54:    CharT1 const* const end = reinterpret_cast<CharT1 const*>( str.end() );
+        8:   55:    os << std::basic_string<CharT1,Tr>( beg, end - beg );
         -:   56:
-        6:   57:    return os;
+        8:   57:    return os;
         -:   58:}
         -:   59:
         -:   60:#endif

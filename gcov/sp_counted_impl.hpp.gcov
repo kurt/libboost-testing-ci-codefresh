@@ -68,12 +68,12 @@
         -:   63:
         -:   64:public:
         -:   65:
-        8:   66:    explicit sp_counted_impl_p( X * px ): px_( px )
+       10:   66:    explicit sp_counted_impl_p( X * px ): px_( px )
         -:   67:    {
         -:   68:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
         -:   69:        boost::sp_scalar_constructor_hook( px, sizeof(X), this );
         -:   70:#endif
-        8:   71:    }
+       10:   71:    }
         -:   72:
     #####:   73:    virtual void dispose() // nothrow
         -:   74:    {

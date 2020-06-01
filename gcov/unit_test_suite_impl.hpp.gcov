@@ -255,9 +255,9 @@
         -:  250://____________________________________________________________________________//
         -:  251:
         -:  252:inline test_case*
-        8:  253:make_test_case( callback0<> const& test_func, const_string tc_name )
+       10:  253:make_test_case( callback0<> const& test_func, const_string tc_name )
         -:  254:{
-        8:  255:    return new test_case( ut_detail::normalize_test_case_name( tc_name ), test_func );
+       10:  255:    return new test_case( ut_detail::normalize_test_case_name( tc_name ), test_func );
         -:  256:}
         -:  257:
         -:  258://____________________________________________________________________________//
@@ -296,7 +296,7 @@
         -:  291:
         -:  292:template<typename T>
         -:  293:struct auto_tc_exp_fail {
-        8:  294:    auto_tc_exp_fail() : m_value( 0 ) {}
+       10:  294:    auto_tc_exp_fail() : m_value( 0 ) {}
         -:  295:
         -:  296:    explicit    auto_tc_exp_fail( unsigned v )
         -:  297:    : m_value( v )
@@ -304,15 +304,15 @@
         -:  299:        instance() = this;
         -:  300:    }
         -:  301:
-        8:  302:    static auto_tc_exp_fail*& instance() 
+       10:  302:    static auto_tc_exp_fail*& instance() 
         -:  303:    {
-        8:  304:        static auto_tc_exp_fail     inst; 
+       10:  304:        static auto_tc_exp_fail     inst; 
         -:  305:        static auto_tc_exp_fail*    inst_ptr = &inst; 
         -:  306:
-        8:  307:        return inst_ptr;
+       10:  307:        return inst_ptr;
         -:  308:    }
         -:  309:
-        8:  310:    unsigned    value() const { return m_value; }
+       10:  310:    unsigned    value() const { return m_value; }
         -:  311:
         -:  312:private:
         -:  313:    // Data members

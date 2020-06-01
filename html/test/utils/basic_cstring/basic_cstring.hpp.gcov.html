@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-06-01 11:51:24</td>
+            <td class="headerValue">2020-06-01 16:27:59</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">17</td>
@@ -218,50 +218,50 @@
 <span class="lineNum">     147 </span>                :            : 
 <a name="148"><span class="lineNum">     148 </span>                :            : template&lt;typename CharT&gt;</a>
 <span class="lineNum">     149 </span>                :            : inline typename basic_cstring&lt;CharT&gt;::pointer
-<span class="lineNum">     150 </span>                :<span class="lineCov">         12 : basic_cstring&lt;CharT&gt;::null_str()</span>
+<span class="lineNum">     150 </span>                :<span class="lineCov">         16 : basic_cstring&lt;CharT&gt;::null_str()</span>
 <span class="lineNum">     151 </span>                :            : {
 <span class="lineNum">     152 </span>                :            :     static CharT null = 0;
-<span class="lineNum">     153 </span>                :<span class="lineCov">         12 :     return &amp;null;</span>
+<span class="lineNum">     153 </span>                :<span class="lineCov">         16 :     return &amp;null;</span>
 <span class="lineNum">     154 </span>                :            : }
 <span class="lineNum">     155 </span>                :            : 
 <span class="lineNum">     156 </span>                :            : //____________________________________________________________________________//
 <span class="lineNum">     157 </span>                :            : 
 <a name="158"><span class="lineNum">     158 </span>                :            : template&lt;typename CharT&gt;</a>
 <span class="lineNum">     159 </span>                :            : inline
-<span class="lineNum">     160 </span>                :<span class="lineCov">         12 : basic_cstring&lt;CharT&gt;::basic_cstring()</span>
-<span class="lineNum">     161 </span>                :<span class="lineCov">         12 : : m_begin( null_str() )</span>
-<span class="lineNum">     162 </span>                :<span class="lineCov">         12 : , m_end( m_begin )</span>
+<span class="lineNum">     160 </span>                :<span class="lineCov">         16 : basic_cstring&lt;CharT&gt;::basic_cstring()</span>
+<span class="lineNum">     161 </span>                :<span class="lineCov">         16 : : m_begin( null_str() )</span>
+<span class="lineNum">     162 </span>                :<span class="lineCov">         16 : , m_end( m_begin )</span>
 <span class="lineNum">     163 </span>                :            : {
-<span class="lineNum">     164 </span>                :<span class="lineCov">         12 : }</span>
+<span class="lineNum">     164 </span>                :<span class="lineCov">         16 : }</span>
 <span class="lineNum">     165 </span>                :            : 
 <span class="lineNum">     166 </span>                :            : //____________________________________________________________________________//
 <span class="lineNum">     167 </span>                :            : 
 <a name="168"><span class="lineNum">     168 </span>                :            : template&lt;typename CharT&gt;</a>
 <span class="lineNum">     169 </span>                :            : inline
-<span class="lineNum">     170 </span>                :<span class="lineCov">          8 : basic_cstring&lt;CharT&gt;::basic_cstring( std_string const&amp; s )</span>
+<span class="lineNum">     170 </span>                :<span class="lineCov">         10 : basic_cstring&lt;CharT&gt;::basic_cstring( std_string const&amp; s )</span>
 <span class="lineNum">     171 </span>                :            : : m_begin( s.c_str() )
-<span class="lineNum">     172 </span>                :<span class="lineCov">          8 : , m_end( m_begin + s.size() )</span>
+<span class="lineNum">     172 </span>                :<span class="lineCov">         10 : , m_end( m_begin + s.size() )</span>
 <span class="lineNum">     173 </span>                :            : {
-<span class="lineNum">     174 </span>                :<span class="lineCov">          8 : }</span>
+<span class="lineNum">     174 </span>                :<span class="lineCov">         10 : }</span>
 <span class="lineNum">     175 </span>                :            : 
 <span class="lineNum">     176 </span>                :            : //____________________________________________________________________________//
 <span class="lineNum">     177 </span>                :            : 
 <a name="178"><span class="lineNum">     178 </span>                :            : template&lt;typename CharT&gt;</a>
 <span class="lineNum">     179 </span>                :            : inline
-<span class="lineNum">     180 </span>                :<span class="lineCov">         12 : basic_cstring&lt;CharT&gt;::basic_cstring( pointer s )</span>
+<span class="lineNum">     180 </span>                :<span class="lineCov">         14 : basic_cstring&lt;CharT&gt;::basic_cstring( pointer s )</span>
 <span class="lineNum">     181 </span>                :            : : m_begin( s ? s : null_str() )
-<span class="lineNum">     182 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 12 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 12 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         12 : , m_end  ( m_begin + (s ? traits_type::length( s ) : 0 ) )</span>
+<span class="lineNum">     182 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 14 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 14 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         14 : , m_end  ( m_begin + (s ? traits_type::length( s ) : 0 ) )</span>
 <span class="lineNum">     183 </span>                :            : {
-<span class="lineNum">     184 </span>                :<span class="lineCov">         12 : }</span>
+<span class="lineNum">     184 </span>                :<span class="lineCov">         14 : }</span>
 <span class="lineNum">     185 </span>                :            : 
 <span class="lineNum">     186 </span>                :            : //____________________________________________________________________________//
 <span class="lineNum">     187 </span>                :            : 
 <a name="188"><span class="lineNum">     188 </span>                :            : template&lt;typename CharT&gt;</a>
 <span class="lineNum">     189 </span>                :            : inline
-<span class="lineNum">     190 </span>                :<span class="lineCov">         38 : basic_cstring&lt;CharT&gt;::basic_cstring( pointer s, size_type arg_size )</span>
-<span class="lineNum">     191 </span>                :<span class="lineCov">         38 : : m_begin( s ), m_end( m_begin + arg_size )</span>
+<span class="lineNum">     190 </span>                :<span class="lineCov">         50 : basic_cstring&lt;CharT&gt;::basic_cstring( pointer s, size_type arg_size )</span>
+<span class="lineNum">     191 </span>                :<span class="lineCov">         50 : : m_begin( s ), m_end( m_begin + arg_size )</span>
 <span class="lineNum">     192 </span>                :            : {
-<span class="lineNum">     193 </span>                :<span class="lineCov">         38 : }</span>
+<span class="lineNum">     193 </span>                :<span class="lineCov">         50 : }</span>
 <span class="lineNum">     194 </span>                :            : 
 <span class="lineNum">     195 </span>                :            : //____________________________________________________________________________//
 <span class="lineNum">     196 </span>                :            : 
@@ -555,9 +555,9 @@
 <span class="lineNum">     484 </span>                :            : 
 <a name="485"><span class="lineNum">     485 </span>                :            : template&lt;typename CharT&gt;</a>
 <span class="lineNum">     486 </span>                :            : inline typename basic_cstring&lt;CharT&gt;::const_iterator
-<span class="lineNum">     487 </span>                :<span class="lineCov">          6 : basic_cstring&lt;CharT&gt;::begin() const</span>
+<span class="lineNum">     487 </span>                :<span class="lineCov">         16 : basic_cstring&lt;CharT&gt;::begin() const</span>
 <span class="lineNum">     488 </span>                :            : {
-<span class="lineNum">     489 </span>                :<span class="lineCov">          6 :     return m_begin;</span>
+<span class="lineNum">     489 </span>                :<span class="lineCov">         16 :     return m_begin;</span>
 <span class="lineNum">     490 </span>                :            : }
 <span class="lineNum">     491 </span>                :            : 
 <span class="lineNum">     492 </span>                :            : //____________________________________________________________________________//
@@ -573,9 +573,9 @@
 <span class="lineNum">     502 </span>                :            : 
 <a name="503"><span class="lineNum">     503 </span>                :            : template&lt;typename CharT&gt;</a>
 <span class="lineNum">     504 </span>                :            : inline typename basic_cstring&lt;CharT&gt;::const_iterator
-<span class="lineNum">     505 </span>                :<span class="lineCov">          6 : basic_cstring&lt;CharT&gt;::end() const</span>
+<span class="lineNum">     505 </span>                :<span class="lineCov">         16 : basic_cstring&lt;CharT&gt;::end() const</span>
 <span class="lineNum">     506 </span>                :            : {
-<span class="lineNum">     507 </span>                :<span class="lineCov">          6 :     return m_end;</span>
+<span class="lineNum">     507 </span>                :<span class="lineCov">         16 :     return m_end;</span>
 <span class="lineNum">     508 </span>                :            : }
 <span class="lineNum">     509 </span>                :            : 
 <span class="lineNum">     510 </span>                :            : //____________________________________________________________________________//

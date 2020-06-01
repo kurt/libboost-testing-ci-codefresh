@@ -44,16 +44,16 @@
         -:   39:// **************                predicate_result              ************** //
         -:   40:// ************************************************************************** //
         -:   41:
-       12:   42:class BOOST_TEST_DECL predicate_result {
+       16:   42:class BOOST_TEST_DECL predicate_result {
         -:   43:    typedef unit_test::const_string      const_string;
         -:   44:    struct dummy { void nonnull() {}; };
         -:   45:    typedef void (dummy::*safe_bool)();
         -:   46:
         -:   47:public:
         -:   48:    // Constructor
-       12:   49:    predicate_result( bool pv_ ) 
-       12:   50:    : p_predicate_value( pv_ )
-       12:   51:    {}
+       16:   49:    predicate_result( bool pv_ ) 
+       16:   50:    : p_predicate_value( pv_ )
+       16:   51:    {}
         -:   52:
         -:   53:    template<typename BoolConvertable>
         -:   54:    predicate_result( BoolConvertable const& pv_ ) : p_predicate_value( !!pv_ ) {}
@@ -64,7 +64,7 @@
         -:   59:    operator            safe_bool() const           { return !!p_predicate_value ? &dummy::nonnull : 0; }
         -:   60:
         -:   61:    // Public properties
-       12:   62:    BOOST_READONLY_PROPERTY( bool, (predicate_result) ) p_predicate_value;
+       16:   62:    BOOST_READONLY_PROPERTY( bool, (predicate_result) ) p_predicate_value;
         -:   63:
         -:   64:    // Access methods
         -:   65:    bool                has_empty_message() const   { return !m_message; }

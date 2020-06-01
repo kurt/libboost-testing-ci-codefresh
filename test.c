@@ -12,6 +12,9 @@ int call_subtract(void){
 	return subtract(a,b);
 }
 
+
+ 
+
 int conditional(int logical){
 	if(logical==1){
 		printf("This has been called\n");
@@ -26,3 +29,11 @@ int conditional(int logical){
 	return 1;
 }
 
+
+int func(void){
+	int a=10;
+	int b=14;
+	int res; 
+	res=a+b;
+	return res;
+}

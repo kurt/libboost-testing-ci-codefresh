@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-06-01 11:51:24</td>
+            <td class="headerValue">2020-06-01 16:27:59</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">2</td>
@@ -123,8 +123,8 @@
 <span class="lineNum">      52 </span>                :            : public:
 <a name="53"><span class="lineNum">      53 </span>                :            :     // Constructor</a>
 <span class="lineNum">      54 </span>                :            :                     class_property() : value( PropertyType() ) {}
-<span class="lineNum">      55 </span>                :<span class="lineCov">         12 :     explicit        class_property( write_param_t init_value )</span>
-<span class="lineNum">      56 </span>                :<span class="lineCov">         12 :     : value( init_value ) {}</span>
+<span class="lineNum">      55 </span>                :<span class="lineCov">         16 :     explicit        class_property( write_param_t init_value )</span>
+<span class="lineNum">      56 </span>                :<span class="lineCov">         16 :     : value( init_value ) {}</span>
 <span class="lineNum">      57 </span>                :            : 
 <span class="lineNum">      58 </span>                :            :     // Access methods
 <span class="lineNum">      59 </span>                :            :     operator        read_access_t() const   { return value; }
@@ -222,7 +222,7 @@
 <span class="lineNum">     151 </span>                :            : public:
 <a name="152"><span class="lineNum">     152 </span>                :            :     // Constructor</a>
 <span class="lineNum">     153 </span>                :            :                     readonly_property() {}
-<span class="lineNum">     154 </span>                :<span class="lineCov">         24 :     explicit        readonly_property( write_param_t init_value ) : base_prop( init_value ) {}</span>
+<span class="lineNum">     154 </span>                :<span class="lineCov">         32 :     explicit        readonly_property( write_param_t init_value ) : base_prop( init_value ) {}</span>
 <span class="lineNum">     155 </span>                :            : 
 <span class="lineNum">     156 </span>                :            :     // access methods
 <span class="lineNum">     157 </span>                :            :     arrow_res_t     operator-&gt;() const      { return boost::addressof( base_prop::value ); }

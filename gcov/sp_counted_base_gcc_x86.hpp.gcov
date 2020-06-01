@@ -37,7 +37,7 @@
         -:   32:namespace detail
         -:   33:{
         -:   34:
-        8:   35:inline int atomic_exchange_and_add( int * pw, int dv )
+       10:   35:inline int atomic_exchange_and_add( int * pw, int dv )
         -:   36:{
         -:   37:    // int r = *pw;
         -:   38:    // *pw += dv;
@@ -52,9 +52,9 @@
         -:   47:        "=m"( *pw ), "=r"( r ): // outputs (%0, %1)
         -:   48:        "m"( *pw ), "1"( dv ): // inputs (%2, %3 == %1)
         -:   49:        "memory", "cc" // clobbers
-        8:   50:    );
+       10:   50:    );
         -:   51:
-        8:   52:    return r;
+       10:   52:    return r;
         -:   53:}
         -:   54:
         -:   55:inline void atomic_increment( int * pw )
@@ -111,9 +111,9 @@
         -:  106:
         -:  107:public:
         -:  108:
-        8:  109:    sp_counted_base(): use_count_( 1 ), weak_count_( 1 )
+       10:  109:    sp_counted_base(): use_count_( 1 ), weak_count_( 1 )
         -:  110:    {
-        8:  111:    }
+       10:  111:    }
         -:  112:
     #####:  113:    virtual ~sp_counted_base() // nothrow
     #####:  114:    {
@@ -144,14 +144,14 @@
         -:  139:        return atomic_conditional_increment( &use_count_ ) != 0;
         -:  140:    }
         -:  141:
-        8:  142:    void release() // nothrow
+       10:  142:    void release() // nothrow
         -:  143:    {
-        8:  144:        if( atomic_exchange_and_add( &use_count_, -1 ) == 1 )
+       10:  144:        if( atomic_exchange_and_add( &use_count_, -1 ) == 1 )
         -:  145:        {
     #####:  146:            dispose();
     #####:  147:            weak_release();
         -:  148:        }
-        8:  149:    }
+       10:  149:    }
         -:  150:
         -:  151:    void weak_add_ref() // nothrow
         -:  152:    {

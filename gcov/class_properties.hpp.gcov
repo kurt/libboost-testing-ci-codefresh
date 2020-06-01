@@ -57,8 +57,8 @@
         -:   52:public:
         -:   53:    // Constructor
         -:   54:                    class_property() : value( PropertyType() ) {}
-       12:   55:    explicit        class_property( write_param_t init_value )
-       12:   56:    : value( init_value ) {}
+       16:   55:    explicit        class_property( write_param_t init_value )
+       16:   56:    : value( init_value ) {}
         -:   57:
         -:   58:    // Access methods
         -:   59:    operator        read_access_t() const   { return value; }
@@ -156,7 +156,7 @@
         -:  151:public:
         -:  152:    // Constructor
         -:  153:                    readonly_property() {}
-       12:  154:    explicit        readonly_property( write_param_t init_value ) : base_prop( init_value ) {}
+       16:  154:    explicit        readonly_property( write_param_t init_value ) : base_prop( init_value ) {}
         -:  155:
         -:  156:    // access methods
         -:  157:    arrow_res_t     operator->() const      { return boost::addressof( base_prop::value ); }

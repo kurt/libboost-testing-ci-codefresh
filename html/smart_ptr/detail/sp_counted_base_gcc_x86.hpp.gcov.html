@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-06-01 11:51:24</td>
+            <td class="headerValue">2020-06-01 16:27:59</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">3</td>
@@ -103,7 +103,7 @@
 <span class="lineNum">      32 </span>                :            : namespace detail
 <a name="33"><span class="lineNum">      33 </span>                :            : {</a>
 <span class="lineNum">      34 </span>                :            : 
-<span class="lineNum">      35 </span>                :<span class="lineCov">          8 : inline int atomic_exchange_and_add( int * pw, int dv )</span>
+<span class="lineNum">      35 </span>                :<span class="lineCov">         10 : inline int atomic_exchange_and_add( int * pw, int dv )</span>
 <span class="lineNum">      36 </span>                :            : {
 <span class="lineNum">      37 </span>                :            :     // int r = *pw;
 <span class="lineNum">      38 </span>                :            :     // *pw += dv;
@@ -118,9 +118,9 @@
 <span class="lineNum">      47 </span>                :            :         &quot;=m&quot;( *pw ), &quot;=r&quot;( r ): // outputs (%0, %1)
 <span class="lineNum">      48 </span>                :            :         &quot;m&quot;( *pw ), &quot;1&quot;( dv ): // inputs (%2, %3 == %1)
 <span class="lineNum">      49 </span>                :            :         &quot;memory&quot;, &quot;cc&quot; // clobbers
-<span class="lineNum">      50 </span>                :<span class="lineCov">          8 :     );</span>
+<span class="lineNum">      50 </span>                :<span class="lineCov">         10 :     );</span>
 <span class="lineNum">      51 </span>                :            : 
-<span class="lineNum">      52 </span>                :<span class="lineCov">          8 :     return r;</span>
+<span class="lineNum">      52 </span>                :<span class="lineCov">         10 :     return r;</span>
 <span class="lineNum">      53 </span>                :            : }
 <span class="lineNum">      54 </span>                :            : 
 <span class="lineNum">      55 </span>                :            : inline void atomic_increment( int * pw )
@@ -177,9 +177,9 @@
 <span class="lineNum">     106 </span>                :            : 
 <a name="107"><span class="lineNum">     107 </span>                :            : public:</a>
 <span class="lineNum">     108 </span>                :            : 
-<span class="lineNum">     109 </span>                :<span class="lineCov">          8 :     sp_counted_base(): use_count_( 1 ), weak_count_( 1 )</span>
+<span class="lineNum">     109 </span>                :<span class="lineCov">         10 :     sp_counted_base(): use_count_( 1 ), weak_count_( 1 )</span>
 <span class="lineNum">     110 </span>                :            :     {
-<a name="111"><span class="lineNum">     111 </span>                :<span class="lineCov">          8 :     }</span></a>
+<a name="111"><span class="lineNum">     111 </span>                :<span class="lineCov">         10 :     }</span></a>
 <span class="lineNum">     112 </span>                :            : 
 <span class="lineNum">     113 </span>                :<span class="lineNoCov">          0 :     virtual ~sp_counted_base() // nothrow</span>
 <span class="lineNum">     114 </span>                :<span class="lineNoCov">          0 :     {</span>
@@ -210,14 +210,14 @@
 <span class="lineNum">     139 </span>                :            :         return atomic_conditional_increment( &amp;use_count_ ) != 0;
 <a name="140"><span class="lineNum">     140 </span>                :            :     }</a>
 <span class="lineNum">     141 </span>                :            : 
-<span class="lineNum">     142 </span>                :<span class="lineCov">          8 :     void release() // nothrow</span>
+<span class="lineNum">     142 </span>                :<span class="lineCov">         10 :     void release() // nothrow</span>
 <span class="lineNum">     143 </span>                :            :     {
-<span class="lineNum">     144 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 8 times"> + </span>]:<span class="lineCov">          8 :         if( atomic_exchange_and_add( &amp;use_count_, -1 ) == 1 )</span>
+<span class="lineNum">     144 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 10 times"> + </span>]:<span class="lineCov">         10 :         if( atomic_exchange_and_add( &amp;use_count_, -1 ) == 1 )</span>
 <span class="lineNum">     145 </span>                :            :         {
 <span class="lineNum">     146 </span>                :<span class="lineNoCov">          0 :             dispose();</span>
 <span class="lineNum">     147 </span>                :<span class="lineNoCov">          0 :             weak_release();</span>
 <span class="lineNum">     148 </span>                :            :         }
-<span class="lineNum">     149 </span>                :<span class="lineCov">          8 :     }</span>
+<span class="lineNum">     149 </span>                :<span class="lineCov">         10 :     }</span>
 <span class="lineNum">     150 </span>                :            : 
 <span class="lineNum">     151 </span>                :            :     void weak_add_ref() // nothrow
 <span class="lineNum">     152 </span>                :            :     {

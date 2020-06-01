@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-06-01 11:51:24</td>
+            <td class="headerValue">2020-06-01 16:27:59</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">6</td>
@@ -124,7 +124,7 @@
 <span class="lineNum">      53 </span>                :            : template&lt;&gt;
 <a name="54"><span class="lineNum">      54 </span>                :            : struct invoker&lt;unused&gt; {</a>
 <span class="lineNum">      55 </span>                :            :     template&lt;typename Functor&gt;
-<span class="lineNum">      56 </span>                :<span class="lineCov">         16 :     unused  invoke( Functor&amp; f )                        { f(); return unused(); }</span>
+<span class="lineNum">      56 </span>                :<span class="lineCov">         20 :     unused  invoke( Functor&amp; f )                        { f(); return unused(); }</span>
 <span class="lineNum">      57 </span>                :            :     template&lt;typename Functor, typename T1&gt;
 <span class="lineNum">      58 </span>                :            :     unused  invoke( Functor&amp; f, T1 t1 )                 { f( t1 ); return unused(); }
 <span class="lineNum">      59 </span>                :            :     template&lt;typename Functor, typename T1, typename T2&gt;
@@ -144,7 +144,7 @@
 <span class="lineNum">      73 </span>                :            : namespace ut_detail {
 <a name="74"><span class="lineNum">      74 </span>                :            : </a>
 <a name="75"><span class="lineNum">      75 </span>                :            : template&lt;typename R&gt;</a>
-<span class="lineNum">      76 </span>                :<span class="lineCov">          8 : struct callback0_impl {</span>
+<span class="lineNum">      76 </span>                :<span class="lineCov">         10 : struct callback0_impl {</span>
 <span class="lineNum">      77 </span>        [<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :     virtual ~callback0_impl() {}</span>
 <span class="lineNum">      78 </span>                :            : 
 <span class="lineNum">      79 </span>                :            :     virtual R invoke() = 0;
@@ -155,9 +155,9 @@
 <span class="lineNum">      84 </span>                :            : template&lt;typename R, typename Functor&gt;
 <a name="85"><span class="lineNum">      85 </span>        [<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 : struct callback0_impl_t : callback0_impl&lt;R&gt; {</span></a>
 <span class="lineNum">      86 </span>                :            :     // Constructor
-<a name="87"><span class="lineNum">      87 </span>                :<span class="lineCov">         16 :     explicit callback0_impl_t( Functor f ) : m_f( f ) {}</span></a>
+<a name="87"><span class="lineNum">      87 </span>                :<span class="lineCov">         20 :     explicit callback0_impl_t( Functor f ) : m_f( f ) {}</span></a>
 <span class="lineNum">      88 </span>                :            : 
-<span class="lineNum">      89 </span>        [<span class="branchCov" title="Branch 1 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">          8 :     virtual R invoke() { return invoker&lt;R&gt;().invoke( m_f ); }</span>
+<span class="lineNum">      89 </span>        [<span class="branchCov" title="Branch 1 was taken 10 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">         10 :     virtual R invoke() { return invoker&lt;R&gt;().invoke( m_f ); }</span>
 <span class="lineNum">      90 </span>                :            : 
 <span class="lineNum">      91 </span>                :            : private:
 <span class="lineNum">      92 </span>                :            :     // Data members
@@ -169,7 +169,7 @@
 <span class="lineNum">      98 </span>                :            : } // namespace ut_detail
 <a name="99"><span class="lineNum">      99 </span>                :            : </a>
 <span class="lineNum">     100 </span>                :            : template&lt;typename R = ut_detail::unused&gt;
-<span class="lineNum">     101 </span>        [<span class="branchCov" title="Branch 1 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">          8 : class callback0 {</span>
+<span class="lineNum">     101 </span>        [<span class="branchCov" title="Branch 1 was taken 10 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">         10 : class callback0 {</span>
 <span class="lineNum">     102 </span>                :            : public:
 <span class="lineNum">     103 </span>                :            :     // Constructors
 <span class="lineNum">     104 </span>                :            :     callback0() {}
@@ -178,8 +178,8 @@
 <span class="lineNum">     107 </span>                :            : #endif
 <a name="108"><span class="lineNum">     108 </span>                :            : </a>
 <span class="lineNum">     109 </span>                :            :     template&lt;typename Functor&gt;
-<span class="lineNum">     110 </span>                :<span class="lineCov">          8 :     callback0( Functor f )</span>
-<span class="lineNum">     111 </span>        [<span class="branchCov" title="Branch 2 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          8 :     : m_impl( new ut_detail::callback0_impl_t&lt;R,Functor&gt;( f ) ) {}</span>
+<span class="lineNum">     110 </span>                :<span class="lineCov">         10 :     callback0( Functor f )</span>
+<span class="lineNum">     111 </span>        [<span class="branchCov" title="Branch 2 was taken 10 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         10 :     : m_impl( new ut_detail::callback0_impl_t&lt;R,Functor&gt;( f ) ) {}</span>
 <span class="lineNum">     112 </span>                :            :     
 <span class="lineNum">     113 </span>                :            :     void        operator=( callback0 const&amp; rhs ) { m_impl = rhs.m_impl; }
 <span class="lineNum">     114 </span>                :            : 

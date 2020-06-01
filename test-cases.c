@@ -12,11 +12,10 @@ genhtml lcov/testout --output-directory html
 
 
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE HelloC
+#define BOOST_TEST_MODULE NewC
 #include <boost/test/unit_test.hpp>
 #include "Header_Test.h"
-//#define BOOST_TEST_DYN_LINK
-//#define BOOST_TEST_MODULE HelloC
+
 
 BOOST_AUTO_TEST_CASE(subtractTest){
 	BOOST_CHECK(subtract(3,3)==0);
@@ -31,7 +30,13 @@ BOOST_AUTO_TEST_CASE(conditionalTest){
 	BOOST_CHECK(conditional(1)==1);
 	BOOST_CHECK(conditional(0)==1);
 	BOOST_CHECK(conditional(10)==0);
+	BOOST_CHECK(conditional(-10)==0);
 }
+
+BOOST_AUTO_TEST_CASE(newFunctionTest){
+	BOOST_CHECK(func()==24);
+}
+
 
 BOOST_AUTO_TEST_SUITE(OtherTests)
 BOOST_AUTO_TEST_CASE(thisTest){

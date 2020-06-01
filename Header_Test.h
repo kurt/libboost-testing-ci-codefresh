@@ -18,7 +18,7 @@
 int subtract(int i, int j);
 int call_subtract(void);
 int conditional(int logical);
-
+int func(void);
 //Test Function Declarations
 
 

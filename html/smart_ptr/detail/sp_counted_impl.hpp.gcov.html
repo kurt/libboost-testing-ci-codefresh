@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-06-01 11:51:24</td>
+            <td class="headerValue">2020-06-01 16:27:59</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -134,12 +134,12 @@
 <span class="lineNum">      63 </span>                :            : 
 <a name="64"><span class="lineNum">      64 </span>                :            : public:</a>
 <span class="lineNum">      65 </span>                :            : 
-<span class="lineNum">      66 </span>                :<span class="lineCov">         16 :     explicit sp_counted_impl_p( X * px ): px_( px )</span>
+<span class="lineNum">      66 </span>                :<span class="lineCov">         20 :     explicit sp_counted_impl_p( X * px ): px_( px )</span>
 <span class="lineNum">      67 </span>                :            :     {
 <span class="lineNum">      68 </span>                :            : #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
 <span class="lineNum">      69 </span>                :            :         boost::sp_scalar_constructor_hook( px, sizeof(X), this );
 <span class="lineNum">      70 </span>                :            : #endif
-<a name="71"><span class="lineNum">      71 </span>                :<span class="lineCov">          8 :     }</span></a>
+<a name="71"><span class="lineNum">      71 </span>                :<span class="lineCov">         10 :     }</span></a>
 <span class="lineNum">      72 </span>                :            : 
 <span class="lineNum">      73 </span>                :<span class="lineNoCov">          0 :     virtual void dispose() // nothrow</span>
 <span class="lineNum">      74 </span>                :            :     {

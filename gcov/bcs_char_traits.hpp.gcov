@@ -62,9 +62,9 @@
         -:   57:#else
         -:   58:    typedef typename boost::add_const<CharT>::type const_char;
         -:   59:#endif
-      142:   60:    static bool eq( CharT c1, CharT c2 )
+      174:   60:    static bool eq( CharT c1, CharT c2 )
         -:   61:    {
-      142:   62:        return c1 == c2;
+      174:   62:        return c1 == c2;
         -:   63:    }
         -:   64:    static bool lt( CharT c1, CharT c2 )
         -:   65:    {
@@ -84,15 +84,15 @@
         -:   79:        return 0;
         -:   80:    }
         -:   81:
-       12:   82:    static std::size_t length( const_char* cstr )
+       14:   82:    static std::size_t length( const_char* cstr )
         -:   83:    {
-       12:   84:        const_char null_char = CharT();
+       14:   84:        const_char null_char = CharT();
         -:   85:
-       12:   86:        const_char* ptr = cstr;
-      264:   87:        while( !eq( *ptr, null_char ) )
-      126:   88:            ++ptr;
+       14:   86:        const_char* ptr = cstr;
+      326:   87:        while( !eq( *ptr, null_char ) )
+      156:   88:            ++ptr;
         -:   89:
-       12:   90:        return ptr - cstr;
+       14:   90:        return ptr - cstr;
         -:   91:    }
         -:   92:
         8:   93:    static const_char* find( const_char* s, std::size_t n, CharT c )

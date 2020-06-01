@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-06-01 11:51:24</td>
+            <td class="headerValue">2020-06-01 16:27:59</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">6</td>
@@ -296,9 +296,9 @@
 <span class="lineNum">     225 </span>                :            : 
 <a name="226"><span class="lineNum">     226 </span>                :            : #else // _MANAGED</a>
 <span class="lineNum">     227 </span>                :            : 
-<span class="lineNum">     228 </span>                :<span class="lineCov">          8 : inline void sp_enable_shared_from_this( ... )</span>
+<span class="lineNum">     228 </span>                :<span class="lineCov">         10 : inline void sp_enable_shared_from_this( ... )</span>
 <span class="lineNum">     229 </span>                :            : {
-<span class="lineNum">     230 </span>                :<span class="lineCov">          8 : }</span>
+<span class="lineNum">     230 </span>                :<span class="lineCov">         10 : }</span>
 <span class="lineNum">     231 </span>                :            : 
 <span class="lineNum">     232 </span>                :            : #endif // _MANAGED
 <span class="lineNum">     233 </span>                :            : 
@@ -337,11 +337,11 @@
 <span class="lineNum">     266 </span>                :            : 
 <a name="267"><span class="lineNum">     267 </span>                :            : // pointer constructor helper</a>
 <span class="lineNum">     268 </span>                :            : 
-<span class="lineNum">     269 </span>                :<span class="lineCov">          8 : template&lt; class T, class Y &gt; inline void sp_pointer_construct( boost::shared_ptr&lt; T &gt; * ppx, Y * p, boost::detail::shared_count &amp; pn )</span>
+<span class="lineNum">     269 </span>                :<span class="lineCov">         10 : template&lt; class T, class Y &gt; inline void sp_pointer_construct( boost::shared_ptr&lt; T &gt; * ppx, Y * p, boost::detail::shared_count &amp; pn )</span>
 <span class="lineNum">     270 </span>                :            : {
-<span class="lineNum">     271 </span>                :<span class="lineCov">          8 :     boost::detail::shared_count( p ).swap( pn );</span>
-<span class="lineNum">     272 </span>                :<span class="lineCov">          8 :     boost::detail::sp_enable_shared_from_this( ppx, p, p );</span>
-<span class="lineNum">     273 </span>                :<span class="lineCov">          8 : }</span>
+<span class="lineNum">     271 </span>                :<span class="lineCov">         10 :     boost::detail::shared_count( p ).swap( pn );</span>
+<span class="lineNum">     272 </span>                :<span class="lineCov">         10 :     boost::detail::sp_enable_shared_from_this( ppx, p, p );</span>
+<span class="lineNum">     273 </span>                :<span class="lineCov">         10 : }</span>
 <span class="lineNum">     274 </span>                :            : 
 <span class="lineNum">     275 </span>                :            : #if !defined( BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION )
 <span class="lineNum">     276 </span>                :            : 
@@ -391,7 +391,7 @@
 <span class="lineNum">     320 </span>                :            : //  is destroyed or reset.
 <a name="321"><span class="lineNum">     321 </span>                :            : //</a>
 <span class="lineNum">     322 </span>                :            : 
-<span class="lineNum">     323 </span>[<span class="branchCov" title="Branch 1 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 4 was taken 12 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]:<span class="lineCov">         20 : template&lt;class T&gt; class shared_ptr</span>
+<span class="lineNum">     323 </span>[<span class="branchCov" title="Branch 1 was taken 10 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 4 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]:<span class="lineCov">         26 : template&lt;class T&gt; class shared_ptr</span>
 <span class="lineNum">     324 </span>                :            : {
 <span class="lineNum">     325 </span>                :            : private:
 <span class="lineNum">     326 </span>                :            : 
@@ -402,9 +402,9 @@
 <span class="lineNum">     331 </span>                :            : 
 <a name="332"><span class="lineNum">     332 </span>                :            :     typedef typename boost::detail::sp_element&lt; T &gt;::type element_type;</a>
 <span class="lineNum">     333 </span>                :            : 
-<span class="lineNum">     334 </span>                :<span class="lineCov">         24 :     shared_ptr() BOOST_NOEXCEPT : px( 0 ), pn() // never throws in 1.30+</span>
+<span class="lineNum">     334 </span>                :<span class="lineCov">         32 :     shared_ptr() BOOST_NOEXCEPT : px( 0 ), pn() // never throws in 1.30+</span>
 <span class="lineNum">     335 </span>                :            :     {
-<span class="lineNum">     336 </span>                :<span class="lineCov">         12 :     }</span>
+<span class="lineNum">     336 </span>                :<span class="lineCov">         16 :     }</span>
 <span class="lineNum">     337 </span>                :            : 
 <span class="lineNum">     338 </span>                :            : #if !defined( BOOST_NO_CXX11_NULLPTR )
 <span class="lineNum">     339 </span>                :            : 
@@ -415,10 +415,10 @@
 <span class="lineNum">     344 </span>                :            : #endif
 <a name="345"><span class="lineNum">     345 </span>                :            : </a>
 <span class="lineNum">     346 </span>                :            :     template&lt;class Y&gt;
-<span class="lineNum">     347 </span>                :<span class="lineCov">         16 :     explicit shared_ptr( Y * p ): px( p ), pn() // Y must be complete</span>
+<span class="lineNum">     347 </span>                :<span class="lineCov">         20 :     explicit shared_ptr( Y * p ): px( p ), pn() // Y must be complete</span>
 <span class="lineNum">     348 </span>                :            :     {
-<span class="lineNum">     349 </span>        [<span class="branchCov" title="Branch 1 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">          8 :         boost::detail::sp_pointer_construct( this, p, pn );</span>
-<span class="lineNum">     350 </span>                :<span class="lineCov">          8 :     }</span>
+<span class="lineNum">     349 </span>        [<span class="branchCov" title="Branch 1 was taken 10 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">         10 :         boost::detail::sp_pointer_construct( this, p, pn );</span>
+<span class="lineNum">     350 </span>                :<span class="lineCov">         10 :     }</span>
 <span class="lineNum">     351 </span>                :            : 
 <span class="lineNum">     352 </span>                :            :     //
 <span class="lineNum">     353 </span>                :            :     // Requirements: D's copy constructor must not throw

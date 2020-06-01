@@ -152,50 +152,50 @@
         -:  147:
         -:  148:template<typename CharT>
         -:  149:inline typename basic_cstring<CharT>::pointer
-       12:  150:basic_cstring<CharT>::null_str()
+       16:  150:basic_cstring<CharT>::null_str()
         -:  151:{
         -:  152:    static CharT null = 0;
-       12:  153:    return &null;
+       16:  153:    return &null;
         -:  154:}
         -:  155:
         -:  156://____________________________________________________________________________//
         -:  157:
         -:  158:template<typename CharT>
         -:  159:inline
-       12:  160:basic_cstring<CharT>::basic_cstring()
-       12:  161:: m_begin( null_str() )
-       12:  162:, m_end( m_begin )
+       16:  160:basic_cstring<CharT>::basic_cstring()
+       16:  161:: m_begin( null_str() )
+       16:  162:, m_end( m_begin )
         -:  163:{
-       12:  164:}
+       16:  164:}
         -:  165:
         -:  166://____________________________________________________________________________//
         -:  167:
         -:  168:template<typename CharT>
         -:  169:inline
-        8:  170:basic_cstring<CharT>::basic_cstring( std_string const& s )
+       10:  170:basic_cstring<CharT>::basic_cstring( std_string const& s )
         -:  171:: m_begin( s.c_str() )
-        8:  172:, m_end( m_begin + s.size() )
+       10:  172:, m_end( m_begin + s.size() )
         -:  173:{
-        8:  174:}
+       10:  174:}
         -:  175:
         -:  176://____________________________________________________________________________//
         -:  177:
         -:  178:template<typename CharT>
         -:  179:inline
-       12:  180:basic_cstring<CharT>::basic_cstring( pointer s )
+       14:  180:basic_cstring<CharT>::basic_cstring( pointer s )
         -:  181:: m_begin( s ? s : null_str() )
-       12:  182:, m_end  ( m_begin + (s ? traits_type::length( s ) : 0 ) )
+       14:  182:, m_end  ( m_begin + (s ? traits_type::length( s ) : 0 ) )
         -:  183:{
-       12:  184:}
+       14:  184:}
         -:  185:
         -:  186://____________________________________________________________________________//
         -:  187:
         -:  188:template<typename CharT>
         -:  189:inline
-       38:  190:basic_cstring<CharT>::basic_cstring( pointer s, size_type arg_size )
-       38:  191:: m_begin( s ), m_end( m_begin + arg_size )
+       50:  190:basic_cstring<CharT>::basic_cstring( pointer s, size_type arg_size )
+       50:  191:: m_begin( s ), m_end( m_begin + arg_size )
         -:  192:{
-       38:  193:}
+       50:  193:}
         -:  194:
         -:  195://____________________________________________________________________________//
         -:  196:
@@ -489,9 +489,9 @@
         -:  484:
         -:  485:template<typename CharT>
         -:  486:inline typename basic_cstring<CharT>::const_iterator
-        6:  487:basic_cstring<CharT>::begin() const
+        8:  487:basic_cstring<CharT>::begin() const
         -:  488:{
-        6:  489:    return m_begin;
+        8:  489:    return m_begin;
         -:  490:}
         -:  491:
         -:  492://____________________________________________________________________________//
@@ -507,9 +507,9 @@
         -:  502:
         -:  503:template<typename CharT>
         -:  504:inline typename basic_cstring<CharT>::const_iterator
-        6:  505:basic_cstring<CharT>::end() const
+        8:  505:basic_cstring<CharT>::end() const
         -:  506:{
-        6:  507:    return m_end;
+        8:  507:    return m_end;
         -:  508:}
         -:  509:
         -:  510://____________________________________________________________________________//
