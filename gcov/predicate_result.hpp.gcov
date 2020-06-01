@@ -1,0 +1,93 @@
+        -:    0:Source:/usr/include/boost/test/predicate_result.hpp
+        -:    0:Graph:test-cases.gcno
+        -:    0:Data:test-cases.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1://  (C) Copyright Gennadiy Rozental 2001-2008.
+        -:    2://  Distributed under the Boost Software License, Version 1.0.
+        -:    3://  (See accompanying file LICENSE_1_0.txt or copy at 
+        -:    4://  http://www.boost.org/LICENSE_1_0.txt)
+        -:    5:
+        -:    6://  See http://www.boost.org/libs/test for the library home page.
+        -:    7://
+        -:    8://  File        : $RCSfile$
+        -:    9://
+        -:   10://  Version     : $Revision$
+        -:   11://
+        -:   12://  Description : enhanced result for test predicate that include message explaining failure
+        -:   13:// ***************************************************************************
+        -:   14:
+        -:   15:#ifndef BOOST_TEST_PREDICATE_RESULT_HPP_012705GER
+        -:   16:#define BOOST_TEST_PREDICATE_RESULT_HPP_012705GER
+        -:   17:
+        -:   18:// Boost.Test
+        -:   19:#include <boost/test/utils/class_properties.hpp>
+        -:   20:#include <boost/test/utils/wrap_stringstream.hpp>
+        -:   21:#include <boost/test/utils/basic_cstring/basic_cstring.hpp>
+        -:   22:
+        -:   23:// Boost
+        -:   24:#include <boost/shared_ptr.hpp>
+        -:   25:#include <boost/detail/workaround.hpp>
+        -:   26:
+        -:   27:// STL
+        -:   28:#include <cstddef>          // for std::size_t
+        -:   29:
+        -:   30:#include <boost/test/detail/suppress_warnings.hpp>
+        -:   31:
+        -:   32://____________________________________________________________________________//
+        -:   33:
+        -:   34:namespace boost {
+        -:   35:
+        -:   36:namespace test_tools {
+        -:   37:
+        -:   38:// ************************************************************************** //
+        -:   39:// **************                predicate_result              ************** //
+        -:   40:// ************************************************************************** //
+        -:   41:
+        6:   42:class BOOST_TEST_DECL predicate_result {
+        -:   43:    typedef unit_test::const_string      const_string;
+        -:   44:    struct dummy { void nonnull() {}; };
+        -:   45:    typedef void (dummy::*safe_bool)();
+        -:   46:
+        -:   47:public:
+        -:   48:    // Constructor
+        6:   49:    predicate_result( bool pv_ ) 
+        6:   50:    : p_predicate_value( pv_ )
+        6:   51:    {}
+        -:   52:
+        -:   53:    template<typename BoolConvertable>
+        -:   54:    predicate_result( BoolConvertable const& pv_ ) : p_predicate_value( !!pv_ ) {}
+        -:   55:
+        -:   56:    // Access methods
+        -:   57:    bool                operator!() const           { return !p_predicate_value; }
+        -:   58:    void                operator=( bool pv_ )       { p_predicate_value.value = pv_; }
+        -:   59:    operator            safe_bool() const           { return !!p_predicate_value ? &dummy::nonnull : 0; }
+        -:   60:
+        -:   61:    // Public properties
+        6:   62:    BOOST_READONLY_PROPERTY( bool, (predicate_result) ) p_predicate_value;
+        -:   63:
+        -:   64:    // Access methods
+        -:   65:    bool                has_empty_message() const   { return !m_message; }
+        -:   66:    wrap_stringstream&  message()
+        -:   67:    {
+        -:   68:        if( !m_message )
+        -:   69:            m_message.reset( new wrap_stringstream );
+        -:   70:
+        -:   71:        return *m_message;
+        -:   72:    }
+        -:   73:    const_string        message() const                   { return !m_message ? const_string() : const_string( m_message->str() ); }
+        -:   74:
+        -:   75:private:
+        -:   76:    // Data members
+        -:   77:    shared_ptr<wrap_stringstream> m_message;
+        -:   78:};
+        -:   79:
+        -:   80:} // namespace test_tools
+        -:   81:
+        -:   82:} // namespace boost
+        -:   83:
+        -:   84://____________________________________________________________________________//
+        -:   85:
+        -:   86:#include <boost/test/detail/enable_warnings.hpp>
+        -:   87:
+        -:   88:#endif // BOOST_TEST_PREDICATE_RESULT_HPP_012705GER

@@ -1,0 +1,276 @@
+        -:    0:Source:/usr/include/boost/smart_ptr/detail/sp_counted_impl.hpp
+        -:    0:Graph:test-cases.gcno
+        -:    0:Data:test-cases.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_IMPL_HPP_INCLUDED
+        -:    2:#define BOOST_SMART_PTR_DETAIL_SP_COUNTED_IMPL_HPP_INCLUDED
+        -:    3:
+        -:    4:// MS compatible compilers support #pragma once
+        -:    5:
+        -:    6:#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+        -:    7:# pragma once
+        -:    8:#endif
+        -:    9:
+        -:   10://
+        -:   11://  detail/sp_counted_impl.hpp
+        -:   12://
+        -:   13://  Copyright (c) 2001, 2002, 2003 Peter Dimov and Multi Media Ltd.
+        -:   14://  Copyright 2004-2005 Peter Dimov
+        -:   15://
+        -:   16:// Distributed under the Boost Software License, Version 1.0. (See
+        -:   17:// accompanying file LICENSE_1_0.txt or copy at
+        -:   18:// http://www.boost.org/LICENSE_1_0.txt)
+        -:   19://
+        -:   20:
+        -:   21:#include <boost/config.hpp>
+        -:   22:
+        -:   23:#if defined(BOOST_SP_USE_STD_ALLOCATOR) && defined(BOOST_SP_USE_QUICK_ALLOCATOR)
+        -:   24:# error BOOST_SP_USE_STD_ALLOCATOR and BOOST_SP_USE_QUICK_ALLOCATOR are incompatible.
+        -:   25:#endif
+        -:   26:
+        -:   27:#include <boost/checked_delete.hpp>
+        -:   28:#include <boost/smart_ptr/detail/sp_counted_base.hpp>
+        -:   29:
+        -:   30:#if defined(BOOST_SP_USE_QUICK_ALLOCATOR)
+        -:   31:#include <boost/smart_ptr/detail/quick_allocator.hpp>
+        -:   32:#endif
+        -:   33:
+        -:   34:#if defined(BOOST_SP_USE_STD_ALLOCATOR)
+        -:   35:#include <memory>           // std::allocator
+        -:   36:#endif
+        -:   37:
+        -:   38:#include <cstddef>          // std::size_t
+        -:   39:
+        -:   40:namespace boost
+        -:   41:{
+        -:   42:
+        -:   43:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:   44:
+        -:   45:void sp_scalar_constructor_hook( void * px, std::size_t size, void * pn );
+        -:   46:void sp_scalar_destructor_hook( void * px, std::size_t size, void * pn );
+        -:   47:
+        -:   48:#endif
+        -:   49:
+        -:   50:namespace detail
+        -:   51:{
+        -:   52:
+    #####:   53:template<class X> class sp_counted_impl_p: public sp_counted_base
+        -:   54:{
+        -:   55:private:
+        -:   56:
+        -:   57:    X * px_;
+        -:   58:
+        -:   59:    sp_counted_impl_p( sp_counted_impl_p const & );
+        -:   60:    sp_counted_impl_p & operator= ( sp_counted_impl_p const & );
+        -:   61:
+        -:   62:    typedef sp_counted_impl_p<X> this_type;
+        -:   63:
+        -:   64:public:
+        -:   65:
+        4:   66:    explicit sp_counted_impl_p( X * px ): px_( px )
+        -:   67:    {
+        -:   68:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:   69:        boost::sp_scalar_constructor_hook( px, sizeof(X), this );
+        -:   70:#endif
+        4:   71:    }
+        -:   72:
+    #####:   73:    virtual void dispose() // nothrow
+        -:   74:    {
+        -:   75:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:   76:        boost::sp_scalar_destructor_hook( px_, sizeof(X), this );
+        -:   77:#endif
+    #####:   78:        boost::checked_delete( px_ );
+    #####:   79:    }
+        -:   80:
+    #####:   81:    virtual void * get_deleter( sp_typeinfo const & )
+        -:   82:    {
+    #####:   83:        return 0;
+        -:   84:    }
+        -:   85:
+    #####:   86:    virtual void * get_untyped_deleter()
+        -:   87:    {
+    #####:   88:        return 0;
+        -:   89:    }
+        -:   90:
+        -:   91:#if defined(BOOST_SP_USE_STD_ALLOCATOR)
+        -:   92:
+        -:   93:    void * operator new( std::size_t )
+        -:   94:    {
+        -:   95:        return std::allocator<this_type>().allocate( 1, static_cast<this_type *>(0) );
+        -:   96:    }
+        -:   97:
+        -:   98:    void operator delete( void * p )
+        -:   99:    {
+        -:  100:        std::allocator<this_type>().deallocate( static_cast<this_type *>(p), 1 );
+        -:  101:    }
+        -:  102:
+        -:  103:#endif
+        -:  104:
+        -:  105:#if defined(BOOST_SP_USE_QUICK_ALLOCATOR)
+        -:  106:
+        -:  107:    void * operator new( std::size_t )
+        -:  108:    {
+        -:  109:        return quick_allocator<this_type>::alloc();
+        -:  110:    }
+        -:  111:
+        -:  112:    void operator delete( void * p )
+        -:  113:    {
+        -:  114:        quick_allocator<this_type>::dealloc( p );
+        -:  115:    }
+        -:  116:
+        -:  117:#endif
+        -:  118:};
+        -:  119:
+        -:  120://
+        -:  121:// Borland's Codeguard trips up over the -Vx- option here:
+        -:  122://
+        -:  123:#ifdef __CODEGUARD__
+        -:  124:# pragma option push -Vx-
+        -:  125:#endif
+        -:  126:
+        -:  127:template<class P, class D> class sp_counted_impl_pd: public sp_counted_base
+        -:  128:{
+        -:  129:private:
+        -:  130:
+        -:  131:    P ptr; // copy constructor must not throw
+        -:  132:    D del; // copy constructor must not throw
+        -:  133:
+        -:  134:    sp_counted_impl_pd( sp_counted_impl_pd const & );
+        -:  135:    sp_counted_impl_pd & operator= ( sp_counted_impl_pd const & );
+        -:  136:
+        -:  137:    typedef sp_counted_impl_pd<P, D> this_type;
+        -:  138:
+        -:  139:public:
+        -:  140:
+        -:  141:    // pre: d(p) must not throw
+        -:  142:
+        -:  143:    sp_counted_impl_pd( P p, D & d ): ptr( p ), del( d )
+        -:  144:    {
+        -:  145:    }
+        -:  146:
+        -:  147:    sp_counted_impl_pd( P p ): ptr( p ), del()
+        -:  148:    {
+        -:  149:    }
+        -:  150:
+        -:  151:    virtual void dispose() // nothrow
+        -:  152:    {
+        -:  153:        del( ptr );
+        -:  154:    }
+        -:  155:
+        -:  156:    virtual void * get_deleter( sp_typeinfo const & ti )
+        -:  157:    {
+        -:  158:        return ti == BOOST_SP_TYPEID(D)? &reinterpret_cast<char&>( del ): 0;
+        -:  159:    }
+        -:  160:
+        -:  161:    virtual void * get_untyped_deleter()
+        -:  162:    {
+        -:  163:        return &reinterpret_cast<char&>( del );
+        -:  164:    }
+        -:  165:
+        -:  166:#if defined(BOOST_SP_USE_STD_ALLOCATOR)
+        -:  167:
+        -:  168:    void * operator new( std::size_t )
+        -:  169:    {
+        -:  170:        return std::allocator<this_type>().allocate( 1, static_cast<this_type *>(0) );
+        -:  171:    }
+        -:  172:
+        -:  173:    void operator delete( void * p )
+        -:  174:    {
+        -:  175:        std::allocator<this_type>().deallocate( static_cast<this_type *>(p), 1 );
+        -:  176:    }
+        -:  177:
+        -:  178:#endif
+        -:  179:
+        -:  180:#if defined(BOOST_SP_USE_QUICK_ALLOCATOR)
+        -:  181:
+        -:  182:    void * operator new( std::size_t )
+        -:  183:    {
+        -:  184:        return quick_allocator<this_type>::alloc();
+        -:  185:    }
+        -:  186:
+        -:  187:    void operator delete( void * p )
+        -:  188:    {
+        -:  189:        quick_allocator<this_type>::dealloc( p );
+        -:  190:    }
+        -:  191:
+        -:  192:#endif
+        -:  193:};
+        -:  194:
+        -:  195:template<class P, class D, class A> class sp_counted_impl_pda: public sp_counted_base
+        -:  196:{
+        -:  197:private:
+        -:  198:
+        -:  199:    P p_; // copy constructor must not throw
+        -:  200:    D d_; // copy constructor must not throw
+        -:  201:    A a_; // copy constructor must not throw
+        -:  202:
+        -:  203:    sp_counted_impl_pda( sp_counted_impl_pda const & );
+        -:  204:    sp_counted_impl_pda & operator= ( sp_counted_impl_pda const & );
+        -:  205:
+        -:  206:    typedef sp_counted_impl_pda<P, D, A> this_type;
+        -:  207:
+        -:  208:public:
+        -:  209:
+        -:  210:    // pre: d( p ) must not throw
+        -:  211:
+        -:  212:    sp_counted_impl_pda( P p, D & d, A a ): p_( p ), d_( d ), a_( a )
+        -:  213:    {
+        -:  214:    }
+        -:  215:
+        -:  216:    sp_counted_impl_pda( P p, A a ): p_( p ), d_( a ), a_( a )
+        -:  217:    {
+        -:  218:    }
+        -:  219:
+        -:  220:    virtual void dispose() // nothrow
+        -:  221:    {
+        -:  222:        d_( p_ );
+        -:  223:    }
+        -:  224:
+        -:  225:    virtual void destroy() // nothrow
+        -:  226:    {
+        -:  227:#if !defined( BOOST_NO_CXX11_ALLOCATOR )
+        -:  228:
+        -:  229:        typedef typename std::allocator_traits<A>::template rebind_alloc< this_type > A2;
+        -:  230:
+        -:  231:#else
+        -:  232:
+        -:  233:        typedef typename A::template rebind< this_type >::other A2;
+        -:  234:
+        -:  235:#endif
+        -:  236:
+        -:  237:        A2 a2( a_ );
+        -:  238:
+        -:  239:#if !defined( BOOST_NO_CXX11_ALLOCATOR )
+        -:  240:
+        -:  241:        std::allocator_traits<A2>::destroy( a2, this );
+        -:  242:
+        -:  243:#else
+        -:  244:
+        -:  245:        this->~this_type();
+        -:  246:
+        -:  247:#endif
+        -:  248:
+        -:  249:        a2.deallocate( this, 1 );
+        -:  250:    }
+        -:  251:
+        -:  252:    virtual void * get_deleter( sp_typeinfo const & ti )
+        -:  253:    {
+        -:  254:        return ti == BOOST_SP_TYPEID( D )? &reinterpret_cast<char&>( d_ ): 0;
+        -:  255:    }
+        -:  256:
+        -:  257:    virtual void * get_untyped_deleter()
+        -:  258:    {
+        -:  259:        return &reinterpret_cast<char&>( d_ );
+        -:  260:    }
+        -:  261:};
+        -:  262:
+        -:  263:#ifdef __CODEGUARD__
+        -:  264:# pragma option pop
+        -:  265:#endif
+        -:  266:
+        -:  267:} // namespace detail
+        -:  268:
+        -:  269:} // namespace boost
+        -:  270:
+        -:  271:#endif  // #ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_IMPL_HPP_INCLUDED

@@ -1,0 +1,439 @@
+        -:    0:Source:/usr/include/boost/test/unit_test_suite_impl.hpp
+        -:    0:Graph:test-cases.gcno
+        -:    0:Data:test-cases.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1://  (C) Copyright Gennadiy Rozental 2001-2008.
+        -:    2://  Distributed under the Boost Software License, Version 1.0.
+        -:    3://  (See accompanying file LICENSE_1_0.txt or copy at 
+        -:    4://  http://www.boost.org/LICENSE_1_0.txt)
+        -:    5:
+        -:    6://  See http://www.boost.org/libs/test for the library home page.
+        -:    7://
+        -:    8://  File        : $RCSfile$
+        -:    9://
+        -:   10://  Version     : $Revision$
+        -:   11://
+        -:   12://  Description : defines test_unit, test_case, test_case_results, test_suite and test_tree_visitor
+        -:   13:// ***************************************************************************
+        -:   14:
+        -:   15:#ifndef BOOST_TEST_UNIT_TEST_SUITE_IMPL_HPP_071894GER
+        -:   16:#define BOOST_TEST_UNIT_TEST_SUITE_IMPL_HPP_071894GER
+        -:   17:
+        -:   18:// Boost.Test
+        -:   19:#include <boost/test/detail/config.hpp>
+        -:   20:#include <boost/test/detail/global_typedef.hpp>
+        -:   21:#include <boost/test/utils/class_properties.hpp>
+        -:   22:#include <boost/test/utils/callback.hpp>
+        -:   23:#include <boost/test/detail/fwd_decl.hpp>
+        -:   24:#include <boost/test/detail/workaround.hpp>
+        -:   25:#include <boost/test/test_observer.hpp>
+        -:   26:
+        -:   27:// Boost
+        -:   28:#include <boost/shared_ptr.hpp>
+        -:   29:#include <boost/mpl/for_each.hpp>
+        -:   30:#include <boost/mpl/identity.hpp>
+        -:   31:#include <boost/type.hpp>
+        -:   32:#include <boost/type_traits/is_const.hpp>
+        -:   33:
+        -:   34:// STL
+        -:   35:#include <typeinfo> // for typeid
+        -:   36:#include <string>   // for std::string
+        -:   37:#include <list>     // for std::list
+        -:   38:#include <vector>   // for std::vector
+        -:   39:
+        -:   40:#include <boost/test/detail/suppress_warnings.hpp>
+        -:   41:
+        -:   42://____________________________________________________________________________//
+        -:   43:
+        -:   44:namespace boost {
+        -:   45:
+        -:   46:namespace unit_test {
+        -:   47:
+        -:   48:// ************************************************************************** //
+        -:   49:// **************                   test_unit                  ************** //
+        -:   50:// ************************************************************************** //
+        -:   51:
+        -:   52:class BOOST_TEST_DECL test_unit {
+        -:   53:public:
+        -:   54:    enum { type = tut_any };
+        -:   55:
+        -:   56:    // Constructor
+        -:   57:    test_unit( const_string tu_name, test_unit_type t );
+        -:   58:
+        -:   59:    // dependencies management
+        -:   60:    void    depends_on( test_unit* tu );
+        -:   61:    bool    check_dependencies() const;
+        -:   62:
+        -:   63:    // Public r/o properties
+        -:   64:    typedef BOOST_READONLY_PROPERTY(test_unit_id,(framework_impl))  id_t;
+        -:   65:    typedef BOOST_READONLY_PROPERTY(test_unit_id,(test_suite))      parent_id_t;
+        -:   66:    readonly_property<test_unit_type>   p_type;                 // type for this test unit
+        -:   67:    readonly_property<const_string>     p_type_name;            // "case"/"suite"
+        -:   68:    id_t                                p_id;                   // unique id for this test unit
+        -:   69:    parent_id_t                         p_parent_id;            // parent test suite id
+        -:   70:
+        -:   71:    // Public r/w properties
+        -:   72:    readwrite_property<std::string>     p_name;                 // name for this test unit
+        -:   73:    readwrite_property<unsigned>        p_timeout;              // timeout for the test unit execution 
+        -:   74:    readwrite_property<counter_t>       p_expected_failures;    // number of expected failures in this test unit
+        -:   75:    mutable readwrite_property<bool>    p_enabled;              // enabled status for this unit
+        -:   76:
+        -:   77:    void                                increase_exp_fail( unsigned num );
+        -:   78:
+        -:   79:protected:
+        -:   80:    ~test_unit();
+        -:   81:
+        -:   82:private:
+        -:   83:    // Data members
+        -:   84:    std::list<test_unit_id>             m_dependencies;
+        -:   85:};
+        -:   86:
+        -:   87:// ************************************************************************** //
+        -:   88:// **************              test_case_generator             ************** //
+        -:   89:// ************************************************************************** //
+        -:   90:
+        -:   91:class BOOST_TEST_DECL test_unit_generator {
+        -:   92:public:
+        -:   93:    virtual test_unit*  next() const = 0;
+        -:   94:
+        -:   95:protected:
+        -:   96:    BOOST_TEST_PROTECTED_VIRTUAL ~test_unit_generator() {}
+        -:   97:};
+        -:   98:
+        -:   99:// ************************************************************************** //
+        -:  100:// **************                   test_case                  ************** //
+        -:  101:// ************************************************************************** //
+        -:  102:
+        -:  103:class BOOST_TEST_DECL test_case : public test_unit {
+        -:  104:public:
+        -:  105:    enum { type = tut_case };
+        -:  106:
+        -:  107:    // Constructor
+        -:  108:    test_case( const_string tc_name, callback0<> const& test_func );
+        -:  109:
+        -:  110:    // Access methods
+        -:  111:    callback0<> const&  test_func() const { return m_test_func; }
+        -:  112:
+        -:  113:private:
+        -:  114:    friend class framework_impl;
+        -:  115:    ~test_case() {}
+        -:  116:
+        -:  117:    // BOOST_MSVC <= 1200 have problems with callback as property
+        -:  118:    // Data members
+        -:  119:    callback0<> m_test_func;
+        -:  120:};
+        -:  121:
+        -:  122:// ************************************************************************** //
+        -:  123:// **************                  test_suite                  ************** //
+        -:  124:// ************************************************************************** //
+        -:  125:
+        -:  126:class BOOST_TEST_DECL test_suite : public test_unit {
+        -:  127:public:
+        -:  128:    enum { type = tut_suite };
+        -:  129:
+        -:  130:    // Constructor
+        -:  131:    explicit        test_suite( const_string ts_name );
+        -:  132:
+        -:  133:    // test unit list management
+        -:  134:    void            add( test_unit* tu, counter_t expected_failures = 0, unsigned timeout = 0 );
+        -:  135:    void            add( test_unit_generator const& gen, unsigned timeout = 0 );
+        -:  136:    void            remove( test_unit_id id );
+        -:  137:
+        -:  138:    // access methods
+        -:  139:    test_unit_id    get( const_string tu_name ) const;
+        -:  140:    std::size_t     size() const { return m_members.size(); }
+        -:  141:
+        -:  142:protected:
+        -:  143:    friend BOOST_TEST_DECL 
+        -:  144:    void        traverse_test_tree( test_suite const&, test_tree_visitor& );
+        -:  145:    friend class framework_impl;
+        -:  146:    virtual     ~test_suite() {}
+        -:  147:
+        -:  148:    // Data members
+        -:  149:    std::vector<test_unit_id> m_members;
+        -:  150:};
+        -:  151:
+        -:  152:// ************************************************************************** //
+        -:  153:// **************               master_test_suite              ************** //
+        -:  154:// ************************************************************************** //
+        -:  155:
+        -:  156:class BOOST_TEST_DECL master_test_suite_t : public test_suite {
+        -:  157:public:
+        -:  158:    master_test_suite_t() : test_suite( "Master Test Suite" )
+        -:  159:    , argc( 0 )
+        -:  160:    , argv( 0 )
+        -:  161:    {}
+        -:  162:    
+        -:  163:    // Data members    
+        -:  164:    int      argc;
+        -:  165:    char**   argv;
+        -:  166:};
+        -:  167:
+        -:  168:
+        -:  169:// ************************************************************************** //
+        -:  170:// **************               test_tree_visitor              ************** //
+        -:  171:// ************************************************************************** //
+        -:  172:
+        -:  173:class BOOST_TEST_DECL test_tree_visitor {
+        -:  174:public:
+        -:  175:    // test tree visitor interface
+        -:  176:    virtual void    visit( test_case const& )               {}
+        -:  177:    virtual bool    test_suite_start( test_suite const& )   { return true; }
+        -:  178:    virtual void    test_suite_finish( test_suite const& )  {}
+        -:  179:
+        -:  180:protected:
+        -:  181:    BOOST_TEST_PROTECTED_VIRTUAL ~test_tree_visitor() {}
+        -:  182:};
+        -:  183:
+        -:  184:// ************************************************************************** //
+        -:  185:// **************               traverse_test_tree             ************** //
+        -:  186:// ************************************************************************** //
+        -:  187:
+        -:  188:BOOST_TEST_DECL void    traverse_test_tree( test_case const&, test_tree_visitor& );
+        -:  189:BOOST_TEST_DECL void    traverse_test_tree( test_suite const&, test_tree_visitor& );
+        -:  190:BOOST_TEST_DECL void    traverse_test_tree( test_unit_id     , test_tree_visitor& );
+        -:  191:
+        -:  192://____________________________________________________________________________//
+        -:  193:
+        -:  194:inline void
+        -:  195:traverse_test_tree( test_unit const& tu, test_tree_visitor& V )
+        -:  196:{
+        -:  197:    if( tu.p_type == tut_case )
+        -:  198:        traverse_test_tree( static_cast<test_case const&>( tu ), V );
+        -:  199:    else
+        -:  200:        traverse_test_tree( static_cast<test_suite const&>( tu ), V );
+        -:  201:}
+        -:  202:
+        -:  203://____________________________________________________________________________//
+        -:  204:
+        -:  205:// ************************************************************************** //
+        -:  206:// **************                test_case_counter             ************** //
+        -:  207:// ************************************************************************** //
+        -:  208:
+        -:  209:class test_case_counter : public test_tree_visitor {
+        -:  210:public:
+        -:  211:    // Constructor
+        -:  212:    test_case_counter() : p_count( 0 ) {}
+        -:  213:
+        -:  214:    BOOST_READONLY_PROPERTY( counter_t, (test_case_counter)) p_count;
+        -:  215:private:
+        -:  216:    // test tree visitor interface
+        -:  217:    virtual void    visit( test_case const& );
+        -:  218:    virtual bool    test_suite_start( test_suite const& ts )    { return ts.p_enabled; }
+        -:  219:};
+        -:  220:
+        -:  221:// ************************************************************************** //
+        -:  222:// **************               test_being_aborted             ************** //
+        -:  223:// ************************************************************************** //
+        -:  224:
+        -:  225:struct BOOST_TEST_DECL test_being_aborted {};
+        -:  226:
+        -:  227:// ************************************************************************** //
+        -:  228:// **************               object generators              ************** //
+        -:  229:// ************************************************************************** //
+        -:  230:
+        -:  231:namespace ut_detail {
+        -:  232:
+        -:  233:BOOST_TEST_DECL std::string normalize_test_case_name( const_string tu_name );
+        -:  234:
+        -:  235:template<typename InstanceType,typename UserTestCase>
+        -:  236:struct user_tc_method_invoker {
+        -:  237:    typedef void (UserTestCase::*TestMethod )();
+        -:  238:
+        -:  239:    user_tc_method_invoker( shared_ptr<InstanceType> inst, TestMethod test_method )
+        -:  240:    : m_inst( inst ), m_test_method( test_method ) {}
+        -:  241:
+        -:  242:    void operator()() { ((*m_inst).*m_test_method)(); }
+        -:  243:
+        -:  244:    shared_ptr<InstanceType> m_inst;
+        -:  245:    TestMethod               m_test_method;
+        -:  246:};
+        -:  247:
+        -:  248:} // namespace ut_detail
+        -:  249:
+        -:  250://____________________________________________________________________________//
+        -:  251:
+        -:  252:inline test_case*
+        4:  253:make_test_case( callback0<> const& test_func, const_string tc_name )
+        -:  254:{
+        4:  255:    return new test_case( ut_detail::normalize_test_case_name( tc_name ), test_func );
+        -:  256:}
+        -:  257:
+        -:  258://____________________________________________________________________________//
+        -:  259:
+        -:  260:template<typename UserTestCase, typename InstanceType>
+        -:  261:inline test_case*
+        -:  262:make_test_case( void (UserTestCase::*           test_method )(),
+        -:  263:                const_string                    tc_name,
+        -:  264:                boost::shared_ptr<InstanceType> user_test_case )
+        -:  265:{
+        -:  266:    return new test_case( ut_detail::normalize_test_case_name( tc_name ), 
+        -:  267:                          ut_detail::user_tc_method_invoker<InstanceType,UserTestCase>( user_test_case, test_method ) );
+        -:  268:}
+        -:  269:
+        -:  270://____________________________________________________________________________//
+        -:  271:
+        -:  272:// ************************************************************************** //
+        -:  273:// **************           auto_test_unit_registrar           ************** //
+        -:  274:// ************************************************************************** //
+        -:  275:
+        -:  276:namespace ut_detail {
+        -:  277:
+        -:  278:struct BOOST_TEST_DECL auto_test_unit_registrar
+        -:  279:{
+        -:  280:    // Constructors
+        -:  281:                auto_test_unit_registrar( test_case* tc, counter_t exp_fail );
+        -:  282:    explicit    auto_test_unit_registrar( const_string ts_name );
+        -:  283:    explicit    auto_test_unit_registrar( test_unit_generator const& tc_gen );
+        -:  284:    explicit    auto_test_unit_registrar( int );
+        -:  285:
+        -:  286:private:
+        -:  287:    static std::list<test_suite*>& curr_ts_store();
+        -:  288:};
+        -:  289:
+        -:  290://____________________________________________________________________________//
+        -:  291:
+        -:  292:template<typename T>
+        -:  293:struct auto_tc_exp_fail {
+        4:  294:    auto_tc_exp_fail() : m_value( 0 ) {}
+        -:  295:
+        -:  296:    explicit    auto_tc_exp_fail( unsigned v )
+        -:  297:    : m_value( v )
+        -:  298:    {
+        -:  299:        instance() = this;
+        -:  300:    }
+        -:  301:
+        4:  302:    static auto_tc_exp_fail*& instance() 
+        -:  303:    {
+        4:  304:        static auto_tc_exp_fail     inst; 
+        -:  305:        static auto_tc_exp_fail*    inst_ptr = &inst; 
+        -:  306:
+        4:  307:        return inst_ptr;
+        -:  308:    }
+        -:  309:
+        4:  310:    unsigned    value() const { return m_value; }
+        -:  311:
+        -:  312:private:
+        -:  313:    // Data members
+        -:  314:    unsigned    m_value;
+        -:  315:};
+        -:  316:
+        -:  317://____________________________________________________________________________//
+        -:  318:
+        -:  319:} // namespace ut_detail
+        -:  320:
+        -:  321:// ************************************************************************** //
+        -:  322:// **************                global_fixture                ************** //
+        -:  323:// ************************************************************************** //
+        -:  324:
+        -:  325:class BOOST_TEST_DECL global_fixture : public test_observer { 
+        -:  326:public: 
+        -:  327:    // Constructor
+        -:  328:    global_fixture();
+        -:  329:}; 
+        -:  330:
+        -:  331://____________________________________________________________________________//
+        -:  332:
+        -:  333:namespace ut_detail {
+        -:  334:
+        -:  335:template<typename F> 
+        -:  336:struct global_fixture_impl : public global_fixture {
+        -:  337:    // Constructor
+        -:  338:    global_fixture_impl(): m_fixure( 0 )    {}
+        -:  339:
+        -:  340:    // test observer interface
+        -:  341:    virtual void    test_start( counter_t ) { m_fixure = new F; }
+        -:  342:    virtual void    test_finish()           { delete m_fixure; m_fixure = 0; } 
+        -:  343:    virtual void    test_aborted()          { delete m_fixure; m_fixure = 0; } 
+        -:  344:
+        -:  345:private:
+        -:  346:    // Data members
+        -:  347:    F*  m_fixure;
+        -:  348:}; 
+        -:  349:
+        -:  350:// ************************************************************************** //
+        -:  351:// **************          test_case_template_invoker          ************** //
+        -:  352:// ************************************************************************** //
+        -:  353:
+        -:  354:template<typename TestCaseTemplate,typename TestType>
+        -:  355:class test_case_template_invoker {
+        -:  356:public:
+        -:  357:    void    operator()()    { TestCaseTemplate::run( (boost::type<TestType>*)0 ); }
+        -:  358:};
+        -:  359:
+        -:  360:// ************************************************************************** //
+        -:  361:// **************           generate_test_case_4_type          ************** //
+        -:  362:// ************************************************************************** //
+        -:  363:
+        -:  364:template<typename Generator,typename TestCaseTemplate>
+        -:  365:struct generate_test_case_4_type {
+        -:  366:    explicit    generate_test_case_4_type( const_string tc_name, Generator& G )
+        -:  367:    : m_test_case_name( tc_name )
+        -:  368:    , m_holder( G )
+        -:  369:    {}
+        -:  370:
+        -:  371:    template<typename TestType>
+        -:  372:    void        operator()( mpl::identity<TestType> )
+        -:  373:    {
+        -:  374:        std::string full_name;
+        -:  375:        assign_op( full_name, m_test_case_name, 0 );
+        -:  376:        full_name += '<';
+        -:  377:        full_name += typeid(TestType).name();
+        -:  378:        if( boost::is_const<TestType>::value )
+        -:  379:            full_name += " const";
+        -:  380:        full_name += '>';
+        -:  381:
+        -:  382:        m_holder.m_test_cases.push_back( 
+        -:  383:            new test_case( full_name, test_case_template_invoker<TestCaseTemplate,TestType>() ) );
+        -:  384:    }
+        -:  385:
+        -:  386:private:
+        -:  387:    // Data members
+        -:  388:    const_string    m_test_case_name;
+        -:  389:    Generator&      m_holder;
+        -:  390:};
+        -:  391:
+        -:  392:// ************************************************************************** //
+        -:  393:// **************              test_case_template              ************** //
+        -:  394:// ************************************************************************** //
+        -:  395:
+        -:  396:template<typename TestCaseTemplate,typename TestTypesList>
+        -:  397:class template_test_case_gen : public test_unit_generator {
+        -:  398:public:
+        -:  399:    // Constructor
+        -:  400:    template_test_case_gen( const_string tc_name )
+        -:  401:    {
+        -:  402:        typedef generate_test_case_4_type<template_test_case_gen<TestCaseTemplate,TestTypesList>,
+        -:  403:                                          TestCaseTemplate
+        -:  404:        > single_test_gen;
+        -:  405:        mpl::for_each<TestTypesList,mpl::make_identity<mpl::_> >( single_test_gen( tc_name, *this ) );
+        -:  406:    }
+        -:  407:
+        -:  408:    virtual test_unit* next() const
+        -:  409:    {
+        -:  410:        if( m_test_cases.empty() )
+        -:  411:            return 0;
+        -:  412:    
+        -:  413:        test_unit* res = m_test_cases.front();
+        -:  414:        m_test_cases.pop_front();
+        -:  415:
+        -:  416:        return res;
+        -:  417:    }
+        -:  418:
+        -:  419:    // Data members
+        -:  420:    mutable std::list<test_unit*> m_test_cases;
+        -:  421:};
+        -:  422:
+        -:  423://____________________________________________________________________________//
+        -:  424:
+        -:  425:} // namespace ut_detail
+        -:  426:
+        -:  427:} // unit_test
+        -:  428:
+        -:  429:} // namespace boost
+        -:  430:
+        -:  431:#include <boost/test/detail/enable_warnings.hpp>
+        -:  432:
+        -:  433:#endif // BOOST_TEST_UNIT_TEST_SUITE_IMPL_HPP_071894GER
+        -:  434:

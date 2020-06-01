@@ -1,0 +1,395 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - testout - test/utils/callback.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">test/utils</a> - callback.hpp<span style="font-size: 80%;"> (source / <a href="callback.hpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">testout</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntryMed">77.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-05-29 16:49:03</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntryLo">60.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntryLo">30.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : //  (C) Copyright Gennadiy Rozental 2005-2008.</a>
+<span class="lineNum">       2 </span>                :            : //  Use, modification, and distribution are subject to the 
+<span class="lineNum">       3 </span>                :            : //  Boost Software License, Version 1.0. (See accompanying file 
+<span class="lineNum">       4 </span>                :            : //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       5 </span>                :            : 
+<span class="lineNum">       6 </span>                :            : //  See http://www.boost.org/libs/test for the library home page.
+<span class="lineNum">       7 </span>                :            : //
+<span class="lineNum">       8 </span>                :            : //  File        : $RCSfile$
+<span class="lineNum">       9 </span>                :            : //
+<span class="lineNum">      10 </span>                :            : //  Version     : $Revision$
+<span class="lineNum">      11 </span>                :            : //
+<span class="lineNum">      12 </span>                :            : //  Description : 
+<span class="lineNum">      13 </span>                :            : // ***************************************************************************
+<span class="lineNum">      14 </span>                :            : 
+<span class="lineNum">      15 </span>                :            : #ifndef BOOST_TEST_CALLBACK_020505GER
+<span class="lineNum">      16 </span>                :            : #define BOOST_TEST_CALLBACK_020505GER
+<span class="lineNum">      17 </span>                :            : 
+<span class="lineNum">      18 </span>                :            : // Boost
+<span class="lineNum">      19 </span>                :            : #include &lt;boost/config.hpp&gt;
+<span class="lineNum">      20 </span>                :            : #include &lt;boost/detail/workaround.hpp&gt;
+<span class="lineNum">      21 </span>                :            : #include &lt;boost/shared_ptr.hpp&gt;
+<span class="lineNum">      22 </span>                :            : 
+<span class="lineNum">      23 </span>                :            : #include &lt;boost/test/detail/suppress_warnings.hpp&gt;
+<span class="lineNum">      24 </span>                :            : 
+<span class="lineNum">      25 </span>                :            : #if BOOST_WORKAROUND(BOOST_MSVC, &lt; 1300) || BOOST_WORKAROUND(BOOST_INTEL, &lt;= 700)
+<span class="lineNum">      26 </span>                :            : #  define BOOST_CALLBACK_EXPLICIT_COPY_CONSTRUCTOR
+<span class="lineNum">      27 </span>                :            : #endif
+<span class="lineNum">      28 </span>                :            : 
+<span class="lineNum">      29 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">      30 </span>                :            : 
+<span class="lineNum">      31 </span>                :            : namespace boost {
+<span class="lineNum">      32 </span>                :            : 
+<span class="lineNum">      33 </span>                :            : namespace unit_test {
+<span class="lineNum">      34 </span>                :            : 
+<span class="lineNum">      35 </span>                :            : namespace ut_detail {
+<span class="lineNum">      36 </span>                :            : 
+<span class="lineNum">      37 </span>                :            : struct unused {};
+<span class="lineNum">      38 </span>                :            : 
+<span class="lineNum">      39 </span>                :            : template&lt;typename R&gt;
+<span class="lineNum">      40 </span>                :            : struct invoker {
+<span class="lineNum">      41 </span>                :            :     template&lt;typename Functor&gt;
+<span class="lineNum">      42 </span>                :            :     R       invoke( Functor&amp; f )                        { return f(); }
+<span class="lineNum">      43 </span>                :            :     template&lt;typename Functor, typename T1&gt;
+<span class="lineNum">      44 </span>                :            :     R       invoke( Functor&amp; f, T1 t1 )                 { return f( t1 ); }
+<span class="lineNum">      45 </span>                :            :     template&lt;typename Functor, typename T1, typename T2&gt;
+<span class="lineNum">      46 </span>                :            :     R       invoke( Functor&amp; f, T1 t1, T2 t2 )          { return f( t1, t2 ); }
+<span class="lineNum">      47 </span>                :            :     template&lt;typename Functor, typename T1, typename T2, typename T3&gt;
+<span class="lineNum">      48 </span>                :            :     R       invoke( Functor&amp; f, T1 t1, T2 t2, T3 t3 )   { return f( t1, t2, t3 ); }
+<span class="lineNum">      49 </span>                :            : };
+<span class="lineNum">      50 </span>                :            : 
+<span class="lineNum">      51 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">      52 </span>                :            : 
+<span class="lineNum">      53 </span>                :            : template&lt;&gt;
+<a name="54"><span class="lineNum">      54 </span>                :            : struct invoker&lt;unused&gt; {</a>
+<span class="lineNum">      55 </span>                :            :     template&lt;typename Functor&gt;
+<span class="lineNum">      56 </span>                :<span class="lineCov">          8 :     unused  invoke( Functor&amp; f )                        { f(); return unused(); }</span>
+<span class="lineNum">      57 </span>                :            :     template&lt;typename Functor, typename T1&gt;
+<span class="lineNum">      58 </span>                :            :     unused  invoke( Functor&amp; f, T1 t1 )                 { f( t1 ); return unused(); }
+<span class="lineNum">      59 </span>                :            :     template&lt;typename Functor, typename T1, typename T2&gt;
+<span class="lineNum">      60 </span>                :            :     unused  invoke( Functor&amp; f, T1 t1, T2 t2 )          { f( t1, t2 ); return unused(); }
+<span class="lineNum">      61 </span>                :            :     template&lt;typename Functor, typename T1, typename T2, typename T3&gt;
+<span class="lineNum">      62 </span>                :            :     unused  invoke( Functor&amp; f, T1 t1, T2 t2, T3 t3 )   { f( t1, t2, t3 ); return unused(); }
+<span class="lineNum">      63 </span>                :            : };
+<span class="lineNum">      64 </span>                :            : 
+<span class="lineNum">      65 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">      66 </span>                :            : 
+<span class="lineNum">      67 </span>                :            : } // namespace ut_detail
+<span class="lineNum">      68 </span>                :            : 
+<span class="lineNum">      69 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      70 </span>                :            : // **************             unit_test::callback0             ************** //
+<span class="lineNum">      71 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      72 </span>                :            : 
+<span class="lineNum">      73 </span>                :            : namespace ut_detail {
+<a name="74"><span class="lineNum">      74 </span>                :            : </a>
+<a name="75"><span class="lineNum">      75 </span>                :            : template&lt;typename R&gt;</a>
+<span class="lineNum">      76 </span>                :<span class="lineCov">          4 : struct callback0_impl {</span>
+<span class="lineNum">      77 </span>        [<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :     virtual ~callback0_impl() {}</span>
+<span class="lineNum">      78 </span>                :            : 
+<span class="lineNum">      79 </span>                :            :     virtual R invoke() = 0;
+<span class="lineNum">      80 </span>                :            : };
+<span class="lineNum">      81 </span>                :            : 
+<span class="lineNum">      82 </span>                :            : //____________________________________________________________________________//
+<a name="83"><span class="lineNum">      83 </span>                :            : </a>
+<span class="lineNum">      84 </span>                :            : template&lt;typename R, typename Functor&gt;
+<a name="85"><span class="lineNum">      85 </span>        [<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 : struct callback0_impl_t : callback0_impl&lt;R&gt; {</span></a>
+<span class="lineNum">      86 </span>                :            :     // Constructor
+<a name="87"><span class="lineNum">      87 </span>                :<span class="lineCov">          8 :     explicit callback0_impl_t( Functor f ) : m_f( f ) {}</span></a>
+<span class="lineNum">      88 </span>                :            : 
+<span class="lineNum">      89 </span>        [<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">          4 :     virtual R invoke() { return invoker&lt;R&gt;().invoke( m_f ); }</span>
+<span class="lineNum">      90 </span>                :            : 
+<span class="lineNum">      91 </span>                :            : private:
+<span class="lineNum">      92 </span>                :            :     // Data members
+<span class="lineNum">      93 </span>                :            :     Functor m_f;
+<span class="lineNum">      94 </span>                :            : };
+<span class="lineNum">      95 </span>                :            : 
+<span class="lineNum">      96 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">      97 </span>                :            : 
+<span class="lineNum">      98 </span>                :            : } // namespace ut_detail
+<a name="99"><span class="lineNum">      99 </span>                :            : </a>
+<span class="lineNum">     100 </span>                :            : template&lt;typename R = ut_detail::unused&gt;
+<span class="lineNum">     101 </span>        [<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">          4 : class callback0 {</span>
+<span class="lineNum">     102 </span>                :            : public:
+<span class="lineNum">     103 </span>                :            :     // Constructors
+<span class="lineNum">     104 </span>                :            :     callback0() {}
+<span class="lineNum">     105 </span>                :            : #ifdef BOOST_CALLBACK_EXPLICIT_COPY_CONSTRUCTOR
+<span class="lineNum">     106 </span>                :            :     callback0( callback0 const&amp; rhs ) : m_impl( rhs.m_impl ) {}
+<span class="lineNum">     107 </span>                :            : #endif
+<a name="108"><span class="lineNum">     108 </span>                :            : </a>
+<span class="lineNum">     109 </span>                :            :     template&lt;typename Functor&gt;
+<span class="lineNum">     110 </span>                :<span class="lineCov">          4 :     callback0( Functor f )</span>
+<span class="lineNum">     111 </span>        [<span class="branchCov" title="Branch 2 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          4 :     : m_impl( new ut_detail::callback0_impl_t&lt;R,Functor&gt;( f ) ) {}</span>
+<span class="lineNum">     112 </span>                :            :     
+<span class="lineNum">     113 </span>                :            :     void        operator=( callback0 const&amp; rhs ) { m_impl = rhs.m_impl; }
+<span class="lineNum">     114 </span>                :            : 
+<span class="lineNum">     115 </span>                :            :     template&lt;typename Functor&gt;
+<span class="lineNum">     116 </span>                :            :     void        operator=( Functor f ) { m_impl.reset( new ut_detail::callback0_impl_t&lt;R,Functor&gt;( f ) );  }
+<span class="lineNum">     117 </span>                :            : 
+<span class="lineNum">     118 </span>                :            :     R           operator()() const { return m_impl-&gt;invoke(); }
+<span class="lineNum">     119 </span>                :            : 
+<span class="lineNum">     120 </span>                :            :     bool        operator!() const { return !m_impl; }
+<span class="lineNum">     121 </span>                :            : 
+<span class="lineNum">     122 </span>                :            : private:
+<span class="lineNum">     123 </span>                :            :     // Data members
+<span class="lineNum">     124 </span>                :            :     boost::shared_ptr&lt;ut_detail::callback0_impl&lt;R&gt; &gt; m_impl;
+<span class="lineNum">     125 </span>                :            : };
+<span class="lineNum">     126 </span>                :            : 
+<span class="lineNum">     127 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     128 </span>                :            : // **************             unit_test::callback1             ************** //
+<span class="lineNum">     129 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     130 </span>                :            : 
+<span class="lineNum">     131 </span>                :            : namespace ut_detail {
+<span class="lineNum">     132 </span>                :            : 
+<span class="lineNum">     133 </span>                :            : template&lt;typename R, typename T1&gt;
+<span class="lineNum">     134 </span>                :            : struct callback1_impl {
+<span class="lineNum">     135 </span>                :            :     virtual ~callback1_impl() {}
+<span class="lineNum">     136 </span>                :            : 
+<span class="lineNum">     137 </span>                :            :     virtual R invoke( T1 t1 ) = 0;
+<span class="lineNum">     138 </span>                :            : };
+<span class="lineNum">     139 </span>                :            : 
+<span class="lineNum">     140 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     141 </span>                :            : 
+<span class="lineNum">     142 </span>                :            : template&lt;typename R, typename T1,typename Functor&gt;
+<span class="lineNum">     143 </span>                :            : struct callback1_impl_t : callback1_impl&lt;R,T1&gt; {
+<span class="lineNum">     144 </span>                :            :     // Constructor
+<span class="lineNum">     145 </span>                :            :     explicit callback1_impl_t( Functor f ) : m_f( f ) {}
+<span class="lineNum">     146 </span>                :            : 
+<span class="lineNum">     147 </span>                :            :     virtual R invoke( T1 t1 ) { return invoker&lt;R&gt;().invoke( m_f, t1 ); }
+<span class="lineNum">     148 </span>                :            : 
+<span class="lineNum">     149 </span>                :            : private:
+<span class="lineNum">     150 </span>                :            :     // Data members
+<span class="lineNum">     151 </span>                :            :     Functor m_f;
+<span class="lineNum">     152 </span>                :            : };
+<span class="lineNum">     153 </span>                :            : 
+<span class="lineNum">     154 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     155 </span>                :            : 
+<span class="lineNum">     156 </span>                :            : } // namespace ut_detail
+<span class="lineNum">     157 </span>                :            : 
+<span class="lineNum">     158 </span>                :            : template&lt;typename T1,typename R = ut_detail::unused&gt;
+<span class="lineNum">     159 </span>                :            : class callback1 {
+<span class="lineNum">     160 </span>                :            : public:
+<span class="lineNum">     161 </span>                :            :     // Constructors
+<span class="lineNum">     162 </span>                :            :     callback1() {}
+<span class="lineNum">     163 </span>                :            : #ifdef BOOST_CALLBACK_EXPLICIT_COPY_CONSTRUCTOR
+<span class="lineNum">     164 </span>                :            :     callback1( callback1 const&amp; rhs ) : m_impl( rhs.m_impl ) {}
+<span class="lineNum">     165 </span>                :            : #endif
+<span class="lineNum">     166 </span>                :            : 
+<span class="lineNum">     167 </span>                :            :     template&lt;typename Functor&gt;
+<span class="lineNum">     168 </span>                :            :     callback1( Functor f )
+<span class="lineNum">     169 </span>                :            :     : m_impl( new ut_detail::callback1_impl_t&lt;R,T1,Functor&gt;( f ) ) {}
+<span class="lineNum">     170 </span>                :            : 
+<span class="lineNum">     171 </span>                :            :     void        operator=( callback1 const&amp; rhs ) { m_impl = rhs.m_impl; }
+<span class="lineNum">     172 </span>                :            : 
+<span class="lineNum">     173 </span>                :            :     template&lt;typename Functor&gt;
+<span class="lineNum">     174 </span>                :            :     void        operator=( Functor f ) { m_impl.reset( new ut_detail::callback1_impl_t&lt;R,T1,Functor&gt;( f ) );  }
+<span class="lineNum">     175 </span>                :            : 
+<span class="lineNum">     176 </span>                :            :     R           operator()( T1 t1 ) const { return m_impl-&gt;invoke( t1 ); }
+<span class="lineNum">     177 </span>                :            : 
+<span class="lineNum">     178 </span>                :            :     bool        operator!() const { return !m_impl; }
+<span class="lineNum">     179 </span>                :            : 
+<span class="lineNum">     180 </span>                :            : private:
+<span class="lineNum">     181 </span>                :            :     // Data members
+<span class="lineNum">     182 </span>                :            :     boost::shared_ptr&lt;ut_detail::callback1_impl&lt;R,T1&gt; &gt; m_impl;
+<span class="lineNum">     183 </span>                :            : };
+<span class="lineNum">     184 </span>                :            : 
+<span class="lineNum">     185 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     186 </span>                :            : // **************             unit_test::callback2             ************** //
+<span class="lineNum">     187 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     188 </span>                :            : 
+<span class="lineNum">     189 </span>                :            : namespace ut_detail {
+<span class="lineNum">     190 </span>                :            : 
+<span class="lineNum">     191 </span>                :            : template&lt;typename R, typename T1,typename T2&gt;
+<span class="lineNum">     192 </span>                :            : struct callback2_impl {
+<span class="lineNum">     193 </span>                :            :     virtual ~callback2_impl() {}
+<span class="lineNum">     194 </span>                :            : 
+<span class="lineNum">     195 </span>                :            :     virtual R invoke( T1 t1, T2 t2 ) = 0;
+<span class="lineNum">     196 </span>                :            : };
+<span class="lineNum">     197 </span>                :            : 
+<span class="lineNum">     198 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     199 </span>                :            : 
+<span class="lineNum">     200 </span>                :            : template&lt;typename R, typename T1, typename T2, typename Functor&gt;
+<span class="lineNum">     201 </span>                :            : struct callback2_impl_t : callback2_impl&lt;R,T1,T2&gt; {
+<span class="lineNum">     202 </span>                :            :     // Constructor
+<span class="lineNum">     203 </span>                :            :     explicit callback2_impl_t( Functor f ) : m_f( f ) {}
+<span class="lineNum">     204 </span>                :            : 
+<span class="lineNum">     205 </span>                :            :     virtual R invoke( T1 t1, T2 t2 ) { return invoker&lt;R&gt;().template invoke&lt;Functor,T1,T2&gt;( m_f, t1, t2 ); }
+<span class="lineNum">     206 </span>                :            : 
+<span class="lineNum">     207 </span>                :            : private:
+<span class="lineNum">     208 </span>                :            :     // Data members
+<span class="lineNum">     209 </span>                :            :     Functor m_f;
+<span class="lineNum">     210 </span>                :            : };
+<span class="lineNum">     211 </span>                :            : 
+<span class="lineNum">     212 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     213 </span>                :            : 
+<span class="lineNum">     214 </span>                :            : } // namespace ut_detail
+<span class="lineNum">     215 </span>                :            : 
+<span class="lineNum">     216 </span>                :            : template&lt;typename T1,typename T2, typename R = ut_detail::unused&gt;
+<span class="lineNum">     217 </span>                :            : class callback2 {
+<span class="lineNum">     218 </span>                :            : public:
+<span class="lineNum">     219 </span>                :            :     // Constructors
+<span class="lineNum">     220 </span>                :            :     callback2() {}
+<span class="lineNum">     221 </span>                :            : #ifdef BOOST_CALLBACK_EXPLICIT_COPY_CONSTRUCTOR
+<span class="lineNum">     222 </span>                :            :     callback2( callback2 const&amp; rhs ) : m_impl( rhs.m_impl ) {}
+<span class="lineNum">     223 </span>                :            : #endif
+<span class="lineNum">     224 </span>                :            : 
+<span class="lineNum">     225 </span>                :            :     template&lt;typename Functor&gt;
+<span class="lineNum">     226 </span>                :            :                 callback2( Functor f ) : m_impl( new ut_detail::callback2_impl_t&lt;R,T1,T2,Functor&gt;( f ) ) {}
+<span class="lineNum">     227 </span>                :            : 
+<span class="lineNum">     228 </span>                :            :     void        operator=( callback2 const&amp; rhs ) { m_impl = rhs.m_impl; }
+<span class="lineNum">     229 </span>                :            : 
+<span class="lineNum">     230 </span>                :            :     template&lt;typename Functor&gt;
+<span class="lineNum">     231 </span>                :            :     void        operator=( Functor f ) { m_impl.reset( new ut_detail::callback2_impl_t&lt;R,T1,T2,Functor&gt;( f ) );  }
+<span class="lineNum">     232 </span>                :            : 
+<span class="lineNum">     233 </span>                :            :     R           operator()( T1 t1, T2 t2 ) const { return m_impl-&gt;invoke( t1, t2 ); }
+<span class="lineNum">     234 </span>                :            : 
+<span class="lineNum">     235 </span>                :            :     bool        operator!() const { return !m_impl; }
+<span class="lineNum">     236 </span>                :            : 
+<span class="lineNum">     237 </span>                :            : private:
+<span class="lineNum">     238 </span>                :            :     // Data members
+<span class="lineNum">     239 </span>                :            :     boost::shared_ptr&lt;ut_detail::callback2_impl&lt;R,T1,T2&gt; &gt; m_impl;
+<span class="lineNum">     240 </span>                :            : };
+<span class="lineNum">     241 </span>                :            : 
+<span class="lineNum">     242 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     243 </span>                :            : // **************             unit_test::callback3             ************** //
+<span class="lineNum">     244 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     245 </span>                :            : 
+<span class="lineNum">     246 </span>                :            : namespace ut_detail {
+<span class="lineNum">     247 </span>                :            : 
+<span class="lineNum">     248 </span>                :            : template&lt;typename R, typename T1, typename T2, typename T3&gt;
+<span class="lineNum">     249 </span>                :            : struct callback3_impl {
+<span class="lineNum">     250 </span>                :            :     virtual ~callback3_impl() {}
+<span class="lineNum">     251 </span>                :            : 
+<span class="lineNum">     252 </span>                :            :     virtual R invoke( T1 t1, T2 t2, T3 t3 ) = 0;
+<span class="lineNum">     253 </span>                :            : };
+<span class="lineNum">     254 </span>                :            : 
+<span class="lineNum">     255 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     256 </span>                :            : 
+<span class="lineNum">     257 </span>                :            : template&lt;typename R, typename T1, typename T2, typename T3, typename Functor&gt;
+<span class="lineNum">     258 </span>                :            : struct callback3_impl_t : callback3_impl&lt;R,T1,T2,T3&gt; {
+<span class="lineNum">     259 </span>                :            :     // Constructor
+<span class="lineNum">     260 </span>                :            :     explicit callback3_impl_t( Functor f ) : m_f( f ) {}
+<span class="lineNum">     261 </span>                :            : 
+<span class="lineNum">     262 </span>                :            :     virtual R invoke( T1 t1, T2 t2, T3 t3 ) { return invoker&lt;R&gt;().invoke( m_f, t1, t2, t3 ); }
+<span class="lineNum">     263 </span>                :            : 
+<span class="lineNum">     264 </span>                :            : private:
+<span class="lineNum">     265 </span>                :            :     // Data members
+<span class="lineNum">     266 </span>                :            :     Functor m_f;
+<span class="lineNum">     267 </span>                :            : };
+<span class="lineNum">     268 </span>                :            : 
+<span class="lineNum">     269 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     270 </span>                :            : 
+<span class="lineNum">     271 </span>                :            : } // namespace ut_detail
+<span class="lineNum">     272 </span>                :            : 
+<span class="lineNum">     273 </span>                :            : template&lt;typename T1,typename T2, typename T3, typename R = ut_detail::unused&gt;
+<span class="lineNum">     274 </span>                :            : class callback3 {
+<span class="lineNum">     275 </span>                :            : public:
+<span class="lineNum">     276 </span>                :            :     // Constructors
+<span class="lineNum">     277 </span>                :            :     callback3() {}
+<span class="lineNum">     278 </span>                :            : #ifdef BOOST_CALLBACK_EXPLICIT_COPY_CONSTRUCTOR
+<span class="lineNum">     279 </span>                :            :     callback3( callback3 const&amp; rhs ) : m_impl( rhs.m_impl ) {}
+<span class="lineNum">     280 </span>                :            : #endif
+<span class="lineNum">     281 </span>                :            : 
+<span class="lineNum">     282 </span>                :            :     template&lt;typename Functor&gt;
+<span class="lineNum">     283 </span>                :            :     callback3( Functor f )
+<span class="lineNum">     284 </span>                :            :     : m_impl( new ut_detail::callback3_impl_t&lt;R,T1,T2,T3,Functor&gt;( f ) ) {}
+<span class="lineNum">     285 </span>                :            : 
+<span class="lineNum">     286 </span>                :            :     void        operator=( callback3 const&amp; rhs ) { m_impl = rhs.m_impl; }
+<span class="lineNum">     287 </span>                :            : 
+<span class="lineNum">     288 </span>                :            :     template&lt;typename Functor&gt;
+<span class="lineNum">     289 </span>                :            :     void        operator=( Functor f ) { m_impl.reset( new ut_detail::callback3_impl_t&lt;R,T1,T2,T3,Functor&gt;( f ) );  }
+<span class="lineNum">     290 </span>                :            : 
+<span class="lineNum">     291 </span>                :            :     R           operator()( T1 t1, T2 t2, T3 t3 ) const { return m_impl-&gt;invoke( t1, t2, t3 ); }
+<span class="lineNum">     292 </span>                :            : 
+<span class="lineNum">     293 </span>                :            :     bool        operator!() const { return !m_impl; }
+<span class="lineNum">     294 </span>                :            : 
+<span class="lineNum">     295 </span>                :            : private:
+<span class="lineNum">     296 </span>                :            :     // Data members
+<span class="lineNum">     297 </span>                :            :     boost::shared_ptr&lt;ut_detail::callback3_impl&lt;R,T1,T2,T3&gt; &gt; m_impl;
+<span class="lineNum">     298 </span>                :            : };
+<span class="lineNum">     299 </span>                :            : 
+<span class="lineNum">     300 </span>                :            : } // namespace unit_test
+<span class="lineNum">     301 </span>                :            : 
+<span class="lineNum">     302 </span>                :            : } // namespace boost
+<span class="lineNum">     303 </span>                :            : 
+<span class="lineNum">     304 </span>                :            : #undef BOOST_CALLBACK_EXPLICIT_COPY_CONSTRUCTOR
+<span class="lineNum">     305 </span>                :            : 
+<span class="lineNum">     306 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     307 </span>                :            : 
+<span class="lineNum">     308 </span>                :            : #include &lt;boost/test/detail/enable_warnings.hpp&gt;
+<span class="lineNum">     309 </span>                :            : 
+<span class="lineNum">     310 </span>                :            : #endif // BOOST_TEST_CALLBACK_020505GER
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

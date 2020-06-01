@@ -1,0 +1,53 @@
+        -:    0:Source:/usr/include/boost/core/noncopyable.hpp
+        -:    0:Graph:test-cases.gcno
+        -:    0:Data:test-cases.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1://  Boost noncopyable.hpp header file  --------------------------------------//
+        -:    2:
+        -:    3://  (C) Copyright Beman Dawes 1999-2003. Distributed under the Boost
+        -:    4://  Software License, Version 1.0. (See accompanying file
+        -:    5://  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+        -:    6:
+        -:    7://  See http://www.boost.org/libs/utility for documentation.
+        -:    8:
+        -:    9:#ifndef BOOST_CORE_NONCOPYABLE_HPP
+        -:   10:#define BOOST_CORE_NONCOPYABLE_HPP
+        -:   11:
+        -:   12:#include <boost/config.hpp>
+        -:   13:
+        -:   14:namespace boost {
+        -:   15:
+        -:   16://  Private copy constructor and copy assignment ensure classes derived from
+        -:   17://  class noncopyable cannot be copied.
+        -:   18:
+        -:   19://  Contributed by Dave Abrahams
+        -:   20:
+        -:   21:namespace noncopyable_  // protection from unintended ADL
+        -:   22:{
+        -:   23:  class noncopyable
+        -:   24:  {
+        -:   25:  protected:
+        -:   26:#if !defined(BOOST_NO_CXX11_DEFAULTED_FUNCTIONS) && !defined(BOOST_NO_CXX11_NON_PUBLIC_DEFAULTED_FUNCTIONS)
+        -:   27:      BOOST_CONSTEXPR noncopyable() = default;
+        -:   28:      ~noncopyable() = default;
+        -:   29:#else
+    #####:   30:      noncopyable() {}
+    #####:   31:      ~noncopyable() {}
+        -:   32:#endif
+        -:   33:#if !defined(BOOST_NO_CXX11_DELETED_FUNCTIONS)
+        -:   34:      noncopyable( const noncopyable& ) = delete;
+        -:   35:      noncopyable& operator=( const noncopyable& ) = delete;
+        -:   36:#else
+        -:   37:  private:  // emphasize the following members are private
+        -:   38:      noncopyable( const noncopyable& );
+        -:   39:      noncopyable& operator=( const noncopyable& );
+        -:   40:#endif
+        -:   41:  };
+        -:   42:}
+        -:   43:
+        -:   44:typedef noncopyable_::noncopyable noncopyable;
+        -:   45:
+        -:   46:} // namespace boost
+        -:   47:
+        -:   48:#endif  // BOOST_CORE_NONCOPYABLE_HPP

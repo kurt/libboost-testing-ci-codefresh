@@ -1,0 +1,182 @@
+        -:    0:Source:/usr/include/boost/test/unit_test_log.hpp
+        -:    0:Graph:test-cases.gcno
+        -:    0:Data:test-cases.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1://  (C) Copyright Gennadiy Rozental 2001-2008.
+        -:    2://  Distributed under the Boost Software License, Version 1.0.
+        -:    3://  (See accompanying file LICENSE_1_0.txt or copy at 
+        -:    4://  http://www.boost.org/LICENSE_1_0.txt)
+        -:    5:
+        -:    6://  See http://www.boost.org/libs/test for the library home page.
+        -:    7://
+        -:    8://  File        : $RCSfile$
+        -:    9://
+        -:   10://  Version     : $Revision$
+        -:   11://
+        -:   12://  Description : defines singleton class unit_test_log and all manipulators.
+        -:   13://  unit_test_log has output stream like interface. It's implementation is
+        -:   14://  completely hidden with pimple idiom
+        -:   15:// ***************************************************************************
+        -:   16:
+        -:   17:#ifndef BOOST_TEST_UNIT_TEST_LOG_HPP_071894GER
+        -:   18:#define BOOST_TEST_UNIT_TEST_LOG_HPP_071894GER
+        -:   19:
+        -:   20:// Boost.Test
+        -:   21:#include <boost/test/test_observer.hpp>
+        -:   22:
+        -:   23:#include <boost/test/detail/global_typedef.hpp>
+        -:   24:#include <boost/test/detail/log_level.hpp>
+        -:   25:#include <boost/test/detail/fwd_decl.hpp>
+        -:   26:
+        -:   27:#include <boost/test/utils/wrap_stringstream.hpp>
+        -:   28:#include <boost/test/utils/trivial_singleton.hpp>
+        -:   29:#include <boost/test/utils/lazy_ostream.hpp>
+        -:   30:
+        -:   31:// Boost
+        -:   32:#include <boost/utility.hpp>
+        -:   33:
+        -:   34:// STL
+        -:   35:#include <iosfwd>   // for std::ostream&
+        -:   36:
+        -:   37:#include <boost/test/detail/suppress_warnings.hpp>
+        -:   38:
+        -:   39://____________________________________________________________________________//
+        -:   40:
+        -:   41:namespace boost {
+        -:   42:
+        -:   43:namespace unit_test {
+        -:   44:
+        -:   45:// ************************************************************************** //
+        -:   46:// **************                log manipulators              ************** //
+        -:   47:// ************************************************************************** //
+        -:   48:
+        -:   49:namespace log {
+        -:   50:
+        -:   51:struct BOOST_TEST_DECL begin {
+        -:   52:    begin( const_string fn, std::size_t ln )
+        -:   53:    : m_file_name( fn )
+        -:   54:    , m_line_num( ln )
+        -:   55:    {}
+        -:   56:
+        -:   57:    const_string m_file_name;
+        -:   58:    std::size_t m_line_num;
+        -:   59:};
+        -:   60:
+        -:   61:struct end {};
+        -:   62:
+        -:   63:} // namespace log
+        -:   64:
+        -:   65:// ************************************************************************** //
+        -:   66:// **************             entry_value_collector            ************** //
+        -:   67:// ************************************************************************** //
+        -:   68:
+        -:   69:namespace ut_detail {
+        -:   70:
+        -:   71:class BOOST_TEST_DECL entry_value_collector {
+        -:   72:public:
+        -:   73:    // Constructors
+        -:   74:    entry_value_collector() : m_last( true ) {}
+        -:   75:    entry_value_collector( entry_value_collector const& rhs ) : m_last( true ) { rhs.m_last = false; }
+        -:   76:    ~entry_value_collector();
+        -:   77:
+        -:   78:    // collection interface
+        -:   79:    entry_value_collector const& operator<<( lazy_ostream const& ) const;
+        -:   80:    entry_value_collector const& operator<<( const_string ) const;
+        -:   81:
+        -:   82:private:
+        -:   83:    // Data members
+        -:   84:    mutable bool    m_last;
+        -:   85:};
+        -:   86:
+        -:   87:} // namespace ut_detail
+        -:   88:
+        -:   89:// ************************************************************************** //
+        -:   90:// **************                 unit_test_log                ************** //
+        -:   91:// ************************************************************************** //
+        -:   92:
+    #####:   93:class BOOST_TEST_DECL unit_test_log_t : public test_observer, public singleton<unit_test_log_t> {
+        -:   94:public:
+        -:   95:    // test_observer interface implementation
+        -:   96:    void                test_start( counter_t test_cases_amount );
+        -:   97:    void                test_finish();
+        -:   98:    void                test_aborted();
+        -:   99:
+        -:  100:    void                test_unit_start( test_unit const& );
+        -:  101:    void                test_unit_finish( test_unit const&, unsigned long elapsed );
+        -:  102:    void                test_unit_skipped( test_unit const& );
+        -:  103:    void                test_unit_aborted( test_unit const& );
+        -:  104:
+        -:  105:    void                assertion_result( bool passed );
+        -:  106:    void                exception_caught( execution_exception const& );
+        -:  107:
+        -:  108:    virtual int         priority() { return 1; }
+        -:  109:
+        -:  110:    // log configuration methods
+        -:  111:    void                set_stream( std::ostream& );
+        -:  112:    void                set_threshold_level( log_level );
+        -:  113:    void                set_format( output_format );
+        -:  114:    void                set_formatter( unit_test_log_formatter* );
+        -:  115:
+        -:  116:    // test progress logging
+        -:  117:    void                set_checkpoint( const_string file, std::size_t line_num, const_string msg = const_string() );
+        -:  118:
+        -:  119:    // entry logging
+        -:  120:    unit_test_log_t&    operator<<( log::begin const& );        // begin entry 
+        -:  121:    unit_test_log_t&    operator<<( log::end const& );          // end entry
+        -:  122:    unit_test_log_t&    operator<<( log_level );                // set entry level
+        -:  123:    unit_test_log_t&    operator<<( const_string );             // log entry value
+        -:  124:    unit_test_log_t&    operator<<( lazy_ostream const& );      // log entry value
+        -:  125:
+        -:  126:    ut_detail::entry_value_collector operator()( log_level );   // initiate entry collection
+        -:  127:
+        -:  128:private:
+        -:  129:    bool            log_entry_start();
+        -:  130:
+    #####:  131:    BOOST_TEST_SINGLETON_CONS( unit_test_log_t );
+        -:  132:}; // unit_test_log_t
+        -:  133:
+        1:  134:BOOST_TEST_SINGLETON_INST( unit_test_log )
+        -:  135:
+        -:  136:// helper macros
+        -:  137:#define BOOST_TEST_LOG_ENTRY( ll )                                                  \
+        -:  138:    (::boost::unit_test::unit_test_log                                              \
+        -:  139:        << ::boost::unit_test::log::begin( BOOST_TEST_L(__FILE__), __LINE__ ))(ll)  \
+        -:  140:/**/
+        -:  141:
+        -:  142:} // namespace unit_test
+        -:  143:
+        -:  144:} // namespace boost
+        -:  145:
+        -:  146:// ************************************************************************** //
+        -:  147:// **************       Unit test log interface helpers        ************** //
+        -:  148:// ************************************************************************** //
+        -:  149:
+        -:  150:#define BOOST_TEST_MESSAGE( M )                                 \
+        -:  151:    BOOST_TEST_LOG_ENTRY( ::boost::unit_test::log_messages )    \
+        -:  152:    << (::boost::unit_test::lazy_ostream::instance() << M)      \
+        -:  153:/**/
+        -:  154:
+        -:  155://____________________________________________________________________________//
+        -:  156:
+        -:  157:#define BOOST_TEST_PASSPOINT()                                  \
+        -:  158:    ::boost::unit_test::unit_test_log.set_checkpoint(           \
+        -:  159:        BOOST_TEST_L(__FILE__),                                 \
+        -:  160:        static_cast<std::size_t>(__LINE__) )                    \
+        -:  161:/**/
+        -:  162:
+        -:  163://____________________________________________________________________________//
+        -:  164:
+        -:  165:#define BOOST_TEST_CHECKPOINT( M )                              \
+        -:  166:    ::boost::unit_test::unit_test_log.set_checkpoint(           \
+        -:  167:        BOOST_TEST_L(__FILE__),                                 \
+        -:  168:        static_cast<std::size_t>(__LINE__),                     \
+        -:  169:        (::boost::wrap_stringstream().ref() << M).str() )       \
+        -:  170:/**/
+        -:  171:
+        -:  172://____________________________________________________________________________//
+        -:  173:
+        -:  174:#include <boost/test/detail/enable_warnings.hpp>
+        -:  175:
+        -:  176:#endif // BOOST_TEST_UNIT_TEST_LOG_HPP_071894GER
+        -:  177:

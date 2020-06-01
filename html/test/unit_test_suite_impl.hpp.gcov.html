@@ -1,0 +1,523 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - testout - test/unit_test_suite_impl.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">test</a> - unit_test_suite_impl.hpp<span style="font-size: 80%;"> (source / <a href="unit_test_suite_impl.hpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">testout</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-05-29 16:49:03</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : //  (C) Copyright Gennadiy Rozental 2001-2008.</a>
+<span class="lineNum">       2 </span>                :            : //  Distributed under the Boost Software License, Version 1.0.
+<span class="lineNum">       3 </span>                :            : //  (See accompanying file LICENSE_1_0.txt or copy at 
+<span class="lineNum">       4 </span>                :            : //  http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       5 </span>                :            : 
+<span class="lineNum">       6 </span>                :            : //  See http://www.boost.org/libs/test for the library home page.
+<span class="lineNum">       7 </span>                :            : //
+<span class="lineNum">       8 </span>                :            : //  File        : $RCSfile$
+<span class="lineNum">       9 </span>                :            : //
+<span class="lineNum">      10 </span>                :            : //  Version     : $Revision$
+<span class="lineNum">      11 </span>                :            : //
+<span class="lineNum">      12 </span>                :            : //  Description : defines test_unit, test_case, test_case_results, test_suite and test_tree_visitor
+<span class="lineNum">      13 </span>                :            : // ***************************************************************************
+<span class="lineNum">      14 </span>                :            : 
+<span class="lineNum">      15 </span>                :            : #ifndef BOOST_TEST_UNIT_TEST_SUITE_IMPL_HPP_071894GER
+<span class="lineNum">      16 </span>                :            : #define BOOST_TEST_UNIT_TEST_SUITE_IMPL_HPP_071894GER
+<span class="lineNum">      17 </span>                :            : 
+<span class="lineNum">      18 </span>                :            : // Boost.Test
+<span class="lineNum">      19 </span>                :            : #include &lt;boost/test/detail/config.hpp&gt;
+<span class="lineNum">      20 </span>                :            : #include &lt;boost/test/detail/global_typedef.hpp&gt;
+<span class="lineNum">      21 </span>                :            : #include &lt;boost/test/utils/class_properties.hpp&gt;
+<span class="lineNum">      22 </span>                :            : #include &lt;boost/test/utils/callback.hpp&gt;
+<span class="lineNum">      23 </span>                :            : #include &lt;boost/test/detail/fwd_decl.hpp&gt;
+<span class="lineNum">      24 </span>                :            : #include &lt;boost/test/detail/workaround.hpp&gt;
+<span class="lineNum">      25 </span>                :            : #include &lt;boost/test/test_observer.hpp&gt;
+<span class="lineNum">      26 </span>                :            : 
+<span class="lineNum">      27 </span>                :            : // Boost
+<span class="lineNum">      28 </span>                :            : #include &lt;boost/shared_ptr.hpp&gt;
+<span class="lineNum">      29 </span>                :            : #include &lt;boost/mpl/for_each.hpp&gt;
+<span class="lineNum">      30 </span>                :            : #include &lt;boost/mpl/identity.hpp&gt;
+<span class="lineNum">      31 </span>                :            : #include &lt;boost/type.hpp&gt;
+<span class="lineNum">      32 </span>                :            : #include &lt;boost/type_traits/is_const.hpp&gt;
+<span class="lineNum">      33 </span>                :            : 
+<span class="lineNum">      34 </span>                :            : // STL
+<span class="lineNum">      35 </span>                :            : #include &lt;typeinfo&gt; // for typeid
+<span class="lineNum">      36 </span>                :            : #include &lt;string&gt;   // for std::string
+<span class="lineNum">      37 </span>                :            : #include &lt;list&gt;     // for std::list
+<span class="lineNum">      38 </span>                :            : #include &lt;vector&gt;   // for std::vector
+<span class="lineNum">      39 </span>                :            : 
+<span class="lineNum">      40 </span>                :            : #include &lt;boost/test/detail/suppress_warnings.hpp&gt;
+<span class="lineNum">      41 </span>                :            : 
+<span class="lineNum">      42 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">      43 </span>                :            : 
+<span class="lineNum">      44 </span>                :            : namespace boost {
+<span class="lineNum">      45 </span>                :            : 
+<span class="lineNum">      46 </span>                :            : namespace unit_test {
+<span class="lineNum">      47 </span>                :            : 
+<span class="lineNum">      48 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      49 </span>                :            : // **************                   test_unit                  ************** //
+<span class="lineNum">      50 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      51 </span>                :            : 
+<span class="lineNum">      52 </span>                :            : class BOOST_TEST_DECL test_unit {
+<span class="lineNum">      53 </span>                :            : public:
+<span class="lineNum">      54 </span>                :            :     enum { type = tut_any };
+<span class="lineNum">      55 </span>                :            : 
+<span class="lineNum">      56 </span>                :            :     // Constructor
+<span class="lineNum">      57 </span>                :            :     test_unit( const_string tu_name, test_unit_type t );
+<span class="lineNum">      58 </span>                :            : 
+<span class="lineNum">      59 </span>                :            :     // dependencies management
+<span class="lineNum">      60 </span>                :            :     void    depends_on( test_unit* tu );
+<span class="lineNum">      61 </span>                :            :     bool    check_dependencies() const;
+<span class="lineNum">      62 </span>                :            : 
+<span class="lineNum">      63 </span>                :            :     // Public r/o properties
+<span class="lineNum">      64 </span>                :            :     typedef BOOST_READONLY_PROPERTY(test_unit_id,(framework_impl))  id_t;
+<span class="lineNum">      65 </span>                :            :     typedef BOOST_READONLY_PROPERTY(test_unit_id,(test_suite))      parent_id_t;
+<span class="lineNum">      66 </span>                :            :     readonly_property&lt;test_unit_type&gt;   p_type;                 // type for this test unit
+<span class="lineNum">      67 </span>                :            :     readonly_property&lt;const_string&gt;     p_type_name;            // &quot;case&quot;/&quot;suite&quot;
+<span class="lineNum">      68 </span>                :            :     id_t                                p_id;                   // unique id for this test unit
+<span class="lineNum">      69 </span>                :            :     parent_id_t                         p_parent_id;            // parent test suite id
+<span class="lineNum">      70 </span>                :            : 
+<span class="lineNum">      71 </span>                :            :     // Public r/w properties
+<span class="lineNum">      72 </span>                :            :     readwrite_property&lt;std::string&gt;     p_name;                 // name for this test unit
+<span class="lineNum">      73 </span>                :            :     readwrite_property&lt;unsigned&gt;        p_timeout;              // timeout for the test unit execution 
+<span class="lineNum">      74 </span>                :            :     readwrite_property&lt;counter_t&gt;       p_expected_failures;    // number of expected failures in this test unit
+<span class="lineNum">      75 </span>                :            :     mutable readwrite_property&lt;bool&gt;    p_enabled;              // enabled status for this unit
+<span class="lineNum">      76 </span>                :            : 
+<span class="lineNum">      77 </span>                :            :     void                                increase_exp_fail( unsigned num );
+<span class="lineNum">      78 </span>                :            : 
+<span class="lineNum">      79 </span>                :            : protected:
+<span class="lineNum">      80 </span>                :            :     ~test_unit();
+<span class="lineNum">      81 </span>                :            : 
+<span class="lineNum">      82 </span>                :            : private:
+<span class="lineNum">      83 </span>                :            :     // Data members
+<span class="lineNum">      84 </span>                :            :     std::list&lt;test_unit_id&gt;             m_dependencies;
+<span class="lineNum">      85 </span>                :            : };
+<span class="lineNum">      86 </span>                :            : 
+<span class="lineNum">      87 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      88 </span>                :            : // **************              test_case_generator             ************** //
+<span class="lineNum">      89 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      90 </span>                :            : 
+<span class="lineNum">      91 </span>                :            : class BOOST_TEST_DECL test_unit_generator {
+<span class="lineNum">      92 </span>                :            : public:
+<span class="lineNum">      93 </span>                :            :     virtual test_unit*  next() const = 0;
+<span class="lineNum">      94 </span>                :            : 
+<span class="lineNum">      95 </span>                :            : protected:
+<span class="lineNum">      96 </span>                :            :     BOOST_TEST_PROTECTED_VIRTUAL ~test_unit_generator() {}
+<span class="lineNum">      97 </span>                :            : };
+<span class="lineNum">      98 </span>                :            : 
+<span class="lineNum">      99 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     100 </span>                :            : // **************                   test_case                  ************** //
+<span class="lineNum">     101 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     102 </span>                :            : 
+<span class="lineNum">     103 </span>                :            : class BOOST_TEST_DECL test_case : public test_unit {
+<span class="lineNum">     104 </span>                :            : public:
+<span class="lineNum">     105 </span>                :            :     enum { type = tut_case };
+<span class="lineNum">     106 </span>                :            : 
+<span class="lineNum">     107 </span>                :            :     // Constructor
+<span class="lineNum">     108 </span>                :            :     test_case( const_string tc_name, callback0&lt;&gt; const&amp; test_func );
+<span class="lineNum">     109 </span>                :            : 
+<span class="lineNum">     110 </span>                :            :     // Access methods
+<span class="lineNum">     111 </span>                :            :     callback0&lt;&gt; const&amp;  test_func() const { return m_test_func; }
+<span class="lineNum">     112 </span>                :            : 
+<span class="lineNum">     113 </span>                :            : private:
+<span class="lineNum">     114 </span>                :            :     friend class framework_impl;
+<span class="lineNum">     115 </span>                :            :     ~test_case() {}
+<span class="lineNum">     116 </span>                :            : 
+<span class="lineNum">     117 </span>                :            :     // BOOST_MSVC &lt;= 1200 have problems with callback as property
+<span class="lineNum">     118 </span>                :            :     // Data members
+<span class="lineNum">     119 </span>                :            :     callback0&lt;&gt; m_test_func;
+<span class="lineNum">     120 </span>                :            : };
+<span class="lineNum">     121 </span>                :            : 
+<span class="lineNum">     122 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     123 </span>                :            : // **************                  test_suite                  ************** //
+<span class="lineNum">     124 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     125 </span>                :            : 
+<span class="lineNum">     126 </span>                :            : class BOOST_TEST_DECL test_suite : public test_unit {
+<span class="lineNum">     127 </span>                :            : public:
+<span class="lineNum">     128 </span>                :            :     enum { type = tut_suite };
+<span class="lineNum">     129 </span>                :            : 
+<span class="lineNum">     130 </span>                :            :     // Constructor
+<span class="lineNum">     131 </span>                :            :     explicit        test_suite( const_string ts_name );
+<span class="lineNum">     132 </span>                :            : 
+<span class="lineNum">     133 </span>                :            :     // test unit list management
+<span class="lineNum">     134 </span>                :            :     void            add( test_unit* tu, counter_t expected_failures = 0, unsigned timeout = 0 );
+<span class="lineNum">     135 </span>                :            :     void            add( test_unit_generator const&amp; gen, unsigned timeout = 0 );
+<span class="lineNum">     136 </span>                :            :     void            remove( test_unit_id id );
+<span class="lineNum">     137 </span>                :            : 
+<span class="lineNum">     138 </span>                :            :     // access methods
+<span class="lineNum">     139 </span>                :            :     test_unit_id    get( const_string tu_name ) const;
+<span class="lineNum">     140 </span>                :            :     std::size_t     size() const { return m_members.size(); }
+<span class="lineNum">     141 </span>                :            : 
+<span class="lineNum">     142 </span>                :            : protected:
+<span class="lineNum">     143 </span>                :            :     friend BOOST_TEST_DECL 
+<span class="lineNum">     144 </span>                :            :     void        traverse_test_tree( test_suite const&amp;, test_tree_visitor&amp; );
+<span class="lineNum">     145 </span>                :            :     friend class framework_impl;
+<span class="lineNum">     146 </span>                :            :     virtual     ~test_suite() {}
+<span class="lineNum">     147 </span>                :            : 
+<span class="lineNum">     148 </span>                :            :     // Data members
+<span class="lineNum">     149 </span>                :            :     std::vector&lt;test_unit_id&gt; m_members;
+<span class="lineNum">     150 </span>                :            : };
+<span class="lineNum">     151 </span>                :            : 
+<span class="lineNum">     152 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     153 </span>                :            : // **************               master_test_suite              ************** //
+<span class="lineNum">     154 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     155 </span>                :            : 
+<span class="lineNum">     156 </span>                :            : class BOOST_TEST_DECL master_test_suite_t : public test_suite {
+<span class="lineNum">     157 </span>                :            : public:
+<span class="lineNum">     158 </span>                :            :     master_test_suite_t() : test_suite( &quot;Master Test Suite&quot; )
+<span class="lineNum">     159 </span>                :            :     , argc( 0 )
+<span class="lineNum">     160 </span>                :            :     , argv( 0 )
+<span class="lineNum">     161 </span>                :            :     {}
+<span class="lineNum">     162 </span>                :            :     
+<span class="lineNum">     163 </span>                :            :     // Data members    
+<span class="lineNum">     164 </span>                :            :     int      argc;
+<span class="lineNum">     165 </span>                :            :     char**   argv;
+<span class="lineNum">     166 </span>                :            : };
+<span class="lineNum">     167 </span>                :            : 
+<span class="lineNum">     168 </span>                :            : 
+<span class="lineNum">     169 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     170 </span>                :            : // **************               test_tree_visitor              ************** //
+<span class="lineNum">     171 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     172 </span>                :            : 
+<span class="lineNum">     173 </span>                :            : class BOOST_TEST_DECL test_tree_visitor {
+<span class="lineNum">     174 </span>                :            : public:
+<span class="lineNum">     175 </span>                :            :     // test tree visitor interface
+<span class="lineNum">     176 </span>                :            :     virtual void    visit( test_case const&amp; )               {}
+<span class="lineNum">     177 </span>                :            :     virtual bool    test_suite_start( test_suite const&amp; )   { return true; }
+<span class="lineNum">     178 </span>                :            :     virtual void    test_suite_finish( test_suite const&amp; )  {}
+<span class="lineNum">     179 </span>                :            : 
+<span class="lineNum">     180 </span>                :            : protected:
+<span class="lineNum">     181 </span>                :            :     BOOST_TEST_PROTECTED_VIRTUAL ~test_tree_visitor() {}
+<span class="lineNum">     182 </span>                :            : };
+<span class="lineNum">     183 </span>                :            : 
+<span class="lineNum">     184 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     185 </span>                :            : // **************               traverse_test_tree             ************** //
+<span class="lineNum">     186 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     187 </span>                :            : 
+<span class="lineNum">     188 </span>                :            : BOOST_TEST_DECL void    traverse_test_tree( test_case const&amp;, test_tree_visitor&amp; );
+<span class="lineNum">     189 </span>                :            : BOOST_TEST_DECL void    traverse_test_tree( test_suite const&amp;, test_tree_visitor&amp; );
+<span class="lineNum">     190 </span>                :            : BOOST_TEST_DECL void    traverse_test_tree( test_unit_id     , test_tree_visitor&amp; );
+<span class="lineNum">     191 </span>                :            : 
+<span class="lineNum">     192 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     193 </span>                :            : 
+<span class="lineNum">     194 </span>                :            : inline void
+<span class="lineNum">     195 </span>                :            : traverse_test_tree( test_unit const&amp; tu, test_tree_visitor&amp; V )
+<span class="lineNum">     196 </span>                :            : {
+<span class="lineNum">     197 </span>                :            :     if( tu.p_type == tut_case )
+<span class="lineNum">     198 </span>                :            :         traverse_test_tree( static_cast&lt;test_case const&amp;&gt;( tu ), V );
+<span class="lineNum">     199 </span>                :            :     else
+<span class="lineNum">     200 </span>                :            :         traverse_test_tree( static_cast&lt;test_suite const&amp;&gt;( tu ), V );
+<span class="lineNum">     201 </span>                :            : }
+<span class="lineNum">     202 </span>                :            : 
+<span class="lineNum">     203 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     204 </span>                :            : 
+<span class="lineNum">     205 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     206 </span>                :            : // **************                test_case_counter             ************** //
+<span class="lineNum">     207 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     208 </span>                :            : 
+<span class="lineNum">     209 </span>                :            : class test_case_counter : public test_tree_visitor {
+<span class="lineNum">     210 </span>                :            : public:
+<span class="lineNum">     211 </span>                :            :     // Constructor
+<span class="lineNum">     212 </span>                :            :     test_case_counter() : p_count( 0 ) {}
+<span class="lineNum">     213 </span>                :            : 
+<span class="lineNum">     214 </span>                :            :     BOOST_READONLY_PROPERTY( counter_t, (test_case_counter)) p_count;
+<span class="lineNum">     215 </span>                :            : private:
+<span class="lineNum">     216 </span>                :            :     // test tree visitor interface
+<span class="lineNum">     217 </span>                :            :     virtual void    visit( test_case const&amp; );
+<span class="lineNum">     218 </span>                :            :     virtual bool    test_suite_start( test_suite const&amp; ts )    { return ts.p_enabled; }
+<span class="lineNum">     219 </span>                :            : };
+<span class="lineNum">     220 </span>                :            : 
+<span class="lineNum">     221 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     222 </span>                :            : // **************               test_being_aborted             ************** //
+<span class="lineNum">     223 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     224 </span>                :            : 
+<span class="lineNum">     225 </span>                :            : struct BOOST_TEST_DECL test_being_aborted {};
+<span class="lineNum">     226 </span>                :            : 
+<span class="lineNum">     227 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     228 </span>                :            : // **************               object generators              ************** //
+<span class="lineNum">     229 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     230 </span>                :            : 
+<span class="lineNum">     231 </span>                :            : namespace ut_detail {
+<span class="lineNum">     232 </span>                :            : 
+<span class="lineNum">     233 </span>                :            : BOOST_TEST_DECL std::string normalize_test_case_name( const_string tu_name );
+<span class="lineNum">     234 </span>                :            : 
+<span class="lineNum">     235 </span>                :            : template&lt;typename InstanceType,typename UserTestCase&gt;
+<span class="lineNum">     236 </span>                :            : struct user_tc_method_invoker {
+<span class="lineNum">     237 </span>                :            :     typedef void (UserTestCase::*TestMethod )();
+<span class="lineNum">     238 </span>                :            : 
+<span class="lineNum">     239 </span>                :            :     user_tc_method_invoker( shared_ptr&lt;InstanceType&gt; inst, TestMethod test_method )
+<span class="lineNum">     240 </span>                :            :     : m_inst( inst ), m_test_method( test_method ) {}
+<span class="lineNum">     241 </span>                :            : 
+<span class="lineNum">     242 </span>                :            :     void operator()() { ((*m_inst).*m_test_method)(); }
+<span class="lineNum">     243 </span>                :            : 
+<span class="lineNum">     244 </span>                :            :     shared_ptr&lt;InstanceType&gt; m_inst;
+<span class="lineNum">     245 </span>                :            :     TestMethod               m_test_method;
+<span class="lineNum">     246 </span>                :            : };
+<span class="lineNum">     247 </span>                :            : 
+<span class="lineNum">     248 </span>                :            : } // namespace ut_detail
+<span class="lineNum">     249 </span>                :            : 
+<span class="lineNum">     250 </span>                :            : //____________________________________________________________________________//
+<a name="251"><span class="lineNum">     251 </span>                :            : </a>
+<span class="lineNum">     252 </span>                :            : inline test_case*
+<span class="lineNum">     253 </span>                :<span class="lineCov">          4 : make_test_case( callback0&lt;&gt; const&amp; test_func, const_string tc_name )</span>
+<span class="lineNum">     254 </span>                :            : {
+<span class="lineNum">     255 </span>[<span class="branchCov" title="Branch 2 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>][<span class="branchCov" title="Branch 5 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]:<span class="lineCov">          4 :     return new test_case( ut_detail::normalize_test_case_name( tc_name ), test_func );</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 8 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     256 </span>                :            : }
+<span class="lineNum">     257 </span>                :            : 
+<span class="lineNum">     258 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     259 </span>                :            : 
+<span class="lineNum">     260 </span>                :            : template&lt;typename UserTestCase, typename InstanceType&gt;
+<span class="lineNum">     261 </span>                :            : inline test_case*
+<span class="lineNum">     262 </span>                :            : make_test_case( void (UserTestCase::*           test_method )(),
+<span class="lineNum">     263 </span>                :            :                 const_string                    tc_name,
+<span class="lineNum">     264 </span>                :            :                 boost::shared_ptr&lt;InstanceType&gt; user_test_case )
+<span class="lineNum">     265 </span>                :            : {
+<span class="lineNum">     266 </span>                :            :     return new test_case( ut_detail::normalize_test_case_name( tc_name ), 
+<span class="lineNum">     267 </span>                :            :                           ut_detail::user_tc_method_invoker&lt;InstanceType,UserTestCase&gt;( user_test_case, test_method ) );
+<span class="lineNum">     268 </span>                :            : }
+<span class="lineNum">     269 </span>                :            : 
+<span class="lineNum">     270 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     271 </span>                :            : 
+<span class="lineNum">     272 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     273 </span>                :            : // **************           auto_test_unit_registrar           ************** //
+<span class="lineNum">     274 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     275 </span>                :            : 
+<span class="lineNum">     276 </span>                :            : namespace ut_detail {
+<span class="lineNum">     277 </span>                :            : 
+<span class="lineNum">     278 </span>                :            : struct BOOST_TEST_DECL auto_test_unit_registrar
+<span class="lineNum">     279 </span>                :            : {
+<span class="lineNum">     280 </span>                :            :     // Constructors
+<span class="lineNum">     281 </span>                :            :                 auto_test_unit_registrar( test_case* tc, counter_t exp_fail );
+<span class="lineNum">     282 </span>                :            :     explicit    auto_test_unit_registrar( const_string ts_name );
+<span class="lineNum">     283 </span>                :            :     explicit    auto_test_unit_registrar( test_unit_generator const&amp; tc_gen );
+<span class="lineNum">     284 </span>                :            :     explicit    auto_test_unit_registrar( int );
+<span class="lineNum">     285 </span>                :            : 
+<span class="lineNum">     286 </span>                :            : private:
+<span class="lineNum">     287 </span>                :            :     static std::list&lt;test_suite*&gt;&amp; curr_ts_store();
+<span class="lineNum">     288 </span>                :            : };
+<span class="lineNum">     289 </span>                :            : 
+<span class="lineNum">     290 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     291 </span>                :            : 
+<a name="292"><span class="lineNum">     292 </span>                :            : template&lt;typename T&gt;</a>
+<span class="lineNum">     293 </span>                :            : struct auto_tc_exp_fail {
+<span class="lineNum">     294 </span>                :<span class="lineCov">          4 :     auto_tc_exp_fail() : m_value( 0 ) {}</span>
+<span class="lineNum">     295 </span>                :            : 
+<span class="lineNum">     296 </span>                :            :     explicit    auto_tc_exp_fail( unsigned v )
+<span class="lineNum">     297 </span>                :            :     : m_value( v )
+<span class="lineNum">     298 </span>                :            :     {
+<span class="lineNum">     299 </span>                :            :         instance() = this;
+<a name="300"><span class="lineNum">     300 </span>                :            :     }</a>
+<span class="lineNum">     301 </span>                :            : 
+<span class="lineNum">     302 </span>                :<span class="lineCov">          4 :     static auto_tc_exp_fail*&amp; instance() </span>
+<span class="lineNum">     303 </span>                :            :     {
+<span class="lineNum">     304 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          4 :         static auto_tc_exp_fail     inst; </span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 7 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>][<span class="branchCov" title="Branch 10 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 11 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 14 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 15 was not taken"> - </span>][<span class="branchCov" title="Branch 17 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 18 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 21 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 22 was not taken"> - </span>][<span class="branchCov" title="Branch 24 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 25 was not taken"> - </span>]
+<span class="lineNum">     305 </span>                :            :         static auto_tc_exp_fail*    inst_ptr = &amp;inst; 
+<span class="lineNum">     306 </span>                :            : 
+<span class="lineNum">     307 </span>                :<span class="lineCov">          4 :         return inst_ptr;</span>
+<a name="308"><span class="lineNum">     308 </span>                :            :     }</a>
+<span class="lineNum">     309 </span>                :            : 
+<span class="lineNum">     310 </span>                :<span class="lineCov">          8 :     unsigned    value() const { return m_value; }</span>
+<span class="lineNum">     311 </span>                :            : 
+<span class="lineNum">     312 </span>                :            : private:
+<span class="lineNum">     313 </span>                :            :     // Data members
+<span class="lineNum">     314 </span>                :            :     unsigned    m_value;
+<span class="lineNum">     315 </span>                :            : };
+<span class="lineNum">     316 </span>                :            : 
+<span class="lineNum">     317 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     318 </span>                :            : 
+<span class="lineNum">     319 </span>                :            : } // namespace ut_detail
+<span class="lineNum">     320 </span>                :            : 
+<span class="lineNum">     321 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     322 </span>                :            : // **************                global_fixture                ************** //
+<span class="lineNum">     323 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     324 </span>                :            : 
+<span class="lineNum">     325 </span>                :            : class BOOST_TEST_DECL global_fixture : public test_observer { 
+<span class="lineNum">     326 </span>                :            : public: 
+<span class="lineNum">     327 </span>                :            :     // Constructor
+<span class="lineNum">     328 </span>                :            :     global_fixture();
+<span class="lineNum">     329 </span>                :            : }; 
+<span class="lineNum">     330 </span>                :            : 
+<span class="lineNum">     331 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     332 </span>                :            : 
+<span class="lineNum">     333 </span>                :            : namespace ut_detail {
+<span class="lineNum">     334 </span>                :            : 
+<span class="lineNum">     335 </span>                :            : template&lt;typename F&gt; 
+<span class="lineNum">     336 </span>                :            : struct global_fixture_impl : public global_fixture {
+<span class="lineNum">     337 </span>                :            :     // Constructor
+<span class="lineNum">     338 </span>                :            :     global_fixture_impl(): m_fixure( 0 )    {}
+<span class="lineNum">     339 </span>                :            : 
+<span class="lineNum">     340 </span>                :            :     // test observer interface
+<span class="lineNum">     341 </span>                :            :     virtual void    test_start( counter_t ) { m_fixure = new F; }
+<span class="lineNum">     342 </span>                :            :     virtual void    test_finish()           { delete m_fixure; m_fixure = 0; } 
+<span class="lineNum">     343 </span>                :            :     virtual void    test_aborted()          { delete m_fixure; m_fixure = 0; } 
+<span class="lineNum">     344 </span>                :            : 
+<span class="lineNum">     345 </span>                :            : private:
+<span class="lineNum">     346 </span>                :            :     // Data members
+<span class="lineNum">     347 </span>                :            :     F*  m_fixure;
+<span class="lineNum">     348 </span>                :            : }; 
+<span class="lineNum">     349 </span>                :            : 
+<span class="lineNum">     350 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     351 </span>                :            : // **************          test_case_template_invoker          ************** //
+<span class="lineNum">     352 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     353 </span>                :            : 
+<span class="lineNum">     354 </span>                :            : template&lt;typename TestCaseTemplate,typename TestType&gt;
+<span class="lineNum">     355 </span>                :            : class test_case_template_invoker {
+<span class="lineNum">     356 </span>                :            : public:
+<span class="lineNum">     357 </span>                :            :     void    operator()()    { TestCaseTemplate::run( (boost::type&lt;TestType&gt;*)0 ); }
+<span class="lineNum">     358 </span>                :            : };
+<span class="lineNum">     359 </span>                :            : 
+<span class="lineNum">     360 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     361 </span>                :            : // **************           generate_test_case_4_type          ************** //
+<span class="lineNum">     362 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     363 </span>                :            : 
+<span class="lineNum">     364 </span>                :            : template&lt;typename Generator,typename TestCaseTemplate&gt;
+<span class="lineNum">     365 </span>                :            : struct generate_test_case_4_type {
+<span class="lineNum">     366 </span>                :            :     explicit    generate_test_case_4_type( const_string tc_name, Generator&amp; G )
+<span class="lineNum">     367 </span>                :            :     : m_test_case_name( tc_name )
+<span class="lineNum">     368 </span>                :            :     , m_holder( G )
+<span class="lineNum">     369 </span>                :            :     {}
+<span class="lineNum">     370 </span>                :            : 
+<span class="lineNum">     371 </span>                :            :     template&lt;typename TestType&gt;
+<span class="lineNum">     372 </span>                :            :     void        operator()( mpl::identity&lt;TestType&gt; )
+<span class="lineNum">     373 </span>                :            :     {
+<span class="lineNum">     374 </span>                :            :         std::string full_name;
+<span class="lineNum">     375 </span>                :            :         assign_op( full_name, m_test_case_name, 0 );
+<span class="lineNum">     376 </span>                :            :         full_name += '&lt;';
+<span class="lineNum">     377 </span>                :            :         full_name += typeid(TestType).name();
+<span class="lineNum">     378 </span>                :            :         if( boost::is_const&lt;TestType&gt;::value )
+<span class="lineNum">     379 </span>                :            :             full_name += &quot; const&quot;;
+<span class="lineNum">     380 </span>                :            :         full_name += '&gt;';
+<span class="lineNum">     381 </span>                :            : 
+<span class="lineNum">     382 </span>                :            :         m_holder.m_test_cases.push_back( 
+<span class="lineNum">     383 </span>                :            :             new test_case( full_name, test_case_template_invoker&lt;TestCaseTemplate,TestType&gt;() ) );
+<span class="lineNum">     384 </span>                :            :     }
+<span class="lineNum">     385 </span>                :            : 
+<span class="lineNum">     386 </span>                :            : private:
+<span class="lineNum">     387 </span>                :            :     // Data members
+<span class="lineNum">     388 </span>                :            :     const_string    m_test_case_name;
+<span class="lineNum">     389 </span>                :            :     Generator&amp;      m_holder;
+<span class="lineNum">     390 </span>                :            : };
+<span class="lineNum">     391 </span>                :            : 
+<span class="lineNum">     392 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     393 </span>                :            : // **************              test_case_template              ************** //
+<span class="lineNum">     394 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     395 </span>                :            : 
+<span class="lineNum">     396 </span>                :            : template&lt;typename TestCaseTemplate,typename TestTypesList&gt;
+<span class="lineNum">     397 </span>                :            : class template_test_case_gen : public test_unit_generator {
+<span class="lineNum">     398 </span>                :            : public:
+<span class="lineNum">     399 </span>                :            :     // Constructor
+<span class="lineNum">     400 </span>                :            :     template_test_case_gen( const_string tc_name )
+<span class="lineNum">     401 </span>                :            :     {
+<span class="lineNum">     402 </span>                :            :         typedef generate_test_case_4_type&lt;template_test_case_gen&lt;TestCaseTemplate,TestTypesList&gt;,
+<span class="lineNum">     403 </span>                :            :                                           TestCaseTemplate
+<span class="lineNum">     404 </span>                :            :         &gt; single_test_gen;
+<span class="lineNum">     405 </span>                :            :         mpl::for_each&lt;TestTypesList,mpl::make_identity&lt;mpl::_&gt; &gt;( single_test_gen( tc_name, *this ) );
+<span class="lineNum">     406 </span>                :            :     }
+<span class="lineNum">     407 </span>                :            : 
+<span class="lineNum">     408 </span>                :            :     virtual test_unit* next() const
+<span class="lineNum">     409 </span>                :            :     {
+<span class="lineNum">     410 </span>                :            :         if( m_test_cases.empty() )
+<span class="lineNum">     411 </span>                :            :             return 0;
+<span class="lineNum">     412 </span>                :            :     
+<span class="lineNum">     413 </span>                :            :         test_unit* res = m_test_cases.front();
+<span class="lineNum">     414 </span>                :            :         m_test_cases.pop_front();
+<span class="lineNum">     415 </span>                :            : 
+<span class="lineNum">     416 </span>                :            :         return res;
+<span class="lineNum">     417 </span>                :            :     }
+<span class="lineNum">     418 </span>                :            : 
+<span class="lineNum">     419 </span>                :            :     // Data members
+<span class="lineNum">     420 </span>                :            :     mutable std::list&lt;test_unit*&gt; m_test_cases;
+<span class="lineNum">     421 </span>                :            : };
+<span class="lineNum">     422 </span>                :            : 
+<span class="lineNum">     423 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     424 </span>                :            : 
+<span class="lineNum">     425 </span>                :            : } // namespace ut_detail
+<span class="lineNum">     426 </span>                :            : 
+<span class="lineNum">     427 </span>                :            : } // unit_test
+<span class="lineNum">     428 </span>                :            : 
+<span class="lineNum">     429 </span>                :            : } // namespace boost
+<span class="lineNum">     430 </span>                :            : 
+<span class="lineNum">     431 </span>                :            : #include &lt;boost/test/detail/enable_warnings.hpp&gt;
+<span class="lineNum">     432 </span>                :            : 
+<span class="lineNum">     433 </span>                :            : #endif // BOOST_TEST_UNIT_TEST_SUITE_IMPL_HPP_071894GER
+<span class="lineNum">     434 </span>                :            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

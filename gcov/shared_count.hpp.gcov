@@ -1,0 +1,680 @@
+        -:    0:Source:/usr/include/boost/smart_ptr/detail/shared_count.hpp
+        -:    0:Graph:test-cases.gcno
+        -:    0:Data:test-cases.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#ifndef BOOST_SMART_PTR_DETAIL_SHARED_COUNT_HPP_INCLUDED
+        -:    2:#define BOOST_SMART_PTR_DETAIL_SHARED_COUNT_HPP_INCLUDED
+        -:    3:
+        -:    4:// MS compatible compilers support #pragma once
+        -:    5:
+        -:    6:#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+        -:    7:# pragma once
+        -:    8:#endif
+        -:    9:
+        -:   10://
+        -:   11://  detail/shared_count.hpp
+        -:   12://
+        -:   13://  Copyright (c) 2001, 2002, 2003 Peter Dimov and Multi Media Ltd.
+        -:   14://  Copyright 2004-2005 Peter Dimov
+        -:   15://
+        -:   16:// Distributed under the Boost Software License, Version 1.0. (See
+        -:   17:// accompanying file LICENSE_1_0.txt or copy at
+        -:   18:// http://www.boost.org/LICENSE_1_0.txt)
+        -:   19://
+        -:   20:
+        -:   21:#ifdef __BORLANDC__
+        -:   22:# pragma warn -8027     // Functions containing try are not expanded inline
+        -:   23:#endif
+        -:   24:
+        -:   25:#include <boost/config.hpp>
+        -:   26:#include <boost/checked_delete.hpp>
+        -:   27:#include <boost/throw_exception.hpp>
+        -:   28:#include <boost/smart_ptr/bad_weak_ptr.hpp>
+        -:   29:#include <boost/smart_ptr/detail/sp_counted_base.hpp>
+        -:   30:#include <boost/smart_ptr/detail/sp_counted_impl.hpp>
+        -:   31:#include <boost/detail/workaround.hpp>
+        -:   32:// In order to avoid circular dependencies with Boost.TR1
+        -:   33:// we make sure that our include of <memory> doesn't try to
+        -:   34:// pull in the TR1 headers: that's why we use this header 
+        -:   35:// rather than including <memory> directly:
+        -:   36:#include <boost/config/no_tr1/memory.hpp>  // std::auto_ptr
+        -:   37:#include <functional>       // std::less
+        -:   38:
+        -:   39:#ifdef BOOST_NO_EXCEPTIONS
+        -:   40:# include <new>              // std::bad_alloc
+        -:   41:#endif
+        -:   42:
+        -:   43:#if !defined( BOOST_NO_CXX11_SMART_PTR )
+        -:   44:# include <boost/utility/addressof.hpp>
+        -:   45:#endif
+        -:   46:
+        -:   47:namespace boost
+        -:   48:{
+        -:   49:
+        -:   50:namespace detail
+        -:   51:{
+        -:   52:
+        -:   53:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:   54:
+        -:   55:int const shared_count_id = 0x2C35F101;
+        -:   56:int const   weak_count_id = 0x298C38A4;
+        -:   57:
+        -:   58:#endif
+        -:   59:
+        -:   60:struct sp_nothrow_tag {};
+        -:   61:
+        -:   62:template< class D > struct sp_inplace_tag
+        -:   63:{
+        -:   64:};
+        -:   65:
+        -:   66:#if !defined( BOOST_NO_CXX11_SMART_PTR )
+        -:   67:
+        -:   68:template< class T > class sp_reference_wrapper
+        -:   69:{ 
+        -:   70:public:
+        -:   71:
+        -:   72:    explicit sp_reference_wrapper( T & t): t_( boost::addressof( t ) )
+        -:   73:    {
+        -:   74:    }
+        -:   75:
+        -:   76:    template< class Y > void operator()( Y * p ) const
+        -:   77:    {
+        -:   78:        (*t_)( p );
+        -:   79:    }
+        -:   80:
+        -:   81:private:
+        -:   82:
+        -:   83:    T * t_;
+        -:   84:};
+        -:   85:
+        -:   86:template< class D > struct sp_convert_reference
+        -:   87:{
+        -:   88:    typedef D type;
+        -:   89:};
+        -:   90:
+        -:   91:template< class D > struct sp_convert_reference< D& >
+        -:   92:{
+        -:   93:    typedef sp_reference_wrapper< D > type;
+        -:   94:};
+        -:   95:
+        -:   96:#endif
+        -:   97:
+        -:   98:class weak_count;
+        -:   99:
+        -:  100:class shared_count
+        -:  101:{
+        -:  102:private:
+        -:  103:
+        -:  104:    sp_counted_base * pi_;
+        -:  105:
+        -:  106:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  107:    int id_;
+        -:  108:#endif
+        -:  109:
+        -:  110:    friend class weak_count;
+        -:  111:
+        -:  112:public:
+        -:  113:
+       10:  114:    shared_count(): pi_(0) // nothrow
+        -:  115:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  116:        , id_(shared_count_id)
+        -:  117:#endif
+        -:  118:    {
+       10:  119:    }
+        -:  120:
+        4:  121:    template<class Y> explicit shared_count( Y * p ): pi_( 0 )
+        -:  122:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  123:        , id_(shared_count_id)
+        -:  124:#endif
+        -:  125:    {
+        -:  126:#ifndef BOOST_NO_EXCEPTIONS
+        -:  127:
+        -:  128:        try
+        -:  129:        {
+        4:  130:            pi_ = new sp_counted_impl_p<Y>( p );
+        -:  131:        }
+    =====:  132:        catch(...)
+        -:  133:        {
+    =====:  134:            boost::checked_delete( p );
+    =====:  135:            throw;
+        -:  136:        }
+        -:  137:
+        -:  138:#else
+        -:  139:
+        -:  140:        pi_ = new sp_counted_impl_p<Y>( p );
+        -:  141:
+        -:  142:        if( pi_ == 0 )
+        -:  143:        {
+        -:  144:            boost::checked_delete( p );
+        -:  145:            boost::throw_exception( std::bad_alloc() );
+        -:  146:        }
+        -:  147:
+        -:  148:#endif
+        4:  149:    }
+        -:  150:
+        -:  151:#if defined( BOOST_MSVC ) && BOOST_WORKAROUND( BOOST_MSVC, <= 1200 )
+        -:  152:    template<class Y, class D> shared_count( Y * p, D d ): pi_(0)
+        -:  153:#else
+        -:  154:    template<class P, class D> shared_count( P p, D d ): pi_(0)
+        -:  155:#endif
+        -:  156:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  157:        , id_(shared_count_id)
+        -:  158:#endif
+        -:  159:    {
+        -:  160:#if defined( BOOST_MSVC ) && BOOST_WORKAROUND( BOOST_MSVC, <= 1200 )
+        -:  161:        typedef Y* P;
+        -:  162:#endif
+        -:  163:#ifndef BOOST_NO_EXCEPTIONS
+        -:  164:
+        -:  165:        try
+        -:  166:        {
+        -:  167:            pi_ = new sp_counted_impl_pd<P, D>(p, d);
+        -:  168:        }
+        -:  169:        catch(...)
+        -:  170:        {
+        -:  171:            d(p); // delete p
+        -:  172:            throw;
+        -:  173:        }
+        -:  174:
+        -:  175:#else
+        -:  176:
+        -:  177:        pi_ = new sp_counted_impl_pd<P, D>(p, d);
+        -:  178:
+        -:  179:        if(pi_ == 0)
+        -:  180:        {
+        -:  181:            d(p); // delete p
+        -:  182:            boost::throw_exception(std::bad_alloc());
+        -:  183:        }
+        -:  184:
+        -:  185:#endif
+        -:  186:    }
+        -:  187:
+        -:  188:#if !defined( BOOST_NO_FUNCTION_TEMPLATE_ORDERING )
+        -:  189:
+        -:  190:    template< class P, class D > shared_count( P p, sp_inplace_tag<D> ): pi_( 0 )
+        -:  191:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  192:        , id_(shared_count_id)
+        -:  193:#endif
+        -:  194:    {
+        -:  195:#ifndef BOOST_NO_EXCEPTIONS
+        -:  196:
+        -:  197:        try
+        -:  198:        {
+        -:  199:            pi_ = new sp_counted_impl_pd< P, D >( p );
+        -:  200:        }
+        -:  201:        catch( ... )
+        -:  202:        {
+        -:  203:            D::operator_fn( p ); // delete p
+        -:  204:            throw;
+        -:  205:        }
+        -:  206:
+        -:  207:#else
+        -:  208:
+        -:  209:        pi_ = new sp_counted_impl_pd< P, D >( p );
+        -:  210:
+        -:  211:        if( pi_ == 0 )
+        -:  212:        {
+        -:  213:            D::operator_fn( p ); // delete p
+        -:  214:            boost::throw_exception( std::bad_alloc() );
+        -:  215:        }
+        -:  216:
+        -:  217:#endif // #ifndef BOOST_NO_EXCEPTIONS
+        -:  218:    }
+        -:  219:
+        -:  220:#endif // !defined( BOOST_NO_FUNCTION_TEMPLATE_ORDERING )
+        -:  221:
+        -:  222:    template<class P, class D, class A> shared_count( P p, D d, A a ): pi_( 0 )
+        -:  223:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  224:        , id_(shared_count_id)
+        -:  225:#endif
+        -:  226:    {
+        -:  227:        typedef sp_counted_impl_pda<P, D, A> impl_type;
+        -:  228:
+        -:  229:#if !defined( BOOST_NO_CXX11_ALLOCATOR )
+        -:  230:
+        -:  231:        typedef typename std::allocator_traits<A>::template rebind_alloc< impl_type > A2;
+        -:  232:
+        -:  233:#else
+        -:  234:
+        -:  235:        typedef typename A::template rebind< impl_type >::other A2;
+        -:  236:
+        -:  237:#endif
+        -:  238:
+        -:  239:        A2 a2( a );
+        -:  240:
+        -:  241:#ifndef BOOST_NO_EXCEPTIONS
+        -:  242:
+        -:  243:        try
+        -:  244:        {
+        -:  245:#if !defined( BOOST_NO_CXX11_ALLOCATOR )
+        -:  246:
+        -:  247:            impl_type * pi = std::allocator_traits<A2>::allocate( a2, 1 );
+        -:  248:            pi_ = pi;
+        -:  249:            std::allocator_traits<A2>::construct( a2, pi, p, d, a );
+        -:  250:
+        -:  251:#else
+        -:  252:
+        -:  253:            pi_ = a2.allocate( 1, static_cast< impl_type* >( 0 ) );
+        -:  254:            ::new( static_cast< void* >( pi_ ) ) impl_type( p, d, a );
+        -:  255:
+        -:  256:#endif
+        -:  257:        }
+        -:  258:        catch(...)
+        -:  259:        {
+        -:  260:            d( p );
+        -:  261:
+        -:  262:            if( pi_ != 0 )
+        -:  263:            {
+        -:  264:                a2.deallocate( static_cast< impl_type* >( pi_ ), 1 );
+        -:  265:            }
+        -:  266:
+        -:  267:            throw;
+        -:  268:        }
+        -:  269:
+        -:  270:#else
+        -:  271:
+        -:  272:#if !defined( BOOST_NO_CXX11_ALLOCATOR )
+        -:  273:
+        -:  274:        impl_type * pi = std::allocator_traits<A2>::allocate( a2, 1 );
+        -:  275:        pi_ = pi;
+        -:  276:
+        -:  277:#else
+        -:  278:
+        -:  279:        pi_ = a2.allocate( 1, static_cast< impl_type* >( 0 ) );
+        -:  280:
+        -:  281:#endif
+        -:  282:
+        -:  283:        if( pi_ != 0 )
+        -:  284:        {
+        -:  285:#if !defined( BOOST_NO_CXX11_ALLOCATOR )
+        -:  286:
+        -:  287:            std::allocator_traits<A2>::construct( a2, pi, p, d, a );
+        -:  288:
+        -:  289:#else
+        -:  290:
+        -:  291:            ::new( static_cast< void* >( pi_ ) ) impl_type( p, d, a );
+        -:  292:
+        -:  293:#endif
+        -:  294:        }
+        -:  295:        else
+        -:  296:        {
+        -:  297:            d( p );
+        -:  298:            boost::throw_exception( std::bad_alloc() );
+        -:  299:        }
+        -:  300:
+        -:  301:#endif
+        -:  302:    }
+        -:  303:
+        -:  304:#if !defined( BOOST_NO_FUNCTION_TEMPLATE_ORDERING )
+        -:  305:
+        -:  306:    template< class P, class D, class A > shared_count( P p, sp_inplace_tag< D >, A a ): pi_( 0 )
+        -:  307:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  308:        , id_(shared_count_id)
+        -:  309:#endif
+        -:  310:    {
+        -:  311:        typedef sp_counted_impl_pda< P, D, A > impl_type;
+        -:  312:
+        -:  313:#if !defined( BOOST_NO_CXX11_ALLOCATOR )
+        -:  314:
+        -:  315:        typedef typename std::allocator_traits<A>::template rebind_alloc< impl_type > A2;
+        -:  316:
+        -:  317:#else
+        -:  318:
+        -:  319:        typedef typename A::template rebind< impl_type >::other A2;
+        -:  320:
+        -:  321:#endif
+        -:  322:
+        -:  323:        A2 a2( a );
+        -:  324:
+        -:  325:#ifndef BOOST_NO_EXCEPTIONS
+        -:  326:
+        -:  327:        try
+        -:  328:        {
+        -:  329:#if !defined( BOOST_NO_CXX11_ALLOCATOR )
+        -:  330:
+        -:  331:            impl_type * pi = std::allocator_traits<A2>::allocate( a2, 1 );
+        -:  332:            pi_ = pi;
+        -:  333:            std::allocator_traits<A2>::construct( a2, pi, p, a );
+        -:  334:
+        -:  335:#else
+        -:  336:
+        -:  337:            pi_ = a2.allocate( 1, static_cast< impl_type* >( 0 ) );
+        -:  338:            ::new( static_cast< void* >( pi_ ) ) impl_type( p, a );
+        -:  339:
+        -:  340:#endif
+        -:  341:        }
+        -:  342:        catch(...)
+        -:  343:        {
+        -:  344:            D::operator_fn( p );
+        -:  345:
+        -:  346:            if( pi_ != 0 )
+        -:  347:            {
+        -:  348:                a2.deallocate( static_cast< impl_type* >( pi_ ), 1 );
+        -:  349:            }
+        -:  350:
+        -:  351:            throw;
+        -:  352:        }
+        -:  353:
+        -:  354:#else
+        -:  355:
+        -:  356:#if !defined( BOOST_NO_CXX11_ALLOCATOR )
+        -:  357:
+        -:  358:        impl_type * pi = std::allocator_traits<A2>::allocate( a2, 1 );
+        -:  359:        pi_ = pi;
+        -:  360:
+        -:  361:#else
+        -:  362:
+        -:  363:        pi_ = a2.allocate( 1, static_cast< impl_type* >( 0 ) );
+        -:  364:
+        -:  365:#endif
+        -:  366:
+        -:  367:        if( pi_ != 0 )
+        -:  368:        {
+        -:  369:#if !defined( BOOST_NO_CXX11_ALLOCATOR )
+        -:  370:
+        -:  371:            std::allocator_traits<A2>::construct( a2, pi, p, a );
+        -:  372:
+        -:  373:#else
+        -:  374:
+        -:  375:            ::new( static_cast< void* >( pi_ ) ) impl_type( p, a );
+        -:  376:
+        -:  377:#endif
+        -:  378:        }
+        -:  379:        else
+        -:  380:        {
+        -:  381:            D::operator_fn( p );
+        -:  382:            boost::throw_exception( std::bad_alloc() );
+        -:  383:        }
+        -:  384:
+        -:  385:#endif // #ifndef BOOST_NO_EXCEPTIONS
+        -:  386:    }
+        -:  387:
+        -:  388:#endif // !defined( BOOST_NO_FUNCTION_TEMPLATE_ORDERING )
+        -:  389:
+        -:  390:#ifndef BOOST_NO_AUTO_PTR
+        -:  391:
+        -:  392:    // auto_ptr<Y> is special cased to provide the strong guarantee
+        -:  393:
+        -:  394:    template<class Y>
+        -:  395:    explicit shared_count( std::auto_ptr<Y> & r ): pi_( new sp_counted_impl_p<Y>( r.get() ) )
+        -:  396:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  397:        , id_(shared_count_id)
+        -:  398:#endif
+        -:  399:    {
+        -:  400:#ifdef BOOST_NO_EXCEPTIONS
+        -:  401:
+        -:  402:        if( pi_ == 0 )
+        -:  403:        {
+        -:  404:            boost::throw_exception(std::bad_alloc());
+        -:  405:        }
+        -:  406:
+        -:  407:#endif
+        -:  408:
+        -:  409:        r.release();
+        -:  410:    }
+        -:  411:
+        -:  412:#endif 
+        -:  413:
+        -:  414:#if !defined( BOOST_NO_CXX11_SMART_PTR )
+        -:  415:
+        -:  416:    template<class Y, class D>
+        -:  417:    explicit shared_count( std::unique_ptr<Y, D> & r ): pi_( 0 )
+        -:  418:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  419:        , id_(shared_count_id)
+        -:  420:#endif
+        -:  421:    {
+        -:  422:        typedef typename sp_convert_reference<D>::type D2;
+        -:  423:
+        -:  424:        D2 d2( r.get_deleter() );
+        -:  425:        pi_ = new sp_counted_impl_pd< typename std::unique_ptr<Y, D>::pointer, D2 >( r.get(), d2 );
+        -:  426:
+        -:  427:#ifdef BOOST_NO_EXCEPTIONS
+        -:  428:
+        -:  429:        if( pi_ == 0 )
+        -:  430:        {
+        -:  431:            boost::throw_exception( std::bad_alloc() );
+        -:  432:        }
+        -:  433:
+        -:  434:#endif
+        -:  435:
+        -:  436:        r.release();
+        -:  437:    }
+        -:  438:
+        -:  439:#endif
+        -:  440:
+       14:  441:    ~shared_count() // nothrow
+       14:  442:    {
+       14:  443:        if( pi_ != 0 ) pi_->release();
+        -:  444:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  445:        id_ = 0;
+        -:  446:#endif
+       14:  447:    }
+        -:  448:
+        -:  449:    shared_count(shared_count const & r): pi_(r.pi_) // nothrow
+        -:  450:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  451:        , id_(shared_count_id)
+        -:  452:#endif
+        -:  453:    {
+        -:  454:        if( pi_ != 0 ) pi_->add_ref_copy();
+        -:  455:    }
+        -:  456:
+        -:  457:#if !defined( BOOST_NO_CXX11_RVALUE_REFERENCES )
+        -:  458:
+        -:  459:    shared_count(shared_count && r): pi_(r.pi_) // nothrow
+        -:  460:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  461:        , id_(shared_count_id)
+        -:  462:#endif
+        -:  463:    {
+        -:  464:        r.pi_ = 0;
+        -:  465:    }
+        -:  466:
+        -:  467:#endif
+        -:  468:
+        -:  469:    explicit shared_count(weak_count const & r); // throws bad_weak_ptr when r.use_count() == 0
+        -:  470:    shared_count( weak_count const & r, sp_nothrow_tag ); // constructs an empty *this when r.use_count() == 0
+        -:  471:
+        -:  472:    shared_count & operator= (shared_count const & r) // nothrow
+        -:  473:    {
+        -:  474:        sp_counted_base * tmp = r.pi_;
+        -:  475:
+        -:  476:        if( tmp != pi_ )
+        -:  477:        {
+        -:  478:            if( tmp != 0 ) tmp->add_ref_copy();
+        -:  479:            if( pi_ != 0 ) pi_->release();
+        -:  480:            pi_ = tmp;
+        -:  481:        }
+        -:  482:
+        -:  483:        return *this;
+        -:  484:    }
+        -:  485:
+        4:  486:    void swap(shared_count & r) // nothrow
+        -:  487:    {
+        4:  488:        sp_counted_base * tmp = r.pi_;
+        4:  489:        r.pi_ = pi_;
+        4:  490:        pi_ = tmp;
+        4:  491:    }
+        -:  492:
+        -:  493:    long use_count() const // nothrow
+        -:  494:    {
+        -:  495:        return pi_ != 0? pi_->use_count(): 0;
+        -:  496:    }
+        -:  497:
+        -:  498:    bool unique() const // nothrow
+        -:  499:    {
+        -:  500:        return use_count() == 1;
+        -:  501:    }
+        -:  502:
+        -:  503:    bool empty() const // nothrow
+        -:  504:    {
+        -:  505:        return pi_ == 0;
+        -:  506:    }
+        -:  507:
+        -:  508:    friend inline bool operator==(shared_count const & a, shared_count const & b)
+        -:  509:    {
+        -:  510:        return a.pi_ == b.pi_;
+        -:  511:    }
+        -:  512:
+        -:  513:    friend inline bool operator<(shared_count const & a, shared_count const & b)
+        -:  514:    {
+        -:  515:        return std::less<sp_counted_base *>()( a.pi_, b.pi_ );
+        -:  516:    }
+        -:  517:
+        -:  518:    void * get_deleter( sp_typeinfo const & ti ) const
+        -:  519:    {
+        -:  520:        return pi_? pi_->get_deleter( ti ): 0;
+        -:  521:    }
+        -:  522:
+        -:  523:    void * get_untyped_deleter() const
+        -:  524:    {
+        -:  525:        return pi_? pi_->get_untyped_deleter(): 0;
+        -:  526:    }
+        -:  527:};
+        -:  528:
+        -:  529:
+        -:  530:class weak_count
+        -:  531:{
+        -:  532:private:
+        -:  533:
+        -:  534:    sp_counted_base * pi_;
+        -:  535:
+        -:  536:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  537:    int id_;
+        -:  538:#endif
+        -:  539:
+        -:  540:    friend class shared_count;
+        -:  541:
+        -:  542:public:
+        -:  543:
+        -:  544:    weak_count(): pi_(0) // nothrow
+        -:  545:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  546:        , id_(weak_count_id)
+        -:  547:#endif
+        -:  548:    {
+        -:  549:    }
+        -:  550:
+        -:  551:    weak_count(shared_count const & r): pi_(r.pi_) // nothrow
+        -:  552:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  553:        , id_(weak_count_id)
+        -:  554:#endif
+        -:  555:    {
+        -:  556:        if(pi_ != 0) pi_->weak_add_ref();
+        -:  557:    }
+        -:  558:
+        -:  559:    weak_count(weak_count const & r): pi_(r.pi_) // nothrow
+        -:  560:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  561:        , id_(weak_count_id)
+        -:  562:#endif
+        -:  563:    {
+        -:  564:        if(pi_ != 0) pi_->weak_add_ref();
+        -:  565:    }
+        -:  566:
+        -:  567:// Move support
+        -:  568:
+        -:  569:#if !defined( BOOST_NO_CXX11_RVALUE_REFERENCES )
+        -:  570:
+        -:  571:    weak_count(weak_count && r): pi_(r.pi_) // nothrow
+        -:  572:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  573:        , id_(weak_count_id)
+        -:  574:#endif
+        -:  575:    {
+        -:  576:        r.pi_ = 0;
+        -:  577:    }
+        -:  578:
+        -:  579:#endif
+        -:  580:
+        -:  581:    ~weak_count() // nothrow
+        -:  582:    {
+        -:  583:        if(pi_ != 0) pi_->weak_release();
+        -:  584:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  585:        id_ = 0;
+        -:  586:#endif
+        -:  587:    }
+        -:  588:
+        -:  589:    weak_count & operator= (shared_count const & r) // nothrow
+        -:  590:    {
+        -:  591:        sp_counted_base * tmp = r.pi_;
+        -:  592:
+        -:  593:        if( tmp != pi_ )
+        -:  594:        {
+        -:  595:            if(tmp != 0) tmp->weak_add_ref();
+        -:  596:            if(pi_ != 0) pi_->weak_release();
+        -:  597:            pi_ = tmp;
+        -:  598:        }
+        -:  599:
+        -:  600:        return *this;
+        -:  601:    }
+        -:  602:
+        -:  603:    weak_count & operator= (weak_count const & r) // nothrow
+        -:  604:    {
+        -:  605:        sp_counted_base * tmp = r.pi_;
+        -:  606:
+        -:  607:        if( tmp != pi_ )
+        -:  608:        {
+        -:  609:            if(tmp != 0) tmp->weak_add_ref();
+        -:  610:            if(pi_ != 0) pi_->weak_release();
+        -:  611:            pi_ = tmp;
+        -:  612:        }
+        -:  613:
+        -:  614:        return *this;
+        -:  615:    }
+        -:  616:
+        -:  617:    void swap(weak_count & r) // nothrow
+        -:  618:    {
+        -:  619:        sp_counted_base * tmp = r.pi_;
+        -:  620:        r.pi_ = pi_;
+        -:  621:        pi_ = tmp;
+        -:  622:    }
+        -:  623:
+        -:  624:    long use_count() const // nothrow
+        -:  625:    {
+        -:  626:        return pi_ != 0? pi_->use_count(): 0;
+        -:  627:    }
+        -:  628:
+        -:  629:    bool empty() const // nothrow
+        -:  630:    {
+        -:  631:        return pi_ == 0;
+        -:  632:    }
+        -:  633:
+        -:  634:    friend inline bool operator==(weak_count const & a, weak_count const & b)
+        -:  635:    {
+        -:  636:        return a.pi_ == b.pi_;
+        -:  637:    }
+        -:  638:
+        -:  639:    friend inline bool operator<(weak_count const & a, weak_count const & b)
+        -:  640:    {
+        -:  641:        return std::less<sp_counted_base *>()(a.pi_, b.pi_);
+        -:  642:    }
+        -:  643:};
+        -:  644:
+        -:  645:inline shared_count::shared_count( weak_count const & r ): pi_( r.pi_ )
+        -:  646:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  647:        , id_(shared_count_id)
+        -:  648:#endif
+        -:  649:{
+        -:  650:    if( pi_ == 0 || !pi_->add_ref_lock() )
+        -:  651:    {
+        -:  652:        boost::throw_exception( boost::bad_weak_ptr() );
+        -:  653:    }
+        -:  654:}
+        -:  655:
+        -:  656:inline shared_count::shared_count( weak_count const & r, sp_nothrow_tag ): pi_( r.pi_ )
+        -:  657:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
+        -:  658:        , id_(shared_count_id)
+        -:  659:#endif
+        -:  660:{
+        -:  661:    if( pi_ != 0 && !pi_->add_ref_lock() )
+        -:  662:    {
+        -:  663:        pi_ = 0;
+        -:  664:    }
+        -:  665:}
+        -:  666:
+        -:  667:} // namespace detail
+        -:  668:
+        -:  669:} // namespace boost
+        -:  670:
+        -:  671:#ifdef __BORLANDC__
+        -:  672:# pragma warn .8027     // Functions containing try are not expanded inline
+        -:  673:#endif
+        -:  674:
+        -:  675:#endif  // #ifndef BOOST_SMART_PTR_DETAIL_SHARED_COUNT_HPP_INCLUDED

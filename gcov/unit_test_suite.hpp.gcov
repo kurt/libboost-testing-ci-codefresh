@@ -1,0 +1,250 @@
+        -:    0:Source:/usr/include/boost/test/unit_test_suite.hpp
+        -:    0:Graph:test-cases.gcno
+        -:    0:Data:test-cases.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1://  (C) Copyright Gennadiy Rozental 2001-2008.
+        -:    2://  Distributed under the Boost Software License, Version 1.0.
+        -:    3://  (See accompanying file LICENSE_1_0.txt or copy at 
+        -:    4://  http://www.boost.org/LICENSE_1_0.txt)
+        -:    5:
+        -:    6://  See http://www.boost.org/libs/test for the library home page.
+        -:    7://
+        -:    8://  File        : $RCSfile$
+        -:    9://
+        -:   10://  Version     : $Revision$
+        -:   11://
+        -:   12://  Description : defines Unit Test Framework public API
+        -:   13:// ***************************************************************************
+        -:   14:
+        -:   15:#ifndef BOOST_TEST_UNIT_TEST_SUITE_HPP_071894GER
+        -:   16:#define BOOST_TEST_UNIT_TEST_SUITE_HPP_071894GER
+        -:   17:
+        -:   18:// Boost.Test
+        -:   19:#include <boost/test/unit_test_suite_impl.hpp>
+        -:   20:#include <boost/test/framework.hpp>
+        -:   21:
+        -:   22://____________________________________________________________________________//
+        -:   23:
+        -:   24:// ************************************************************************** //
+        -:   25:// **************    Non-auto (explicit) test case interface   ************** //
+        -:   26:// ************************************************************************** //
+        -:   27:
+        -:   28:#define BOOST_TEST_CASE( test_function ) \
+        -:   29:boost::unit_test::make_test_case( boost::unit_test::callback0<>(test_function), BOOST_TEST_STRINGIZE( test_function ) )
+        -:   30:#define BOOST_CLASS_TEST_CASE( test_function, tc_instance ) \
+        -:   31:boost::unit_test::make_test_case((test_function), BOOST_TEST_STRINGIZE( test_function ), tc_instance )
+        -:   32:
+        -:   33:// ************************************************************************** //
+        -:   34:// **************               BOOST_TEST_SUITE               ************** //
+        -:   35:// ************************************************************************** //
+        -:   36:
+        -:   37:#define BOOST_TEST_SUITE( testsuite_name ) \
+        -:   38:( new boost::unit_test::test_suite( testsuite_name ) )
+        -:   39:
+        -:   40:// ************************************************************************** //
+        -:   41:// **************             BOOST_AUTO_TEST_SUITE            ************** //
+        -:   42:// ************************************************************************** //
+        -:   43:
+        -:   44:#define BOOST_AUTO_TEST_SUITE( suite_name )                             \
+        -:   45:namespace suite_name {                                                  \
+        -:   46:BOOST_AUTO_TU_REGISTRAR( suite_name )( BOOST_STRINGIZE( suite_name ) ); \
+        -:   47:/**/
+        -:   48:
+        -:   49:// ************************************************************************** //
+        -:   50:// **************            BOOST_FIXTURE_TEST_SUITE          ************** //
+        -:   51:// ************************************************************************** //
+        -:   52:
+        -:   53:#define BOOST_FIXTURE_TEST_SUITE( suite_name, F )                       \
+        -:   54:BOOST_AUTO_TEST_SUITE( suite_name )                                     \
+        -:   55:typedef F BOOST_AUTO_TEST_CASE_FIXTURE;                                 \
+        -:   56:/**/
+        -:   57:
+        -:   58:// ************************************************************************** //
+        -:   59:// **************           BOOST_AUTO_TEST_SUITE_END          ************** //
+        -:   60:// ************************************************************************** //
+        -:   61:
+        -:   62:#define BOOST_AUTO_TEST_SUITE_END()                                     \
+        -:   63:BOOST_AUTO_TU_REGISTRAR( BOOST_JOIN( end_suite, __LINE__ ) )( 1 );      \
+        -:   64:}                                                                       \
+        -:   65:/**/
+        -:   66:
+        -:   67:// ************************************************************************** //
+        -:   68:// **************    BOOST_AUTO_TEST_CASE_EXPECTED_FAILURES    ************** //
+        -:   69:// ************************************************************************** //
+        -:   70:
+        -:   71:#define BOOST_AUTO_TEST_CASE_EXPECTED_FAILURES( test_name, n )          \
+        -:   72:struct BOOST_AUTO_TC_UNIQUE_ID( test_name );                            \
+        -:   73:                                                                        \
+        -:   74:static struct BOOST_JOIN( test_name, _exp_fail_num_spec )               \
+        -:   75:: boost::unit_test::ut_detail::                                         \
+        -:   76:  auto_tc_exp_fail<BOOST_AUTO_TC_UNIQUE_ID( test_name ) >               \
+        -:   77:{                                                                       \
+        -:   78:    BOOST_JOIN( test_name, _exp_fail_num_spec )()                       \
+        -:   79:    : boost::unit_test::ut_detail::                                     \
+        -:   80:      auto_tc_exp_fail<BOOST_AUTO_TC_UNIQUE_ID( test_name ) >( n )      \
+        -:   81:    {}                                                                  \
+        -:   82:} BOOST_JOIN( test_name, _exp_fail_num_spec_inst );                     \
+        -:   83:                                                                        \
+        -:   84:/**/
+        -:   85:
+        -:   86:// ************************************************************************** //
+        -:   87:// **************            BOOST_FIXTURE_TEST_CASE           ************** //
+        -:   88:// ************************************************************************** //
+        -:   89:
+        -:   90:#define BOOST_FIXTURE_TEST_CASE( test_name, F )                         \
+        -:   91:struct test_name : public F { void test_method(); };                    \
+        -:   92:                                                                        \
+        -:   93:static void BOOST_AUTO_TC_INVOKER( test_name )()                        \
+        -:   94:{                                                                       \
+        -:   95:    test_name t;                                                        \
+        -:   96:    t.test_method();                                                    \
+        -:   97:}                                                                       \
+        -:   98:                                                                        \
+        -:   99:struct BOOST_AUTO_TC_UNIQUE_ID( test_name ) {};                         \
+        -:  100:                                                                        \
+        -:  101:BOOST_AUTO_TU_REGISTRAR( test_name )(                                   \
+        -:  102:    boost::unit_test::make_test_case(                                   \
+        -:  103:        &BOOST_AUTO_TC_INVOKER( test_name ), #test_name ),              \
+        -:  104:    boost::unit_test::ut_detail::auto_tc_exp_fail<                      \
+        -:  105:        BOOST_AUTO_TC_UNIQUE_ID( test_name )>::instance()->value() );   \
+        -:  106:                                                                        \
+        -:  107:void test_name::test_method()                                           \
+        -:  108:/**/
+        -:  109:
+        -:  110:// ************************************************************************** //
+        -:  111:// **************             BOOST_AUTO_TEST_CASE             ************** //
+        -:  112:// ************************************************************************** //
+        -:  113:
+        -:  114:#define BOOST_AUTO_TEST_CASE( test_name )                               \
+        -:  115:BOOST_FIXTURE_TEST_CASE( test_name, BOOST_AUTO_TEST_CASE_FIXTURE )
+        -:  116:/**/
+        -:  117:
+        -:  118:// ************************************************************************** //
+        -:  119:// **************       BOOST_FIXTURE_TEST_CASE_TEMPLATE       ************** //
+        -:  120:// ************************************************************************** //
+        -:  121:
+        -:  122:#define BOOST_FIXTURE_TEST_CASE_TEMPLATE( test_name, type_name, TL, F ) \
+        -:  123:template<typename type_name>                                            \
+        -:  124:struct test_name : public F                                             \
+        -:  125:{ void test_method(); };                                                \
+        -:  126:                                                                        \
+        -:  127:struct BOOST_AUTO_TC_INVOKER( test_name ) {                             \
+        -:  128:    template<typename TestType>                                         \
+        -:  129:    static void run( boost::type<TestType>* = 0 )                       \
+        -:  130:    {                                                                   \
+        -:  131:        test_name<TestType> t;                                          \
+        -:  132:        t.test_method();                                                \
+        -:  133:    }                                                                   \
+        -:  134:};                                                                      \
+        -:  135:                                                                        \
+        -:  136:BOOST_AUTO_TU_REGISTRAR( test_name )(                                   \
+        -:  137:    boost::unit_test::ut_detail::template_test_case_gen<                \
+        -:  138:        BOOST_AUTO_TC_INVOKER( test_name ),TL >(                        \
+        -:  139:          BOOST_STRINGIZE( test_name ) ) );                             \
+        -:  140:                                                                        \
+        -:  141:template<typename type_name>                                            \
+        -:  142:void test_name<type_name>::test_method()                                \
+        -:  143:/**/
+        -:  144:
+        -:  145:// ************************************************************************** //
+        -:  146:// **************        BOOST_AUTO_TEST_CASE_TEMPLATE         ************** //
+        -:  147:// ************************************************************************** //
+        -:  148:
+        -:  149:#define BOOST_AUTO_TEST_CASE_TEMPLATE( test_name, type_name, TL )       \
+        -:  150:BOOST_FIXTURE_TEST_CASE_TEMPLATE( test_name, type_name, TL, BOOST_AUTO_TEST_CASE_FIXTURE )
+        -:  151:
+        -:  152:// ************************************************************************** //
+        -:  153:// **************           BOOST_TEST_CASE_TEMPLATE           ************** //
+        -:  154:// ************************************************************************** //
+        -:  155:
+        -:  156:#define BOOST_TEST_CASE_TEMPLATE( name, typelist )                          \
+        -:  157:    boost::unit_test::ut_detail::template_test_case_gen<name,typelist >(    \
+        -:  158:        BOOST_TEST_STRINGIZE( name ) )                                      \
+        -:  159:/**/
+        -:  160:
+        -:  161:// ************************************************************************** //
+        -:  162:// **************      BOOST_TEST_CASE_TEMPLATE_FUNCTION       ************** //
+        -:  163:// ************************************************************************** //
+        -:  164:
+        -:  165:#define BOOST_TEST_CASE_TEMPLATE_FUNCTION( name, type_name )    \
+        -:  166:template<typename type_name>                                    \
+        -:  167:void BOOST_JOIN( name, _impl )( boost::type<type_name>* );      \
+        -:  168:                                                                \
+        -:  169:struct name {                                                   \
+        -:  170:    template<typename TestType>                                 \
+        -:  171:    static void run( boost::type<TestType>* frwrd = 0 )         \
+        -:  172:    {                                                           \
+        -:  173:       BOOST_JOIN( name, _impl )( frwrd );                      \
+        -:  174:    }                                                           \
+        -:  175:};                                                              \
+        -:  176:                                                                \
+        -:  177:template<typename type_name>                                    \
+        -:  178:void BOOST_JOIN( name, _impl )( boost::type<type_name>* )       \
+        -:  179:/**/
+        -:  180:
+        -:  181:// ************************************************************************** //
+        -:  182:// **************              BOOST_GLOBAL_FIXURE             ************** //
+        -:  183:// ************************************************************************** //
+        -:  184:
+        -:  185:#define BOOST_GLOBAL_FIXTURE( F ) \
+        -:  186:static boost::unit_test::ut_detail::global_fixture_impl<F> BOOST_JOIN( gf_, F ) ; \
+        -:  187:/**/
+        -:  188:
+        -:  189:// ************************************************************************** //
+        -:  190:// **************         BOOST_AUTO_TEST_CASE_FIXTURE         ************** //
+        -:  191:// ************************************************************************** //
+        -:  192:
+        -:  193:namespace boost { namespace unit_test { namespace ut_detail {
+        -:  194:
+        -:  195:struct nil_t {};
+        -:  196:
+        -:  197:} // namespace ut_detail
+        -:  198:} // unit_test
+        -:  199:} // namespace boost
+        -:  200:
+        -:  201:// Intentionally is in global namespace, so that FIXURE_TEST_SUITE can reset it in user code.
+        -:  202:typedef ::boost::unit_test::ut_detail::nil_t BOOST_AUTO_TEST_CASE_FIXTURE;
+        -:  203:
+        -:  204:// ************************************************************************** //
+        -:  205:// **************   Auto registration facility helper macros   ************** //
+        -:  206:// ************************************************************************** //
+        -:  207:
+        -:  208:#define BOOST_AUTO_TU_REGISTRAR( test_name )    \
+        -:  209:static boost::unit_test::ut_detail::auto_test_unit_registrar BOOST_JOIN( BOOST_JOIN( test_name, _registrar ), __LINE__ )
+        -:  210:#define BOOST_AUTO_TC_INVOKER( test_name )      BOOST_JOIN( test_name, _invoker )
+        -:  211:#define BOOST_AUTO_TC_UNIQUE_ID( test_name )    BOOST_JOIN( test_name, _id )
+        -:  212:
+        -:  213:// ************************************************************************** //
+        -:  214:// **************                BOOST_TEST_MAIN               ************** //
+        -:  215:// ************************************************************************** //
+        -:  216:
+        -:  217:#if defined(BOOST_TEST_MAIN)
+        -:  218:
+        -:  219:#ifdef BOOST_TEST_ALTERNATIVE_INIT_API
+        1:  220:bool init_unit_test()                   {
+        -:  221:#else
+        -:  222:::boost::unit_test::test_suite*
+        -:  223:init_unit_test_suite( int, char* [] )   {
+        -:  224:#endif
+        -:  225:
+        -:  226:#ifdef BOOST_TEST_MODULE
+        -:  227:    using namespace ::boost::unit_test;
+        1:  228:    assign_op( framework::master_test_suite().p_name.value, BOOST_TEST_STRINGIZE( BOOST_TEST_MODULE ).trim( "\"" ), 0 );
+        -:  229:    
+        -:  230:#endif
+        -:  231:
+        -:  232:#ifdef BOOST_TEST_ALTERNATIVE_INIT_API
+        1:  233:    return true;
+        -:  234:}
+        -:  235:#else
+        -:  236:    return 0;
+        -:  237:}
+        -:  238:#endif
+        -:  239:
+        -:  240:#endif
+        -:  241:
+        -:  242://____________________________________________________________________________//
+        -:  243:
+        -:  244:#endif // BOOST_TEST_UNIT_TEST_SUITE_HPP_071894GER
+        -:  245:

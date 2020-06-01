@@ -1,0 +1,79 @@
+        -:    0:Source:/usr/include/boost/test/utils/trivial_singleton.hpp
+        -:    0:Graph:test-cases.gcno
+        -:    0:Data:test-cases.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1://  (C) Copyright Gennadiy Rozental 2005-2008.
+        -:    2://  Distributed under the Boost Software License, Version 1.0.
+        -:    3://  (See accompanying file LICENSE_1_0.txt or copy at 
+        -:    4://  http://www.boost.org/LICENSE_1_0.txt)
+        -:    5:
+        -:    6://  See http://www.boost.org/libs/test for the library home page.
+        -:    7://
+        -:    8://  File        : $RCSfile$
+        -:    9://
+        -:   10://  Version     : $Revision$
+        -:   11://
+        -:   12://  Description : simple helpers for creating cusom output manipulators
+        -:   13:// ***************************************************************************
+        -:   14:
+        -:   15:#ifndef BOOST_TEST_TRIVIAL_SIGNLETON_HPP_020505GER
+        -:   16:#define BOOST_TEST_TRIVIAL_SIGNLETON_HPP_020505GER
+        -:   17:
+        -:   18:#include <boost/config.hpp>
+        -:   19:#include <boost/detail/workaround.hpp>
+        -:   20:
+        -:   21:#include <boost/noncopyable.hpp>
+        -:   22:
+        -:   23:#include <boost/test/detail/suppress_warnings.hpp>
+        -:   24:
+        -:   25://____________________________________________________________________________//
+        -:   26:
+        -:   27:namespace boost {
+        -:   28:
+        -:   29:namespace unit_test {
+        -:   30:
+        -:   31:// ************************************************************************** //
+        -:   32:// **************                   singleton                  ************** //
+        -:   33:// ************************************************************************** //
+        -:   34:
+        -:   35:template<typename Derived>
+        -:   36:class singleton : private boost::noncopyable {
+        -:   37:public:
+        2:   38:    static Derived& instance() { static Derived the_inst; return the_inst; }    
+        -:   39:protected:
+    #####:   40:    singleton()  {}
+    #####:   41:    ~singleton() {}
+        -:   42:};
+        -:   43:
+        -:   44:} // namespace unit_test
+        -:   45:
+        -:   46:#define BOOST_TEST_SINGLETON_CONS( type )       \
+        -:   47:friend class boost::unit_test::singleton<type>; \
+        -:   48:type() {}                                       \
+        -:   49:/**/
+        -:   50:
+        -:   51:#if BOOST_WORKAROUND(__DECCXX_VER, BOOST_TESTED_AT(60590042))
+        -:   52:
+        -:   53:#define BOOST_TEST_SINGLETON_INST( inst ) \
+        -:   54:template class unit_test::singleton< BOOST_JOIN( inst, _t ) > ; \
+        -:   55:namespace { BOOST_JOIN( inst, _t)& inst = BOOST_JOIN( inst, _t)::instance(); }
+        -:   56:
+        -:   57:#elif defined(__APPLE_CC__) && defined(__GNUC__) && __GNUC__ < 4
+        -:   58:#define BOOST_TEST_SINGLETON_INST( inst ) \
+        -:   59:static BOOST_JOIN( inst, _t)& inst = BOOST_JOIN (inst, _t)::instance();
+        -:   60:
+        -:   61:#else
+        -:   62:
+        -:   63:#define BOOST_TEST_SINGLETON_INST( inst ) \
+        -:   64:namespace { BOOST_JOIN( inst, _t)& inst = BOOST_JOIN( inst, _t)::instance(); }
+        -:   65:
+        -:   66:#endif
+        -:   67:
+        -:   68:} // namespace boost
+        -:   69:
+        -:   70://____________________________________________________________________________//
+        -:   71:
+        -:   72:#include <boost/test/detail/enable_warnings.hpp>
+        -:   73:
+        -:   74:#endif // BOOST_TEST_TRIVIAL_SIGNLETON_HPP_020505GER

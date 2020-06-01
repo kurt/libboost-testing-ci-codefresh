@@ -1,0 +1,6 @@
+<TestLog><TestSuite name="HelloC"><TestCase name="subtractTest"><Info file="test-cases.c" line="22"><![CDATA[check subtract(3,3)==0 passed]]></Info><TestingTime>72</TestingTime></TestCase><TestCase name="call_subtractTest"><Info file="test-cases.c" line="26"><![CDATA[check call_subtract()==-1 passed]]></Info><TestingTime>100</TestingTime></TestCase><TestCase name="conditionalTest">Running Conditional Tests...
+This has been called
+<Info file="test-cases.c" line="31"><![CDATA[check conditional(1)==1 passed]]></Info>That has been called
+<Info file="test-cases.c" line="32"><![CDATA[check conditional(0)==1 passed]]></Info>an issue occured
+<Info file="test-cases.c" line="33"><![CDATA[check conditional(10)==0 passed]]></Info><TestingTime>63</TestingTime></TestCase><TestSuite name="OtherTests"><TestCase name="thisTest"><Info file="test-cases.c" line="41"><![CDATA[check f==round(m*a) passed]]></Info>981.000061
+<TestingTime>66</TestingTime></TestCase></TestSuite></TestSuite></TestLog>

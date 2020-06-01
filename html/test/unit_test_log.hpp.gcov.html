@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - testout - test/unit_test_log.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">test</a> - unit_test_log.hpp<span style="font-size: 80%;"> (source / <a href="unit_test_log.hpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">testout</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryLo">33.3 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-05-29 16:49:03</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : //  (C) Copyright Gennadiy Rozental 2001-2008.</a>
+<span class="lineNum">       2 </span>                :            : //  Distributed under the Boost Software License, Version 1.0.
+<span class="lineNum">       3 </span>                :            : //  (See accompanying file LICENSE_1_0.txt or copy at 
+<span class="lineNum">       4 </span>                :            : //  http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       5 </span>                :            : 
+<span class="lineNum">       6 </span>                :            : //  See http://www.boost.org/libs/test for the library home page.
+<span class="lineNum">       7 </span>                :            : //
+<span class="lineNum">       8 </span>                :            : //  File        : $RCSfile$
+<span class="lineNum">       9 </span>                :            : //
+<span class="lineNum">      10 </span>                :            : //  Version     : $Revision$
+<span class="lineNum">      11 </span>                :            : //
+<span class="lineNum">      12 </span>                :            : //  Description : defines singleton class unit_test_log and all manipulators.
+<span class="lineNum">      13 </span>                :            : //  unit_test_log has output stream like interface. It's implementation is
+<span class="lineNum">      14 </span>                :            : //  completely hidden with pimple idiom
+<span class="lineNum">      15 </span>                :            : // ***************************************************************************
+<span class="lineNum">      16 </span>                :            : 
+<span class="lineNum">      17 </span>                :            : #ifndef BOOST_TEST_UNIT_TEST_LOG_HPP_071894GER
+<span class="lineNum">      18 </span>                :            : #define BOOST_TEST_UNIT_TEST_LOG_HPP_071894GER
+<span class="lineNum">      19 </span>                :            : 
+<span class="lineNum">      20 </span>                :            : // Boost.Test
+<span class="lineNum">      21 </span>                :            : #include &lt;boost/test/test_observer.hpp&gt;
+<span class="lineNum">      22 </span>                :            : 
+<span class="lineNum">      23 </span>                :            : #include &lt;boost/test/detail/global_typedef.hpp&gt;
+<span class="lineNum">      24 </span>                :            : #include &lt;boost/test/detail/log_level.hpp&gt;
+<span class="lineNum">      25 </span>                :            : #include &lt;boost/test/detail/fwd_decl.hpp&gt;
+<span class="lineNum">      26 </span>                :            : 
+<span class="lineNum">      27 </span>                :            : #include &lt;boost/test/utils/wrap_stringstream.hpp&gt;
+<span class="lineNum">      28 </span>                :            : #include &lt;boost/test/utils/trivial_singleton.hpp&gt;
+<span class="lineNum">      29 </span>                :            : #include &lt;boost/test/utils/lazy_ostream.hpp&gt;
+<span class="lineNum">      30 </span>                :            : 
+<span class="lineNum">      31 </span>                :            : // Boost
+<span class="lineNum">      32 </span>                :            : #include &lt;boost/utility.hpp&gt;
+<span class="lineNum">      33 </span>                :            : 
+<span class="lineNum">      34 </span>                :            : // STL
+<span class="lineNum">      35 </span>                :            : #include &lt;iosfwd&gt;   // for std::ostream&amp;
+<span class="lineNum">      36 </span>                :            : 
+<span class="lineNum">      37 </span>                :            : #include &lt;boost/test/detail/suppress_warnings.hpp&gt;
+<span class="lineNum">      38 </span>                :            : 
+<span class="lineNum">      39 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">      40 </span>                :            : 
+<span class="lineNum">      41 </span>                :            : namespace boost {
+<span class="lineNum">      42 </span>                :            : 
+<span class="lineNum">      43 </span>                :            : namespace unit_test {
+<span class="lineNum">      44 </span>                :            : 
+<span class="lineNum">      45 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      46 </span>                :            : // **************                log manipulators              ************** //
+<span class="lineNum">      47 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      48 </span>                :            : 
+<span class="lineNum">      49 </span>                :            : namespace log {
+<span class="lineNum">      50 </span>                :            : 
+<span class="lineNum">      51 </span>                :            : struct BOOST_TEST_DECL begin {
+<span class="lineNum">      52 </span>                :            :     begin( const_string fn, std::size_t ln )
+<span class="lineNum">      53 </span>                :            :     : m_file_name( fn )
+<span class="lineNum">      54 </span>                :            :     , m_line_num( ln )
+<span class="lineNum">      55 </span>                :            :     {}
+<span class="lineNum">      56 </span>                :            : 
+<span class="lineNum">      57 </span>                :            :     const_string m_file_name;
+<span class="lineNum">      58 </span>                :            :     std::size_t m_line_num;
+<span class="lineNum">      59 </span>                :            : };
+<span class="lineNum">      60 </span>                :            : 
+<span class="lineNum">      61 </span>                :            : struct end {};
+<span class="lineNum">      62 </span>                :            : 
+<span class="lineNum">      63 </span>                :            : } // namespace log
+<span class="lineNum">      64 </span>                :            : 
+<span class="lineNum">      65 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      66 </span>                :            : // **************             entry_value_collector            ************** //
+<span class="lineNum">      67 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      68 </span>                :            : 
+<span class="lineNum">      69 </span>                :            : namespace ut_detail {
+<span class="lineNum">      70 </span>                :            : 
+<span class="lineNum">      71 </span>                :            : class BOOST_TEST_DECL entry_value_collector {
+<span class="lineNum">      72 </span>                :            : public:
+<span class="lineNum">      73 </span>                :            :     // Constructors
+<span class="lineNum">      74 </span>                :            :     entry_value_collector() : m_last( true ) {}
+<span class="lineNum">      75 </span>                :            :     entry_value_collector( entry_value_collector const&amp; rhs ) : m_last( true ) { rhs.m_last = false; }
+<span class="lineNum">      76 </span>                :            :     ~entry_value_collector();
+<span class="lineNum">      77 </span>                :            : 
+<span class="lineNum">      78 </span>                :            :     // collection interface
+<span class="lineNum">      79 </span>                :            :     entry_value_collector const&amp; operator&lt;&lt;( lazy_ostream const&amp; ) const;
+<span class="lineNum">      80 </span>                :            :     entry_value_collector const&amp; operator&lt;&lt;( const_string ) const;
+<span class="lineNum">      81 </span>                :            : 
+<span class="lineNum">      82 </span>                :            : private:
+<span class="lineNum">      83 </span>                :            :     // Data members
+<span class="lineNum">      84 </span>                :            :     mutable bool    m_last;
+<span class="lineNum">      85 </span>                :            : };
+<span class="lineNum">      86 </span>                :            : 
+<span class="lineNum">      87 </span>                :            : } // namespace ut_detail
+<span class="lineNum">      88 </span>                :            : 
+<span class="lineNum">      89 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      90 </span>                :            : // **************                 unit_test_log                ************** //
+<a name="91"><span class="lineNum">      91 </span>                :            : // ************************************************************************** //</a>
+<span class="lineNum">      92 </span>                :            : 
+<span class="lineNum">      93 </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 : class BOOST_TEST_DECL unit_test_log_t : public test_observer, public singleton&lt;unit_test_log_t&gt; {</span>
+<span class="lineNum">      94 </span>                :            : public:
+<span class="lineNum">      95 </span>                :            :     // test_observer interface implementation
+<span class="lineNum">      96 </span>                :            :     void                test_start( counter_t test_cases_amount );
+<span class="lineNum">      97 </span>                :            :     void                test_finish();
+<span class="lineNum">      98 </span>                :            :     void                test_aborted();
+<span class="lineNum">      99 </span>                :            : 
+<span class="lineNum">     100 </span>                :            :     void                test_unit_start( test_unit const&amp; );
+<span class="lineNum">     101 </span>                :            :     void                test_unit_finish( test_unit const&amp;, unsigned long elapsed );
+<span class="lineNum">     102 </span>                :            :     void                test_unit_skipped( test_unit const&amp; );
+<span class="lineNum">     103 </span>                :            :     void                test_unit_aborted( test_unit const&amp; );
+<span class="lineNum">     104 </span>                :            : 
+<span class="lineNum">     105 </span>                :            :     void                assertion_result( bool passed );
+<span class="lineNum">     106 </span>                :            :     void                exception_caught( execution_exception const&amp; );
+<span class="lineNum">     107 </span>                :            : 
+<span class="lineNum">     108 </span>                :            :     virtual int         priority() { return 1; }
+<span class="lineNum">     109 </span>                :            : 
+<span class="lineNum">     110 </span>                :            :     // log configuration methods
+<span class="lineNum">     111 </span>                :            :     void                set_stream( std::ostream&amp; );
+<span class="lineNum">     112 </span>                :            :     void                set_threshold_level( log_level );
+<span class="lineNum">     113 </span>                :            :     void                set_format( output_format );
+<span class="lineNum">     114 </span>                :            :     void                set_formatter( unit_test_log_formatter* );
+<span class="lineNum">     115 </span>                :            : 
+<span class="lineNum">     116 </span>                :            :     // test progress logging
+<span class="lineNum">     117 </span>                :            :     void                set_checkpoint( const_string file, std::size_t line_num, const_string msg = const_string() );
+<span class="lineNum">     118 </span>                :            : 
+<span class="lineNum">     119 </span>                :            :     // entry logging
+<span class="lineNum">     120 </span>                :            :     unit_test_log_t&amp;    operator&lt;&lt;( log::begin const&amp; );        // begin entry 
+<span class="lineNum">     121 </span>                :            :     unit_test_log_t&amp;    operator&lt;&lt;( log::end const&amp; );          // end entry
+<span class="lineNum">     122 </span>                :            :     unit_test_log_t&amp;    operator&lt;&lt;( log_level );                // set entry level
+<span class="lineNum">     123 </span>                :            :     unit_test_log_t&amp;    operator&lt;&lt;( const_string );             // log entry value
+<span class="lineNum">     124 </span>                :            :     unit_test_log_t&amp;    operator&lt;&lt;( lazy_ostream const&amp; );      // log entry value
+<span class="lineNum">     125 </span>                :            : 
+<span class="lineNum">     126 </span>                :            :     ut_detail::entry_value_collector operator()( log_level );   // initiate entry collection
+<span class="lineNum">     127 </span>                :            : 
+<span class="lineNum">     128 </span>                :            : private:
+<a name="129"><span class="lineNum">     129 </span>                :            :     bool            log_entry_start();</a>
+<span class="lineNum">     130 </span>                :            : 
+<span class="lineNum">     131 </span>                :<span class="lineNoCov">          0 :     BOOST_TEST_SINGLETON_CONS( unit_test_log_t );</span>
+<span class="lineNum">     132 </span>                :            : }; // unit_test_log_t
+<span class="lineNum">     133 </span>                :            : 
+<span class="lineNum">     134 </span>                :<span class="lineCov">          2 : BOOST_TEST_SINGLETON_INST( unit_test_log )</span>
+<span class="lineNum">     135 </span>                :            : 
+<span class="lineNum">     136 </span>                :            : // helper macros
+<span class="lineNum">     137 </span>                :            : #define BOOST_TEST_LOG_ENTRY( ll )                                                  \
+<span class="lineNum">     138 </span>                :            :     (::boost::unit_test::unit_test_log                                              \
+<span class="lineNum">     139 </span>                :            :         &lt;&lt; ::boost::unit_test::log::begin( BOOST_TEST_L(__FILE__), __LINE__ ))(ll)  \
+<span class="lineNum">     140 </span>                :            : /**/
+<span class="lineNum">     141 </span>                :            : 
+<span class="lineNum">     142 </span>                :            : } // namespace unit_test
+<span class="lineNum">     143 </span>                :            : 
+<span class="lineNum">     144 </span>                :            : } // namespace boost
+<span class="lineNum">     145 </span>                :            : 
+<span class="lineNum">     146 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     147 </span>                :            : // **************       Unit test log interface helpers        ************** //
+<span class="lineNum">     148 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     149 </span>                :            : 
+<span class="lineNum">     150 </span>                :            : #define BOOST_TEST_MESSAGE( M )                                 \
+<span class="lineNum">     151 </span>                :            :     BOOST_TEST_LOG_ENTRY( ::boost::unit_test::log_messages )    \
+<span class="lineNum">     152 </span>                :            :     &lt;&lt; (::boost::unit_test::lazy_ostream::instance() &lt;&lt; M)      \
+<span class="lineNum">     153 </span>                :            : /**/
+<span class="lineNum">     154 </span>                :            : 
+<span class="lineNum">     155 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     156 </span>                :            : 
+<span class="lineNum">     157 </span>                :            : #define BOOST_TEST_PASSPOINT()                                  \
+<span class="lineNum">     158 </span>                :            :     ::boost::unit_test::unit_test_log.set_checkpoint(           \
+<span class="lineNum">     159 </span>                :            :         BOOST_TEST_L(__FILE__),                                 \
+<span class="lineNum">     160 </span>                :            :         static_cast&lt;std::size_t&gt;(__LINE__) )                    \
+<span class="lineNum">     161 </span>                :            : /**/
+<span class="lineNum">     162 </span>                :            : 
+<span class="lineNum">     163 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     164 </span>                :            : 
+<span class="lineNum">     165 </span>                :            : #define BOOST_TEST_CHECKPOINT( M )                              \
+<span class="lineNum">     166 </span>                :            :     ::boost::unit_test::unit_test_log.set_checkpoint(           \
+<span class="lineNum">     167 </span>                :            :         BOOST_TEST_L(__FILE__),                                 \
+<span class="lineNum">     168 </span>                :            :         static_cast&lt;std::size_t&gt;(__LINE__),                     \
+<span class="lineNum">     169 </span>                :            :         (::boost::wrap_stringstream().ref() &lt;&lt; M).str() )       \
+<span class="lineNum">     170 </span>                :            : /**/
+<span class="lineNum">     171 </span>                :            : 
+<span class="lineNum">     172 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     173 </span>                :            : 
+<span class="lineNum">     174 </span>                :            : #include &lt;boost/test/detail/enable_warnings.hpp&gt;
+<span class="lineNum">     175 </span>                :            : 
+<span class="lineNum">     176 </span>                :            : #endif // BOOST_TEST_UNIT_TEST_LOG_HPP_071894GER
+<span class="lineNum">     177 </span>                :            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

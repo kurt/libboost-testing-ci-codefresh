@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - testout - test/unit_test_suite.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">test</a> - unit_test_suite.hpp<span style="font-size: 80%;"> (source / <a href="unit_test_suite.hpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">testout</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-05-29 16:49:03</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : //  (C) Copyright Gennadiy Rozental 2001-2008.</a>
+<span class="lineNum">       2 </span>                :            : //  Distributed under the Boost Software License, Version 1.0.
+<span class="lineNum">       3 </span>                :            : //  (See accompanying file LICENSE_1_0.txt or copy at 
+<span class="lineNum">       4 </span>                :            : //  http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       5 </span>                :            : 
+<span class="lineNum">       6 </span>                :            : //  See http://www.boost.org/libs/test for the library home page.
+<span class="lineNum">       7 </span>                :            : //
+<span class="lineNum">       8 </span>                :            : //  File        : $RCSfile$
+<span class="lineNum">       9 </span>                :            : //
+<span class="lineNum">      10 </span>                :            : //  Version     : $Revision$
+<span class="lineNum">      11 </span>                :            : //
+<span class="lineNum">      12 </span>                :            : //  Description : defines Unit Test Framework public API
+<span class="lineNum">      13 </span>                :            : // ***************************************************************************
+<span class="lineNum">      14 </span>                :            : 
+<span class="lineNum">      15 </span>                :            : #ifndef BOOST_TEST_UNIT_TEST_SUITE_HPP_071894GER
+<span class="lineNum">      16 </span>                :            : #define BOOST_TEST_UNIT_TEST_SUITE_HPP_071894GER
+<span class="lineNum">      17 </span>                :            : 
+<span class="lineNum">      18 </span>                :            : // Boost.Test
+<span class="lineNum">      19 </span>                :            : #include &lt;boost/test/unit_test_suite_impl.hpp&gt;
+<span class="lineNum">      20 </span>                :            : #include &lt;boost/test/framework.hpp&gt;
+<span class="lineNum">      21 </span>                :            : 
+<span class="lineNum">      22 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">      23 </span>                :            : 
+<span class="lineNum">      24 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      25 </span>                :            : // **************    Non-auto (explicit) test case interface   ************** //
+<span class="lineNum">      26 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      27 </span>                :            : 
+<span class="lineNum">      28 </span>                :            : #define BOOST_TEST_CASE( test_function ) \
+<span class="lineNum">      29 </span>                :            : boost::unit_test::make_test_case( boost::unit_test::callback0&lt;&gt;(test_function), BOOST_TEST_STRINGIZE( test_function ) )
+<span class="lineNum">      30 </span>                :            : #define BOOST_CLASS_TEST_CASE( test_function, tc_instance ) \
+<span class="lineNum">      31 </span>                :            : boost::unit_test::make_test_case((test_function), BOOST_TEST_STRINGIZE( test_function ), tc_instance )
+<span class="lineNum">      32 </span>                :            : 
+<span class="lineNum">      33 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      34 </span>                :            : // **************               BOOST_TEST_SUITE               ************** //
+<span class="lineNum">      35 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      36 </span>                :            : 
+<span class="lineNum">      37 </span>                :            : #define BOOST_TEST_SUITE( testsuite_name ) \
+<span class="lineNum">      38 </span>                :            : ( new boost::unit_test::test_suite( testsuite_name ) )
+<span class="lineNum">      39 </span>                :            : 
+<span class="lineNum">      40 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      41 </span>                :            : // **************             BOOST_AUTO_TEST_SUITE            ************** //
+<span class="lineNum">      42 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      43 </span>                :            : 
+<span class="lineNum">      44 </span>                :            : #define BOOST_AUTO_TEST_SUITE( suite_name )                             \
+<span class="lineNum">      45 </span>                :            : namespace suite_name {                                                  \
+<span class="lineNum">      46 </span>                :            : BOOST_AUTO_TU_REGISTRAR( suite_name )( BOOST_STRINGIZE( suite_name ) ); \
+<span class="lineNum">      47 </span>                :            : /**/
+<span class="lineNum">      48 </span>                :            : 
+<span class="lineNum">      49 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      50 </span>                :            : // **************            BOOST_FIXTURE_TEST_SUITE          ************** //
+<span class="lineNum">      51 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      52 </span>                :            : 
+<span class="lineNum">      53 </span>                :            : #define BOOST_FIXTURE_TEST_SUITE( suite_name, F )                       \
+<span class="lineNum">      54 </span>                :            : BOOST_AUTO_TEST_SUITE( suite_name )                                     \
+<span class="lineNum">      55 </span>                :            : typedef F BOOST_AUTO_TEST_CASE_FIXTURE;                                 \
+<span class="lineNum">      56 </span>                :            : /**/
+<span class="lineNum">      57 </span>                :            : 
+<span class="lineNum">      58 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      59 </span>                :            : // **************           BOOST_AUTO_TEST_SUITE_END          ************** //
+<span class="lineNum">      60 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      61 </span>                :            : 
+<span class="lineNum">      62 </span>                :            : #define BOOST_AUTO_TEST_SUITE_END()                                     \
+<span class="lineNum">      63 </span>                :            : BOOST_AUTO_TU_REGISTRAR( BOOST_JOIN( end_suite, __LINE__ ) )( 1 );      \
+<span class="lineNum">      64 </span>                :            : }                                                                       \
+<span class="lineNum">      65 </span>                :            : /**/
+<span class="lineNum">      66 </span>                :            : 
+<span class="lineNum">      67 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      68 </span>                :            : // **************    BOOST_AUTO_TEST_CASE_EXPECTED_FAILURES    ************** //
+<span class="lineNum">      69 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      70 </span>                :            : 
+<span class="lineNum">      71 </span>                :            : #define BOOST_AUTO_TEST_CASE_EXPECTED_FAILURES( test_name, n )          \
+<span class="lineNum">      72 </span>                :            : struct BOOST_AUTO_TC_UNIQUE_ID( test_name );                            \
+<span class="lineNum">      73 </span>                :            :                                                                         \
+<span class="lineNum">      74 </span>                :            : static struct BOOST_JOIN( test_name, _exp_fail_num_spec )               \
+<span class="lineNum">      75 </span>                :            : : boost::unit_test::ut_detail::                                         \
+<span class="lineNum">      76 </span>                :            :   auto_tc_exp_fail&lt;BOOST_AUTO_TC_UNIQUE_ID( test_name ) &gt;               \
+<span class="lineNum">      77 </span>                :            : {                                                                       \
+<span class="lineNum">      78 </span>                :            :     BOOST_JOIN( test_name, _exp_fail_num_spec )()                       \
+<span class="lineNum">      79 </span>                :            :     : boost::unit_test::ut_detail::                                     \
+<span class="lineNum">      80 </span>                :            :       auto_tc_exp_fail&lt;BOOST_AUTO_TC_UNIQUE_ID( test_name ) &gt;( n )      \
+<span class="lineNum">      81 </span>                :            :     {}                                                                  \
+<span class="lineNum">      82 </span>                :            : } BOOST_JOIN( test_name, _exp_fail_num_spec_inst );                     \
+<span class="lineNum">      83 </span>                :            :                                                                         \
+<span class="lineNum">      84 </span>                :            : /**/
+<span class="lineNum">      85 </span>                :            : 
+<span class="lineNum">      86 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      87 </span>                :            : // **************            BOOST_FIXTURE_TEST_CASE           ************** //
+<span class="lineNum">      88 </span>                :            : // ************************************************************************** //
+<span class="lineNum">      89 </span>                :            : 
+<span class="lineNum">      90 </span>                :            : #define BOOST_FIXTURE_TEST_CASE( test_name, F )                         \
+<span class="lineNum">      91 </span>                :            : struct test_name : public F { void test_method(); };                    \
+<span class="lineNum">      92 </span>                :            :                                                                         \
+<span class="lineNum">      93 </span>                :            : static void BOOST_AUTO_TC_INVOKER( test_name )()                        \
+<span class="lineNum">      94 </span>                :            : {                                                                       \
+<span class="lineNum">      95 </span>                :            :     test_name t;                                                        \
+<span class="lineNum">      96 </span>                :            :     t.test_method();                                                    \
+<span class="lineNum">      97 </span>                :            : }                                                                       \
+<span class="lineNum">      98 </span>                :            :                                                                         \
+<span class="lineNum">      99 </span>                :            : struct BOOST_AUTO_TC_UNIQUE_ID( test_name ) {};                         \
+<span class="lineNum">     100 </span>                :            :                                                                         \
+<span class="lineNum">     101 </span>                :            : BOOST_AUTO_TU_REGISTRAR( test_name )(                                   \
+<span class="lineNum">     102 </span>                :            :     boost::unit_test::make_test_case(                                   \
+<span class="lineNum">     103 </span>                :            :         &amp;BOOST_AUTO_TC_INVOKER( test_name ), #test_name ),              \
+<span class="lineNum">     104 </span>                :            :     boost::unit_test::ut_detail::auto_tc_exp_fail&lt;                      \
+<span class="lineNum">     105 </span>                :            :         BOOST_AUTO_TC_UNIQUE_ID( test_name )&gt;::instance()-&gt;value() );   \
+<span class="lineNum">     106 </span>                :            :                                                                         \
+<span class="lineNum">     107 </span>                :            : void test_name::test_method()                                           \
+<span class="lineNum">     108 </span>                :            : /**/
+<span class="lineNum">     109 </span>                :            : 
+<span class="lineNum">     110 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     111 </span>                :            : // **************             BOOST_AUTO_TEST_CASE             ************** //
+<span class="lineNum">     112 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     113 </span>                :            : 
+<span class="lineNum">     114 </span>                :            : #define BOOST_AUTO_TEST_CASE( test_name )                               \
+<span class="lineNum">     115 </span>                :            : BOOST_FIXTURE_TEST_CASE( test_name, BOOST_AUTO_TEST_CASE_FIXTURE )
+<span class="lineNum">     116 </span>                :            : /**/
+<span class="lineNum">     117 </span>                :            : 
+<span class="lineNum">     118 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     119 </span>                :            : // **************       BOOST_FIXTURE_TEST_CASE_TEMPLATE       ************** //
+<span class="lineNum">     120 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     121 </span>                :            : 
+<span class="lineNum">     122 </span>                :            : #define BOOST_FIXTURE_TEST_CASE_TEMPLATE( test_name, type_name, TL, F ) \
+<span class="lineNum">     123 </span>                :            : template&lt;typename type_name&gt;                                            \
+<span class="lineNum">     124 </span>                :            : struct test_name : public F                                             \
+<span class="lineNum">     125 </span>                :            : { void test_method(); };                                                \
+<span class="lineNum">     126 </span>                :            :                                                                         \
+<span class="lineNum">     127 </span>                :            : struct BOOST_AUTO_TC_INVOKER( test_name ) {                             \
+<span class="lineNum">     128 </span>                :            :     template&lt;typename TestType&gt;                                         \
+<span class="lineNum">     129 </span>                :            :     static void run( boost::type&lt;TestType&gt;* = 0 )                       \
+<span class="lineNum">     130 </span>                :            :     {                                                                   \
+<span class="lineNum">     131 </span>                :            :         test_name&lt;TestType&gt; t;                                          \
+<span class="lineNum">     132 </span>                :            :         t.test_method();                                                \
+<span class="lineNum">     133 </span>                :            :     }                                                                   \
+<span class="lineNum">     134 </span>                :            : };                                                                      \
+<span class="lineNum">     135 </span>                :            :                                                                         \
+<span class="lineNum">     136 </span>                :            : BOOST_AUTO_TU_REGISTRAR( test_name )(                                   \
+<span class="lineNum">     137 </span>                :            :     boost::unit_test::ut_detail::template_test_case_gen&lt;                \
+<span class="lineNum">     138 </span>                :            :         BOOST_AUTO_TC_INVOKER( test_name ),TL &gt;(                        \
+<span class="lineNum">     139 </span>                :            :           BOOST_STRINGIZE( test_name ) ) );                             \
+<span class="lineNum">     140 </span>                :            :                                                                         \
+<span class="lineNum">     141 </span>                :            : template&lt;typename type_name&gt;                                            \
+<span class="lineNum">     142 </span>                :            : void test_name&lt;type_name&gt;::test_method()                                \
+<span class="lineNum">     143 </span>                :            : /**/
+<span class="lineNum">     144 </span>                :            : 
+<span class="lineNum">     145 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     146 </span>                :            : // **************        BOOST_AUTO_TEST_CASE_TEMPLATE         ************** //
+<span class="lineNum">     147 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     148 </span>                :            : 
+<span class="lineNum">     149 </span>                :            : #define BOOST_AUTO_TEST_CASE_TEMPLATE( test_name, type_name, TL )       \
+<span class="lineNum">     150 </span>                :            : BOOST_FIXTURE_TEST_CASE_TEMPLATE( test_name, type_name, TL, BOOST_AUTO_TEST_CASE_FIXTURE )
+<span class="lineNum">     151 </span>                :            : 
+<span class="lineNum">     152 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     153 </span>                :            : // **************           BOOST_TEST_CASE_TEMPLATE           ************** //
+<span class="lineNum">     154 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     155 </span>                :            : 
+<span class="lineNum">     156 </span>                :            : #define BOOST_TEST_CASE_TEMPLATE( name, typelist )                          \
+<span class="lineNum">     157 </span>                :            :     boost::unit_test::ut_detail::template_test_case_gen&lt;name,typelist &gt;(    \
+<span class="lineNum">     158 </span>                :            :         BOOST_TEST_STRINGIZE( name ) )                                      \
+<span class="lineNum">     159 </span>                :            : /**/
+<span class="lineNum">     160 </span>                :            : 
+<span class="lineNum">     161 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     162 </span>                :            : // **************      BOOST_TEST_CASE_TEMPLATE_FUNCTION       ************** //
+<span class="lineNum">     163 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     164 </span>                :            : 
+<span class="lineNum">     165 </span>                :            : #define BOOST_TEST_CASE_TEMPLATE_FUNCTION( name, type_name )    \
+<span class="lineNum">     166 </span>                :            : template&lt;typename type_name&gt;                                    \
+<span class="lineNum">     167 </span>                :            : void BOOST_JOIN( name, _impl )( boost::type&lt;type_name&gt;* );      \
+<span class="lineNum">     168 </span>                :            :                                                                 \
+<span class="lineNum">     169 </span>                :            : struct name {                                                   \
+<span class="lineNum">     170 </span>                :            :     template&lt;typename TestType&gt;                                 \
+<span class="lineNum">     171 </span>                :            :     static void run( boost::type&lt;TestType&gt;* frwrd = 0 )         \
+<span class="lineNum">     172 </span>                :            :     {                                                           \
+<span class="lineNum">     173 </span>                :            :        BOOST_JOIN( name, _impl )( frwrd );                      \
+<span class="lineNum">     174 </span>                :            :     }                                                           \
+<span class="lineNum">     175 </span>                :            : };                                                              \
+<span class="lineNum">     176 </span>                :            :                                                                 \
+<span class="lineNum">     177 </span>                :            : template&lt;typename type_name&gt;                                    \
+<span class="lineNum">     178 </span>                :            : void BOOST_JOIN( name, _impl )( boost::type&lt;type_name&gt;* )       \
+<span class="lineNum">     179 </span>                :            : /**/
+<span class="lineNum">     180 </span>                :            : 
+<span class="lineNum">     181 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     182 </span>                :            : // **************              BOOST_GLOBAL_FIXURE             ************** //
+<span class="lineNum">     183 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     184 </span>                :            : 
+<span class="lineNum">     185 </span>                :            : #define BOOST_GLOBAL_FIXTURE( F ) \
+<span class="lineNum">     186 </span>                :            : static boost::unit_test::ut_detail::global_fixture_impl&lt;F&gt; BOOST_JOIN( gf_, F ) ; \
+<span class="lineNum">     187 </span>                :            : /**/
+<span class="lineNum">     188 </span>                :            : 
+<span class="lineNum">     189 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     190 </span>                :            : // **************         BOOST_AUTO_TEST_CASE_FIXTURE         ************** //
+<span class="lineNum">     191 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     192 </span>                :            : 
+<span class="lineNum">     193 </span>                :            : namespace boost { namespace unit_test { namespace ut_detail {
+<span class="lineNum">     194 </span>                :            : 
+<span class="lineNum">     195 </span>                :            : struct nil_t {};
+<span class="lineNum">     196 </span>                :            : 
+<span class="lineNum">     197 </span>                :            : } // namespace ut_detail
+<span class="lineNum">     198 </span>                :            : } // unit_test
+<span class="lineNum">     199 </span>                :            : } // namespace boost
+<span class="lineNum">     200 </span>                :            : 
+<span class="lineNum">     201 </span>                :            : // Intentionally is in global namespace, so that FIXURE_TEST_SUITE can reset it in user code.
+<span class="lineNum">     202 </span>                :            : typedef ::boost::unit_test::ut_detail::nil_t BOOST_AUTO_TEST_CASE_FIXTURE;
+<span class="lineNum">     203 </span>                :            : 
+<span class="lineNum">     204 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     205 </span>                :            : // **************   Auto registration facility helper macros   ************** //
+<span class="lineNum">     206 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     207 </span>                :            : 
+<span class="lineNum">     208 </span>                :            : #define BOOST_AUTO_TU_REGISTRAR( test_name )    \
+<span class="lineNum">     209 </span>                :            : static boost::unit_test::ut_detail::auto_test_unit_registrar BOOST_JOIN( BOOST_JOIN( test_name, _registrar ), __LINE__ )
+<span class="lineNum">     210 </span>                :            : #define BOOST_AUTO_TC_INVOKER( test_name )      BOOST_JOIN( test_name, _invoker )
+<span class="lineNum">     211 </span>                :            : #define BOOST_AUTO_TC_UNIQUE_ID( test_name )    BOOST_JOIN( test_name, _id )
+<span class="lineNum">     212 </span>                :            : 
+<span class="lineNum">     213 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     214 </span>                :            : // **************                BOOST_TEST_MAIN               ************** //
+<span class="lineNum">     215 </span>                :            : // ************************************************************************** //
+<span class="lineNum">     216 </span>                :            : 
+<span class="lineNum">     217 </span>                :            : #if defined(BOOST_TEST_MAIN)
+<a name="218"><span class="lineNum">     218 </span>                :            : </a>
+<span class="lineNum">     219 </span>                :            : #ifdef BOOST_TEST_ALTERNATIVE_INIT_API
+<span class="lineNum">     220 </span>                :<span class="lineCov">          1 : bool init_unit_test()                   {</span>
+<span class="lineNum">     221 </span>                :            : #else
+<span class="lineNum">     222 </span>                :            : ::boost::unit_test::test_suite*
+<span class="lineNum">     223 </span>                :            : init_unit_test_suite( int, char* [] )   {
+<span class="lineNum">     224 </span>                :            : #endif
+<span class="lineNum">     225 </span>                :            : 
+<span class="lineNum">     226 </span>                :            : #ifdef BOOST_TEST_MODULE
+<span class="lineNum">     227 </span>                :            :     using namespace ::boost::unit_test;
+<span class="lineNum">     228 </span>[<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>][<span class="branchCov" title="Branch 6 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>]:<span class="lineCov">          1 :     assign_op( framework::master_test_suite().p_name.value, BOOST_TEST_STRINGIZE( BOOST_TEST_MODULE ).trim( &quot;\&quot;&quot; ), 0 );</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 9 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>]
+<span class="lineNum">     229 </span>                :            :     
+<span class="lineNum">     230 </span>                :            : #endif
+<span class="lineNum">     231 </span>                :            : 
+<span class="lineNum">     232 </span>                :            : #ifdef BOOST_TEST_ALTERNATIVE_INIT_API
+<span class="lineNum">     233 </span>                :<span class="lineCov">          1 :     return true;</span>
+<span class="lineNum">     234 </span>                :            : }
+<span class="lineNum">     235 </span>                :            : #else
+<span class="lineNum">     236 </span>                :            :     return 0;
+<span class="lineNum">     237 </span>                :            : }
+<span class="lineNum">     238 </span>                :            : #endif
+<span class="lineNum">     239 </span>                :            : 
+<span class="lineNum">     240 </span>                :            : #endif
+<span class="lineNum">     241 </span>                :            : 
+<span class="lineNum">     242 </span>                :            : //____________________________________________________________________________//
+<span class="lineNum">     243 </span>                :            : 
+<span class="lineNum">     244 </span>                :            : #endif // BOOST_TEST_UNIT_TEST_SUITE_HPP_071894GER
+<span class="lineNum">     245 </span>                :            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

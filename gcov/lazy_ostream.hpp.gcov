@@ -1,0 +1,119 @@
+        -:    0:Source:/usr/include/boost/test/utils/lazy_ostream.hpp
+        -:    0:Graph:test-cases.gcno
+        -:    0:Data:test-cases.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1://  (C) Copyright Gennadiy Rozental 2008.
+        -:    2://  Distributed under the Boost Software License, Version 1.0.
+        -:    3://  (See accompanying file LICENSE_1_0.txt or copy at 
+        -:    4://  http://www.boost.org/LICENSE_1_0.txt)
+        -:    5:
+        -:    6://  See http://www.boost.org/libs/test for the library home page.
+        -:    7://
+        -:    8://  File        : $RCSfile$
+        -:    9://
+        -:   10://  Version     : $Revision$
+        -:   11://
+        -:   12://  Description : contains definition for all test tools in test toolbox
+        -:   13:// ***************************************************************************
+        -:   14:
+        -:   15:#ifndef BOOST_TEST_LAZY_OSTREAM_HPP_070708GER
+        -:   16:#define BOOST_TEST_LAZY_OSTREAM_HPP_070708GER
+        -:   17:
+        -:   18:// Boost.Test
+        -:   19:#include <boost/test/detail/config.hpp>
+        -:   20:
+        -:   21:// STL
+        -:   22:#include <iosfwd>
+        -:   23:
+        -:   24:#include <boost/test/detail/suppress_warnings.hpp>
+        -:   25:
+        -:   26://____________________________________________________________________________//
+        -:   27:
+        -:   28:// ************************************************************************** //
+        -:   29:// **************                  lazy_ostream                ************** //
+        -:   30:// ************************************************************************** //
+        -:   31:
+        -:   32:namespace boost {
+        -:   33:
+        -:   34:namespace unit_test {
+        -:   35:
+        -:   36:class lazy_ostream {
+        -:   37:public:
+        6:   38:    static lazy_ostream&    instance()                                              { static lazy_ostream inst; return inst; }
+        -:   39:
+        -:   40:    friend std::ostream&    operator<<( std::ostream& ostr, lazy_ostream const& o ) { return o( ostr ); }
+        -:   41:
+        -:   42:    // access method
+        -:   43:    bool                    empty() const                                           { return m_empty; }
+        -:   44:
+        -:   45:    // actual printing interface; to be accessed only by this class and children
+        6:   46:    virtual std::ostream&   operator()( std::ostream& ostr ) const                  { return ostr; }
+        -:   47:protected:
+        7:   48:    explicit                lazy_ostream( bool empty = true ) : m_empty( empty )    {}
+        -:   49:
+        -:   50:    // protected destructor to make sure right one is called
+        -:   51:#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
+        -:   52:public:
+        -:   53:#endif
+        7:   54:    BOOST_TEST_PROTECTED_VIRTUAL ~lazy_ostream()                                    {}
+        -:   55:
+        -:   56:private:
+        -:   57:    // Data members
+        -:   58:    bool                    m_empty;
+        -:   59:};
+        -:   60:
+        -:   61://____________________________________________________________________________//
+        -:   62:
+        -:   63:template<typename T>
+        6:   64:class lazy_ostream_impl : public lazy_ostream {
+        -:   65:public:
+        6:   66:    lazy_ostream_impl( lazy_ostream const& prev, T value )
+        -:   67:    : lazy_ostream( false )
+        -:   68:    , m_prev( prev )
+        6:   69:    , m_value( value )
+        6:   70:    {}
+        -:   71:private:
+        6:   72:    virtual std::ostream&   operator()( std::ostream& ostr ) const
+        -:   73:    {
+        6:   74:        return m_prev(ostr) << m_value;
+        -:   75:    }
+        -:   76:
+        -:   77:    // Data members
+        -:   78:    lazy_ostream const&     m_prev;
+        -:   79:    T                       m_value;
+        -:   80:};
+        -:   81:
+        -:   82://____________________________________________________________________________//
+        -:   83:
+        -:   84:template<typename T>
+        -:   85:inline lazy_ostream_impl<T const&>
+        6:   86:operator<<( lazy_ostream const& prev, T const& v )
+        -:   87:{
+        6:   88:    return lazy_ostream_impl<T const&>( prev, v );
+        -:   89:}
+        -:   90:
+        -:   91://____________________________________________________________________________//
+        -:   92:
+        -:   93:#if BOOST_TEST_USE_STD_LOCALE
+        -:   94:
+        -:   95:template<typename R,typename S>
+        -:   96:inline lazy_ostream_impl<R& (BOOST_TEST_CALL_DECL *)(S&)>
+        -:   97:operator<<( lazy_ostream const& prev, R& (BOOST_TEST_CALL_DECL *man)(S&) )
+        -:   98:{
+        -:   99:    return lazy_ostream_impl<R& (BOOST_TEST_CALL_DECL *)(S&)>( prev, man );
+        -:  100:}
+        -:  101:
+        -:  102://____________________________________________________________________________//
+        -:  103:
+        -:  104:#endif
+        -:  105:
+        -:  106:} // namespace unit_test
+        -:  107:
+        -:  108:} // namespace boost
+        -:  109:
+        -:  110://____________________________________________________________________________//
+        -:  111:
+        -:  112:#include <boost/test/detail/enable_warnings.hpp>
+        -:  113:
+        -:  114:#endif // BOOST_TEST_LAZY_OSTREAM_HPP_070708GER

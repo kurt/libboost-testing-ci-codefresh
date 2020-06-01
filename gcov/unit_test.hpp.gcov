@@ -1,0 +1,71 @@
+        -:    0:Source:/usr/include/boost/test/unit_test.hpp
+        -:    0:Graph:test-cases.gcno
+        -:    0:Data:test-cases.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1://  (C) Copyright Gennadiy Rozental 2001-2008.
+        -:    2://  Distributed under the Boost Software License, Version 1.0.
+        -:    3://  (See accompanying file LICENSE_1_0.txt or copy at 
+        -:    4://  http://www.boost.org/LICENSE_1_0.txt)
+        -:    5:
+        -:    6://  See http://www.boost.org/libs/test for the library home page.
+        -:    7://
+        -:    8://  File        : $RCSfile$
+        -:    9://
+        -:   10://  Version     : $Revision$
+        -:   11://
+        -:   12://  Description : Entry point for the end user into the Unit Test Framework.
+        -:   13:// ***************************************************************************
+        -:   14:
+        -:   15:#ifndef BOOST_TEST_UNIT_TEST_HPP_071894GER
+        -:   16:#define BOOST_TEST_UNIT_TEST_HPP_071894GER
+        -:   17:
+        -:   18:// Boost.Test
+        -:   19:#include <boost/test/test_tools.hpp>
+        -:   20:#include <boost/test/unit_test_suite.hpp>
+        -:   21:
+        -:   22://____________________________________________________________________________//
+        -:   23:
+        -:   24:// ************************************************************************** //
+        -:   25:// **************                 Auto Linking                 ************** //
+        -:   26:// ************************************************************************** //
+        -:   27:
+        -:   28:#if !defined(BOOST_ALL_NO_LIB) && !defined(BOOST_TEST_NO_LIB) && \
+        -:   29:    !defined(BOOST_TEST_SOURCE) && !defined(BOOST_TEST_INCLUDED)
+        -:   30:#  define BOOST_LIB_NAME boost_unit_test_framework
+        -:   31:
+        -:   32:#  if defined(BOOST_ALL_DYN_LINK) || defined(BOOST_TEST_DYN_LINK)
+        -:   33:#    define BOOST_DYN_LINK
+        -:   34:#  endif
+        -:   35:
+        -:   36:#  include <boost/config/auto_link.hpp>
+        -:   37:
+        -:   38:#endif  // auto-linking disabled
+        -:   39:
+        -:   40:// ************************************************************************** //
+        -:   41:// **************                  unit_test_main              ************** //
+        -:   42:// ************************************************************************** //
+        -:   43:
+        -:   44:namespace boost { namespace unit_test {
+        -:   45:
+        -:   46:int BOOST_TEST_DECL unit_test_main( init_unit_test_func init_func, int argc, char* argv[] );
+        -:   47:
+        -:   48:}}
+        -:   49:
+        -:   50:#if defined(BOOST_TEST_DYN_LINK) && defined(BOOST_TEST_MAIN) && !defined(BOOST_TEST_NO_MAIN)
+        -:   51:
+        -:   52:// ************************************************************************** //
+        -:   53:// **************        main function for tests using dll     ************** //
+        -:   54:// ************************************************************************** //
+        -:   55:
+        -:   56:int BOOST_TEST_CALL_DECL
+        1:   57:main( int argc, char* argv[] )
+        -:   58:{
+        1:   59:    return ::boost::unit_test::unit_test_main( &init_unit_test, argc, argv );
+        -:   60:}
+        -:   61:
+        -:   62://____________________________________________________________________________//
+        -:   63:
+        -:   64:#endif // BOOST_TEST_DYN_LINK && BOOST_TEST_MAIN && !BOOST_TEST_NO_MAIN
+        -:   65:
+        -:   66:#endif // BOOST_TEST_UNIT_TEST_HPP_071894GER
