@@ -1,7 +1,7 @@
         -:    0:Source:/usr/include/boost/test/unit_test_log.hpp
         -:    0:Graph:test-cases.gcno
         -:    0:Data:test-cases.gcda
-        -:    0:Runs:1
+        -:    0:Runs:2
         -:    0:Programs:1
         -:    1://  (C) Copyright Gennadiy Rozental 2001-2008.
         -:    2://  Distributed under the Boost Software License, Version 1.0.
@@ -136,7 +136,7 @@
     #####:  131:    BOOST_TEST_SINGLETON_CONS( unit_test_log_t );
         -:  132:}; // unit_test_log_t
         -:  133:
-        1:  134:BOOST_TEST_SINGLETON_INST( unit_test_log )
+        2:  134:BOOST_TEST_SINGLETON_INST( unit_test_log )
         -:  135:
         -:  136:// helper macros
         -:  137:#define BOOST_TEST_LOG_ENTRY( ll )                                                  \

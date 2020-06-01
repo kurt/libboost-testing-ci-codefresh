@@ -1,7 +1,7 @@
         -:    0:Source:/usr/include/boost/test/utils/callback.hpp
         -:    0:Graph:test-cases.gcno
         -:    0:Data:test-cases.gcda
-        -:    0:Runs:1
+        -:    0:Runs:2
         -:    0:Programs:1
         -:    1://  (C) Copyright Gennadiy Rozental 2005-2008.
         -:    2://  Use, modification, and distribution are subject to the 
@@ -58,7 +58,7 @@
         -:   53:template<>
         -:   54:struct invoker<unused> {
         -:   55:    template<typename Functor>
-        4:   56:    unused  invoke( Functor& f )                        { f(); return unused(); }
+        8:   56:    unused  invoke( Functor& f )                        { f(); return unused(); }
         -:   57:    template<typename Functor, typename T1>
         -:   58:    unused  invoke( Functor& f, T1 t1 )                 { f( t1 ); return unused(); }
         -:   59:    template<typename Functor, typename T1, typename T2>
@@ -78,7 +78,7 @@
         -:   73:namespace ut_detail {
         -:   74:
         -:   75:template<typename R>
-        4:   76:struct callback0_impl {
+        8:   76:struct callback0_impl {
     #####:   77:    virtual ~callback0_impl() {}
         -:   78:
         -:   79:    virtual R invoke() = 0;
@@ -89,9 +89,9 @@
         -:   84:template<typename R, typename Functor>
     #####:   85:struct callback0_impl_t : callback0_impl<R> {
         -:   86:    // Constructor
-        4:   87:    explicit callback0_impl_t( Functor f ) : m_f( f ) {}
+        8:   87:    explicit callback0_impl_t( Functor f ) : m_f( f ) {}
         -:   88:
-        4:   89:    virtual R invoke() { return invoker<R>().invoke( m_f ); }
+        8:   89:    virtual R invoke() { return invoker<R>().invoke( m_f ); }
         -:   90:
         -:   91:private:
         -:   92:    // Data members
@@ -103,7 +103,7 @@
         -:   98:} // namespace ut_detail
         -:   99:
         -:  100:template<typename R = ut_detail::unused>
-        4:  101:class callback0 {
+        8:  101:class callback0 {
         -:  102:public:
         -:  103:    // Constructors
         -:  104:    callback0() {}
@@ -112,8 +112,8 @@
         -:  107:#endif
         -:  108:
         -:  109:    template<typename Functor>
-        4:  110:    callback0( Functor f )
-        4:  111:    : m_impl( new ut_detail::callback0_impl_t<R,Functor>( f ) ) {}
+        8:  110:    callback0( Functor f )
+        8:  111:    : m_impl( new ut_detail::callback0_impl_t<R,Functor>( f ) ) {}
         -:  112:    
         -:  113:    void        operator=( callback0 const& rhs ) { m_impl = rhs.m_impl; }
         -:  114:

@@ -1,7 +1,7 @@
         -:    0:Source:/usr/include/boost/test/predicate_result.hpp
         -:    0:Graph:test-cases.gcno
         -:    0:Data:test-cases.gcda
-        -:    0:Runs:1
+        -:    0:Runs:2
         -:    0:Programs:1
         -:    1://  (C) Copyright Gennadiy Rozental 2001-2008.
         -:    2://  Distributed under the Boost Software License, Version 1.0.
@@ -44,16 +44,16 @@
         -:   39:// **************                predicate_result              ************** //
         -:   40:// ************************************************************************** //
         -:   41:
-        6:   42:class BOOST_TEST_DECL predicate_result {
+       12:   42:class BOOST_TEST_DECL predicate_result {
         -:   43:    typedef unit_test::const_string      const_string;
         -:   44:    struct dummy { void nonnull() {}; };
         -:   45:    typedef void (dummy::*safe_bool)();
         -:   46:
         -:   47:public:
         -:   48:    // Constructor
-        6:   49:    predicate_result( bool pv_ ) 
-        6:   50:    : p_predicate_value( pv_ )
-        6:   51:    {}
+       12:   49:    predicate_result( bool pv_ ) 
+       12:   50:    : p_predicate_value( pv_ )
+       12:   51:    {}
         -:   52:
         -:   53:    template<typename BoolConvertable>
         -:   54:    predicate_result( BoolConvertable const& pv_ ) : p_predicate_value( !!pv_ ) {}
@@ -64,7 +64,7 @@
         -:   59:    operator            safe_bool() const           { return !!p_predicate_value ? &dummy::nonnull : 0; }
         -:   60:
         -:   61:    // Public properties
-        6:   62:    BOOST_READONLY_PROPERTY( bool, (predicate_result) ) p_predicate_value;
+       12:   62:    BOOST_READONLY_PROPERTY( bool, (predicate_result) ) p_predicate_value;
         -:   63:
         -:   64:    // Access methods
         -:   65:    bool                has_empty_message() const   { return !m_message; }

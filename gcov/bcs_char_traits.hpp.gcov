@@ -1,7 +1,7 @@
         -:    0:Source:/usr/include/boost/test/utils/basic_cstring/bcs_char_traits.hpp
         -:    0:Graph:test-cases.gcno
         -:    0:Data:test-cases.gcda
-        -:    0:Runs:1
+        -:    0:Runs:2
         -:    0:Programs:1
         -:    1://  (C) Copyright Gennadiy Rozental 2004-2008.
         -:    2://  Distributed under the Boost Software License, Version 1.0.
@@ -62,9 +62,9 @@
         -:   57:#else
         -:   58:    typedef typename boost::add_const<CharT>::type const_char;
         -:   59:#endif
-       71:   60:    static bool eq( CharT c1, CharT c2 )
+      142:   60:    static bool eq( CharT c1, CharT c2 )
         -:   61:    {
-       71:   62:        return c1 == c2;
+      142:   62:        return c1 == c2;
         -:   63:    }
         -:   64:    static bool lt( CharT c1, CharT c2 )
         -:   65:    {
@@ -84,27 +84,27 @@
         -:   79:        return 0;
         -:   80:    }
         -:   81:
-        6:   82:    static std::size_t length( const_char* cstr )
+       12:   82:    static std::size_t length( const_char* cstr )
         -:   83:    {
-        6:   84:        const_char null_char = CharT();
+       12:   84:        const_char null_char = CharT();
         -:   85:
-        6:   86:        const_char* ptr = cstr;
-      132:   87:        while( !eq( *ptr, null_char ) )
-       63:   88:            ++ptr;
+       12:   86:        const_char* ptr = cstr;
+      264:   87:        while( !eq( *ptr, null_char ) )
+      126:   88:            ++ptr;
         -:   89:
-        6:   90:        return ptr - cstr;
+       12:   90:        return ptr - cstr;
         -:   91:    }
         -:   92:
-        4:   93:    static const_char* find( const_char* s, std::size_t n, CharT c )
+        8:   93:    static const_char* find( const_char* s, std::size_t n, CharT c )
         -:   94:    {
-        6:   95:        while( n > 0 ) {
-        2:   96:            if( eq( *s, c ) )
+       12:   95:        while( n > 0 ) {
+        4:   96:            if( eq( *s, c ) )
     #####:   97:                return s;
         -:   98:
-        2:   99:            ++s;
-        2:  100:            --n;
+        4:   99:            ++s;
+        4:  100:            --n;
         -:  101:        }
-        2:  102:        return 0;
+        4:  102:        return 0;
         -:  103:    }
         -:  104:};
         -:  105:

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-05-29 16:49:03</td>
+            <td class="headerValue">2020-06-01 11:51:24</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">8</td>
@@ -106,7 +106,7 @@
 <span class="lineNum">      35 </span>                :            : 
 <a name="36"><span class="lineNum">      36 </span>                :            : class lazy_ostream {</a>
 <span class="lineNum">      37 </span>                :            : public:
-<span class="lineNum">      38 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         12 :     static lazy_ostream&amp;    instance()                                              { static lazy_ostream inst; return inst; }</span>
+<span class="lineNum">      38 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 10 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         24 :     static lazy_ostream&amp;    instance()                                              { static lazy_ostream inst; return inst; }</span>
 <span class="lineNum">      39 </span>                :            : 
 <span class="lineNum">      40 </span>                :            :     friend std::ostream&amp;    operator&lt;&lt;( std::ostream&amp; ostr, lazy_ostream const&amp; o ) { return o( ostr ); }
 <span class="lineNum">      41 </span>                :            : 
@@ -116,13 +116,13 @@
 <span class="lineNum">      45 </span>                :            :     // actual printing interface; to be accessed only by this class and children
 <a name="46"><span class="lineNum">      46 </span>                :<span class="lineCov">         12 :     virtual std::ostream&amp;   operator()( std::ostream&amp; ostr ) const                  { return ostr; }</span></a>
 <span class="lineNum">      47 </span>                :            : protected:
-<span class="lineNum">      48 </span>                :<span class="lineCov">          7 :     explicit                lazy_ostream( bool empty = true ) : m_empty( empty )    {}</span>
+<span class="lineNum">      48 </span>                :<span class="lineCov">         14 :     explicit                lazy_ostream( bool empty = true ) : m_empty( empty )    {}</span>
 <span class="lineNum">      49 </span>                :            : 
 <span class="lineNum">      50 </span>                :            :     // protected destructor to make sure right one is called
 <span class="lineNum">      51 </span>                :            : #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
 <a name="52"><span class="lineNum">      52 </span>                :            : public:</a>
 <span class="lineNum">      53 </span>                :            : #endif
-<span class="lineNum">      54 </span>        [<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 7 times"> + </span>]:<span class="lineCov">         14 :     BOOST_TEST_PROTECTED_VIRTUAL ~lazy_ostream()                                    {}</span>
+<span class="lineNum">      54 </span>        [<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 14 times"> + </span>]:<span class="lineCov">         28 :     BOOST_TEST_PROTECTED_VIRTUAL ~lazy_ostream()                                    {}</span>
 <span class="lineNum">      55 </span>                :            : 
 <span class="lineNum">      56 </span>                :            : private:
 <span class="lineNum">      57 </span>                :            :     // Data members
@@ -132,13 +132,13 @@
 <span class="lineNum">      61 </span>                :            : //____________________________________________________________________________//
 <a name="62"><span class="lineNum">      62 </span>                :            : </a>
 <span class="lineNum">      63 </span>                :            : template&lt;typename T&gt;
-<a name="64"><span class="lineNum">      64 </span>        [<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 6 times"> + </span>]:<span class="lineCov">         12 : class lazy_ostream_impl : public lazy_ostream {</span></a>
+<a name="64"><span class="lineNum">      64 </span>        [<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 12 times"> + </span>]:<span class="lineCov">         24 : class lazy_ostream_impl : public lazy_ostream {</span></a>
 <span class="lineNum">      65 </span>                :            : public:
-<span class="lineNum">      66 </span>                :<span class="lineCov">          6 :     lazy_ostream_impl( lazy_ostream const&amp; prev, T value )</span>
+<span class="lineNum">      66 </span>                :<span class="lineCov">         12 :     lazy_ostream_impl( lazy_ostream const&amp; prev, T value )</span>
 <span class="lineNum">      67 </span>                :            :     : lazy_ostream( false )
 <span class="lineNum">      68 </span>                :            :     , m_prev( prev )
-<span class="lineNum">      69 </span>                :<span class="lineCov">          6 :     , m_value( value )</span>
-<a name="70"><span class="lineNum">      70 </span>                :<span class="lineCov">          6 :     {}</span></a>
+<span class="lineNum">      69 </span>                :<span class="lineCov">         12 :     , m_value( value )</span>
+<a name="70"><span class="lineNum">      70 </span>                :<span class="lineCov">         12 :     {}</span></a>
 <span class="lineNum">      71 </span>                :            : private:
 <span class="lineNum">      72 </span>                :<span class="lineCov">          6 :     virtual std::ostream&amp;   operator()( std::ostream&amp; ostr ) const</span>
 <span class="lineNum">      73 </span>                :            :     {
@@ -154,9 +154,9 @@
 <span class="lineNum">      83 </span>                :            : 
 <a name="84"><span class="lineNum">      84 </span>                :            : template&lt;typename T&gt;</a>
 <span class="lineNum">      85 </span>                :            : inline lazy_ostream_impl&lt;T const&amp;&gt;
-<span class="lineNum">      86 </span>                :<span class="lineCov">          6 : operator&lt;&lt;( lazy_ostream const&amp; prev, T const&amp; v )</span>
+<span class="lineNum">      86 </span>                :<span class="lineCov">         12 : operator&lt;&lt;( lazy_ostream const&amp; prev, T const&amp; v )</span>
 <span class="lineNum">      87 </span>                :            : {
-<span class="lineNum">      88 </span>                :<span class="lineCov">          6 :     return lazy_ostream_impl&lt;T const&amp;&gt;( prev, v );</span>
+<span class="lineNum">      88 </span>                :<span class="lineCov">         12 :     return lazy_ostream_impl&lt;T const&amp;&gt;( prev, v );</span>
 <span class="lineNum">      89 </span>                :            : }
 <span class="lineNum">      90 </span>                :            : 
 <span class="lineNum">      91 </span>                :            : //____________________________________________________________________________//

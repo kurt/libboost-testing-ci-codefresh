@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-05-29 16:49:03</td>
+            <td class="headerValue">2020-06-01 11:51:24</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">3</td>
@@ -110,16 +110,16 @@
 <span class="lineNum">      39 </span>                :            : // **************                predicate_result              ************** //
 <a name="40"><span class="lineNum">      40 </span>                :            : // ************************************************************************** //</a>
 <span class="lineNum">      41 </span>                :            : 
-<span class="lineNum">      42 </span>        [<span class="branchCov" title="Branch 1 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">          6 : class BOOST_TEST_DECL predicate_result {</span>
+<span class="lineNum">      42 </span>        [<span class="branchCov" title="Branch 1 was taken 12 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">         12 : class BOOST_TEST_DECL predicate_result {</span>
 <span class="lineNum">      43 </span>                :            :     typedef unit_test::const_string      const_string;
 <span class="lineNum">      44 </span>                :            :     struct dummy { void nonnull() {}; };
 <span class="lineNum">      45 </span>                :            :     typedef void (dummy::*safe_bool)();
 <span class="lineNum">      46 </span>                :            : 
 <a name="47"><span class="lineNum">      47 </span>                :            : public:</a>
 <span class="lineNum">      48 </span>                :            :     // Constructor
-<span class="lineNum">      49 </span>                :<span class="lineCov">          6 :     predicate_result( bool pv_ ) </span>
-<span class="lineNum">      50 </span>                :<span class="lineCov">          6 :     : p_predicate_value( pv_ )</span>
-<span class="lineNum">      51 </span>                :<span class="lineCov">          6 :     {}</span>
+<span class="lineNum">      49 </span>                :<span class="lineCov">         12 :     predicate_result( bool pv_ ) </span>
+<span class="lineNum">      50 </span>                :<span class="lineCov">         12 :     : p_predicate_value( pv_ )</span>
+<span class="lineNum">      51 </span>                :<span class="lineCov">         12 :     {}</span>
 <span class="lineNum">      52 </span>                :            : 
 <span class="lineNum">      53 </span>                :            :     template&lt;typename BoolConvertable&gt;
 <span class="lineNum">      54 </span>                :            :     predicate_result( BoolConvertable const&amp; pv_ ) : p_predicate_value( !!pv_ ) {}
@@ -130,7 +130,7 @@
 <span class="lineNum">      59 </span>                :            :     operator            safe_bool() const           { return !!p_predicate_value ? &amp;dummy::nonnull : 0; }
 <a name="60"><span class="lineNum">      60 </span>                :            : </a>
 <span class="lineNum">      61 </span>                :            :     // Public properties
-<span class="lineNum">      62 </span>                :<span class="lineCov">         12 :     BOOST_READONLY_PROPERTY( bool, (predicate_result) ) p_predicate_value;</span>
+<span class="lineNum">      62 </span>                :<span class="lineCov">         24 :     BOOST_READONLY_PROPERTY( bool, (predicate_result) ) p_predicate_value;</span>
 <span class="lineNum">      63 </span>                :            : 
 <span class="lineNum">      64 </span>                :            :     // Access methods
 <span class="lineNum">      65 </span>                :            :     bool                has_empty_message() const   { return !m_message; }

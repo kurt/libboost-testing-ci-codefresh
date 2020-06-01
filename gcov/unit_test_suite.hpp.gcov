@@ -1,7 +1,7 @@
         -:    0:Source:/usr/include/boost/test/unit_test_suite.hpp
         -:    0:Graph:test-cases.gcno
         -:    0:Data:test-cases.gcda
-        -:    0:Runs:1
+        -:    0:Runs:2
         -:    0:Programs:1
         -:    1://  (C) Copyright Gennadiy Rozental 2001-2008.
         -:    2://  Distributed under the Boost Software License, Version 1.0.
@@ -222,7 +222,7 @@
         -:  217:#if defined(BOOST_TEST_MAIN)
         -:  218:
         -:  219:#ifdef BOOST_TEST_ALTERNATIVE_INIT_API
-        1:  220:bool init_unit_test()                   {
+        2:  220:bool init_unit_test()                   {
         -:  221:#else
         -:  222:::boost::unit_test::test_suite*
         -:  223:init_unit_test_suite( int, char* [] )   {
@@ -230,12 +230,12 @@
         -:  225:
         -:  226:#ifdef BOOST_TEST_MODULE
         -:  227:    using namespace ::boost::unit_test;
-        1:  228:    assign_op( framework::master_test_suite().p_name.value, BOOST_TEST_STRINGIZE( BOOST_TEST_MODULE ).trim( "\"" ), 0 );
+        2:  228:    assign_op( framework::master_test_suite().p_name.value, BOOST_TEST_STRINGIZE( BOOST_TEST_MODULE ).trim( "\"" ), 0 );
         -:  229:    
         -:  230:#endif
         -:  231:
         -:  232:#ifdef BOOST_TEST_ALTERNATIVE_INIT_API
-        1:  233:    return true;
+        2:  233:    return true;
         -:  234:}
         -:  235:#else
         -:  236:    return 0;

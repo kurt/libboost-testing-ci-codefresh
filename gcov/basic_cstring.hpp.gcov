@@ -1,7 +1,7 @@
         -:    0:Source:/usr/include/boost/test/utils/basic_cstring/basic_cstring.hpp
         -:    0:Graph:test-cases.gcno
         -:    0:Data:test-cases.gcda
-        -:    0:Runs:1
+        -:    0:Runs:2
         -:    0:Programs:1
         -:    1://  (C) Copyright Gennadiy Rozental 2004-2008.
         -:    2://  Distributed under the Boost Software License, Version 1.0.
@@ -152,50 +152,50 @@
         -:  147:
         -:  148:template<typename CharT>
         -:  149:inline typename basic_cstring<CharT>::pointer
-        6:  150:basic_cstring<CharT>::null_str()
+       12:  150:basic_cstring<CharT>::null_str()
         -:  151:{
         -:  152:    static CharT null = 0;
-        6:  153:    return &null;
+       12:  153:    return &null;
         -:  154:}
         -:  155:
         -:  156://____________________________________________________________________________//
         -:  157:
         -:  158:template<typename CharT>
         -:  159:inline
-        6:  160:basic_cstring<CharT>::basic_cstring()
-        6:  161:: m_begin( null_str() )
-        6:  162:, m_end( m_begin )
+       12:  160:basic_cstring<CharT>::basic_cstring()
+       12:  161:: m_begin( null_str() )
+       12:  162:, m_end( m_begin )
         -:  163:{
-        6:  164:}
+       12:  164:}
         -:  165:
         -:  166://____________________________________________________________________________//
         -:  167:
         -:  168:template<typename CharT>
         -:  169:inline
-        4:  170:basic_cstring<CharT>::basic_cstring( std_string const& s )
+        8:  170:basic_cstring<CharT>::basic_cstring( std_string const& s )
         -:  171:: m_begin( s.c_str() )
-        4:  172:, m_end( m_begin + s.size() )
+        8:  172:, m_end( m_begin + s.size() )
         -:  173:{
-        4:  174:}
+        8:  174:}
         -:  175:
         -:  176://____________________________________________________________________________//
         -:  177:
         -:  178:template<typename CharT>
         -:  179:inline
-        6:  180:basic_cstring<CharT>::basic_cstring( pointer s )
+       12:  180:basic_cstring<CharT>::basic_cstring( pointer s )
         -:  181:: m_begin( s ? s : null_str() )
-        6:  182:, m_end  ( m_begin + (s ? traits_type::length( s ) : 0 ) )
+       12:  182:, m_end  ( m_begin + (s ? traits_type::length( s ) : 0 ) )
         -:  183:{
-        6:  184:}
+       12:  184:}
         -:  185:
         -:  186://____________________________________________________________________________//
         -:  187:
         -:  188:template<typename CharT>
         -:  189:inline
-       19:  190:basic_cstring<CharT>::basic_cstring( pointer s, size_type arg_size )
-       19:  191:: m_begin( s ), m_end( m_begin + arg_size )
+       38:  190:basic_cstring<CharT>::basic_cstring( pointer s, size_type arg_size )
+       38:  191:: m_begin( s ), m_end( m_begin + arg_size )
         -:  192:{
-       19:  193:}
+       38:  193:}
         -:  194:
         -:  195://____________________________________________________________________________//
         -:  196:
@@ -232,18 +232,18 @@
         -:  227:
         -:  228:template<typename CharT>
         -:  229:inline typename basic_cstring<CharT>::size_type
-        3:  230:basic_cstring<CharT>::size() const
+        6:  230:basic_cstring<CharT>::size() const
         -:  231:{
-        3:  232:    return m_end - m_begin;
+        6:  232:    return m_end - m_begin;
         -:  233:}
         -:  234:
         -:  235://____________________________________________________________________________//
         -:  236:
         -:  237:template<typename CharT>
         -:  238:inline bool
-        2:  239:basic_cstring<CharT>::is_empty() const
+        4:  239:basic_cstring<CharT>::is_empty() const
         -:  240:{
-        2:  241:    return m_end == m_begin;
+        4:  241:    return m_end == m_begin;
         -:  242:}
         -:  243:
         -:  244://____________________________________________________________________________//
@@ -291,31 +291,31 @@
         -:  286:
         -:  287:template<typename CharT>
         -:  288:inline basic_cstring<CharT>&
-        1:  289:basic_cstring<CharT>::trim_left( iterator it )
+        2:  289:basic_cstring<CharT>::trim_left( iterator it )
         -:  290:{
-        1:  291:    m_begin = it;
-        1:  292:    if( m_end <= m_begin )
+        2:  291:    m_begin = it;
+        2:  292:    if( m_end <= m_begin )
     #####:  293:        clear();
         -:  294:
-        1:  295:    return *this;
+        2:  295:    return *this;
         -:  296:}
         -:  297:
         -:  298://____________________________________________________________________________//
         -:  299:
         -:  300:template<typename CharT>
         -:  301:inline basic_cstring<CharT>&
-        1:  302:basic_cstring<CharT>::trim_left( basic_cstring exclusions )
+        2:  302:basic_cstring<CharT>::trim_left( basic_cstring exclusions )
         -:  303:{
-        1:  304:    if( exclusions.is_empty() )
+        2:  304:    if( exclusions.is_empty() )
     #####:  305:        exclusions = default_trim_ex();
         -:  306:
         -:  307:    iterator it;
-        1:  308:    for( it = begin(); it != end(); ++it ) {
-        1:  309:        if( traits_type::find( exclusions.begin(), exclusions.size(), *it ) == reinterpret_cast<pointer>(0) )
-        1:  310:            break;
+        2:  308:    for( it = begin(); it != end(); ++it ) {
+        2:  309:        if( traits_type::find( exclusions.begin(), exclusions.size(), *it ) == reinterpret_cast<pointer>(0) )
+        2:  310:            break;
         -:  311:    }
         -:  312:    
-        1:  313:    return trim_left( it );
+        2:  313:    return trim_left( it );
         -:  314:}
         -:  315:
         -:  316://____________________________________________________________________________//
@@ -335,44 +335,44 @@
         -:  330:
         -:  331:template<typename CharT>
         -:  332:inline basic_cstring<CharT>&
-        1:  333:basic_cstring<CharT>::trim_right( iterator it )
+        2:  333:basic_cstring<CharT>::trim_right( iterator it )
         -:  334:{
-        1:  335:    m_end = it;
-        1:  336:    if( m_end <= m_begin )
+        2:  335:    m_end = it;
+        2:  336:    if( m_end <= m_begin )
     #####:  337:        clear();
         -:  338:
-        1:  339:    return *this;
+        2:  339:    return *this;
         -:  340:}
         -:  341:
         -:  342://____________________________________________________________________________//
         -:  343:
         -:  344:template<typename CharT>
         -:  345:inline basic_cstring<CharT>&
-        1:  346:basic_cstring<CharT>::trim_right( basic_cstring exclusions )
+        2:  346:basic_cstring<CharT>::trim_right( basic_cstring exclusions )
         -:  347:{
-        1:  348:    if( exclusions.is_empty() )
+        2:  348:    if( exclusions.is_empty() )
     #####:  349:        exclusions = default_trim_ex();
         -:  350:
         -:  351:    iterator it;
         -:  352:
-        1:  353:    for( it = end()-1; it != begin()-1; --it ) {
-        1:  354:        if( self_type::traits_type::find( exclusions.begin(),  exclusions.size(), *it ) == reinterpret_cast<pointer>(0) )
-        1:  355:            break;
+        2:  353:    for( it = end()-1; it != begin()-1; --it ) {
+        2:  354:        if( self_type::traits_type::find( exclusions.begin(),  exclusions.size(), *it ) == reinterpret_cast<pointer>(0) )
+        2:  355:            break;
         -:  356:    }
         -:  357:    
-        1:  358:    return trim_right( it+1 );
+        2:  358:    return trim_right( it+1 );
         -:  359:}
         -:  360:
         -:  361://____________________________________________________________________________//
         -:  362:
         -:  363:template<typename CharT>
         -:  364:inline basic_cstring<CharT>&
-        1:  365:basic_cstring<CharT>::trim( basic_cstring exclusions )
+        2:  365:basic_cstring<CharT>::trim( basic_cstring exclusions )
         -:  366:{
-        1:  367:    trim_left( exclusions );
-        1:  368:    trim_right( exclusions );
+        2:  367:    trim_left( exclusions );
+        2:  368:    trim_right( exclusions );
         -:  369:
-        1:  370:    return *this;
+        2:  370:    return *this;
         -:  371:}
         -:  372:
         -:  373://____________________________________________________________________________//
@@ -480,9 +480,9 @@
         -:  475:
         -:  476:template<typename CharT>
         -:  477:inline typename basic_cstring<CharT>::iterator
-        5:  478:basic_cstring<CharT>::begin()
+       10:  478:basic_cstring<CharT>::begin()
         -:  479:{
-        5:  480:    return m_begin;
+       10:  480:    return m_begin;
         -:  481:}
         -:  482:
         -:  483://____________________________________________________________________________//
@@ -498,9 +498,9 @@
         -:  493:
         -:  494:template<typename CharT>
         -:  495:inline typename basic_cstring<CharT>::iterator
-        2:  496:basic_cstring<CharT>::end()
+        4:  496:basic_cstring<CharT>::end()
         -:  497:{
-        2:  498:    return m_end;
+        4:  498:    return m_end;
         -:  499:}
         -:  500:
         -:  501://____________________________________________________________________________//
@@ -718,10 +718,10 @@
         -:  713:
         -:  714:template<typename CharT1, typename CharT2>
         -:  715:inline void
-        1:  716:assign_op( std::basic_string<CharT1>& target, basic_cstring<CharT2> src, int )
+        2:  716:assign_op( std::basic_string<CharT1>& target, basic_cstring<CharT2> src, int )
         -:  717:{
-        1:  718:    target.assign( src.begin(), src.size() );
-        1:  719:}
+        2:  718:    target.assign( src.begin(), src.size() );
+        2:  719:}
         -:  720:
         -:  721://____________________________________________________________________________//
         -:  722:

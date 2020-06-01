@@ -1,7 +1,7 @@
         -:    0:Source:/usr/include/boost/smart_ptr/detail/shared_count.hpp
         -:    0:Graph:test-cases.gcno
         -:    0:Data:test-cases.gcda
-        -:    0:Runs:1
+        -:    0:Runs:2
         -:    0:Programs:1
         -:    1:#ifndef BOOST_SMART_PTR_DETAIL_SHARED_COUNT_HPP_INCLUDED
         -:    2:#define BOOST_SMART_PTR_DETAIL_SHARED_COUNT_HPP_INCLUDED
@@ -116,14 +116,14 @@
         -:  111:
         -:  112:public:
         -:  113:
-       10:  114:    shared_count(): pi_(0) // nothrow
+       20:  114:    shared_count(): pi_(0) // nothrow
         -:  115:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
         -:  116:        , id_(shared_count_id)
         -:  117:#endif
         -:  118:    {
-       10:  119:    }
+       20:  119:    }
         -:  120:
-        4:  121:    template<class Y> explicit shared_count( Y * p ): pi_( 0 )
+        8:  121:    template<class Y> explicit shared_count( Y * p ): pi_( 0 )
         -:  122:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
         -:  123:        , id_(shared_count_id)
         -:  124:#endif
@@ -132,7 +132,7 @@
         -:  127:
         -:  128:        try
         -:  129:        {
-        4:  130:            pi_ = new sp_counted_impl_p<Y>( p );
+        8:  130:            pi_ = new sp_counted_impl_p<Y>( p );
         -:  131:        }
     =====:  132:        catch(...)
         -:  133:        {
@@ -151,7 +151,7 @@
         -:  146:        }
         -:  147:
         -:  148:#endif
-        4:  149:    }
+        8:  149:    }
         -:  150:
         -:  151:#if defined( BOOST_MSVC ) && BOOST_WORKAROUND( BOOST_MSVC, <= 1200 )
         -:  152:    template<class Y, class D> shared_count( Y * p, D d ): pi_(0)
@@ -443,13 +443,13 @@
         -:  438:
         -:  439:#endif
         -:  440:
-       14:  441:    ~shared_count() // nothrow
-       14:  442:    {
-       14:  443:        if( pi_ != 0 ) pi_->release();
+       28:  441:    ~shared_count() // nothrow
+       28:  442:    {
+       28:  443:        if( pi_ != 0 ) pi_->release();
         -:  444:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
         -:  445:        id_ = 0;
         -:  446:#endif
-       14:  447:    }
+       28:  447:    }
         -:  448:
         -:  449:    shared_count(shared_count const & r): pi_(r.pi_) // nothrow
         -:  450:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
@@ -488,12 +488,12 @@
         -:  483:        return *this;
         -:  484:    }
         -:  485:
-        4:  486:    void swap(shared_count & r) // nothrow
+        8:  486:    void swap(shared_count & r) // nothrow
         -:  487:    {
-        4:  488:        sp_counted_base * tmp = r.pi_;
-        4:  489:        r.pi_ = pi_;
-        4:  490:        pi_ = tmp;
-        4:  491:    }
+        8:  488:        sp_counted_base * tmp = r.pi_;
+        8:  489:        r.pi_ = pi_;
+        8:  490:        pi_ = tmp;
+        8:  491:    }
         -:  492:
         -:  493:    long use_count() const // nothrow
         -:  494:    {

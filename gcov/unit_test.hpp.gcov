@@ -1,7 +1,7 @@
         -:    0:Source:/usr/include/boost/test/unit_test.hpp
         -:    0:Graph:test-cases.gcno
         -:    0:Data:test-cases.gcda
-        -:    0:Runs:1
+        -:    0:Runs:2
         -:    0:Programs:1
         -:    1://  (C) Copyright Gennadiy Rozental 2001-2008.
         -:    2://  Distributed under the Boost Software License, Version 1.0.
@@ -59,9 +59,9 @@
         -:   54:// ************************************************************************** //
         -:   55:
         -:   56:int BOOST_TEST_CALL_DECL
-        1:   57:main( int argc, char* argv[] )
+        2:   57:main( int argc, char* argv[] )
         -:   58:{
-        1:   59:    return ::boost::unit_test::unit_test_main( &init_unit_test, argc, argv );
+        2:   59:    return ::boost::unit_test::unit_test_main( &init_unit_test, argc, argv );
         -:   60:}
         -:   61:
         -:   62://____________________________________________________________________________//

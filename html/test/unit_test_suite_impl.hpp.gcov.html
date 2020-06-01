@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-05-29 16:49:03</td>
+            <td class="headerValue">2020-06-01 11:51:24</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">13</td>
@@ -321,10 +321,10 @@
 <span class="lineNum">     250 </span>                :            : //____________________________________________________________________________//
 <a name="251"><span class="lineNum">     251 </span>                :            : </a>
 <span class="lineNum">     252 </span>                :            : inline test_case*
-<span class="lineNum">     253 </span>                :<span class="lineCov">          4 : make_test_case( callback0&lt;&gt; const&amp; test_func, const_string tc_name )</span>
+<span class="lineNum">     253 </span>                :<span class="lineCov">          8 : make_test_case( callback0&lt;&gt; const&amp; test_func, const_string tc_name )</span>
 <span class="lineNum">     254 </span>                :            : {
-<span class="lineNum">     255 </span>[<span class="branchCov" title="Branch 2 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>][<span class="branchCov" title="Branch 5 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]:<span class="lineCov">          4 :     return new test_case( ut_detail::normalize_test_case_name( tc_name ), test_func );</span>
-<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 8 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     255 </span>[<span class="branchCov" title="Branch 2 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>][<span class="branchCov" title="Branch 5 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]:<span class="lineCov">          8 :     return new test_case( ut_detail::normalize_test_case_name( tc_name ), test_func );</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 8 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
 <span class="lineNum">     256 </span>                :            : }
 <span class="lineNum">     257 </span>                :            : 
 <span class="lineNum">     258 </span>                :            : //____________________________________________________________________________//
@@ -363,7 +363,7 @@
 <span class="lineNum">     291 </span>                :            : 
 <a name="292"><span class="lineNum">     292 </span>                :            : template&lt;typename T&gt;</a>
 <span class="lineNum">     293 </span>                :            : struct auto_tc_exp_fail {
-<span class="lineNum">     294 </span>                :<span class="lineCov">          4 :     auto_tc_exp_fail() : m_value( 0 ) {}</span>
+<span class="lineNum">     294 </span>                :<span class="lineCov">          8 :     auto_tc_exp_fail() : m_value( 0 ) {}</span>
 <span class="lineNum">     295 </span>                :            : 
 <span class="lineNum">     296 </span>                :            :     explicit    auto_tc_exp_fail( unsigned v )
 <span class="lineNum">     297 </span>                :            :     : m_value( v )
@@ -371,18 +371,18 @@
 <span class="lineNum">     299 </span>                :            :         instance() = this;
 <a name="300"><span class="lineNum">     300 </span>                :            :     }</a>
 <span class="lineNum">     301 </span>                :            : 
-<span class="lineNum">     302 </span>                :<span class="lineCov">          4 :     static auto_tc_exp_fail*&amp; instance() </span>
+<span class="lineNum">     302 </span>                :<span class="lineCov">          8 :     static auto_tc_exp_fail*&amp; instance() </span>
 <span class="lineNum">     303 </span>                :            :     {
-<span class="lineNum">     304 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          4 :         static auto_tc_exp_fail     inst; </span>
-<span class="lineNum">         </span>[<span class="branchCov" title="Branch 7 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>][<span class="branchCov" title="Branch 10 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 11 was not taken"> - </span>]
-<span class="lineNum">         </span>[<span class="branchCov" title="Branch 14 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 15 was not taken"> - </span>][<span class="branchCov" title="Branch 17 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 18 was not taken"> - </span>]
-<span class="lineNum">         </span>[<span class="branchCov" title="Branch 21 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 22 was not taken"> - </span>][<span class="branchCov" title="Branch 24 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 25 was not taken"> - </span>]
+<span class="lineNum">     304 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          8 :         static auto_tc_exp_fail     inst; </span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 7 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>][<span class="branchCov" title="Branch 10 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 11 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 14 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 15 was not taken"> - </span>][<span class="branchCov" title="Branch 17 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 18 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 21 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 22 was not taken"> - </span>][<span class="branchCov" title="Branch 24 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 25 was not taken"> - </span>]
 <span class="lineNum">     305 </span>                :            :         static auto_tc_exp_fail*    inst_ptr = &amp;inst; 
 <span class="lineNum">     306 </span>                :            : 
-<span class="lineNum">     307 </span>                :<span class="lineCov">          4 :         return inst_ptr;</span>
+<span class="lineNum">     307 </span>                :<span class="lineCov">          8 :         return inst_ptr;</span>
 <a name="308"><span class="lineNum">     308 </span>                :            :     }</a>
 <span class="lineNum">     309 </span>                :            : 
-<span class="lineNum">     310 </span>                :<span class="lineCov">          8 :     unsigned    value() const { return m_value; }</span>
+<span class="lineNum">     310 </span>                :<span class="lineCov">         16 :     unsigned    value() const { return m_value; }</span>
 <span class="lineNum">     311 </span>                :            : 
 <span class="lineNum">     312 </span>                :            : private:
 <span class="lineNum">     313 </span>                :            :     // Data members

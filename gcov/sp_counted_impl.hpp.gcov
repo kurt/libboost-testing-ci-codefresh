@@ -1,7 +1,7 @@
         -:    0:Source:/usr/include/boost/smart_ptr/detail/sp_counted_impl.hpp
         -:    0:Graph:test-cases.gcno
         -:    0:Data:test-cases.gcda
-        -:    0:Runs:1
+        -:    0:Runs:2
         -:    0:Programs:1
         -:    1:#ifndef BOOST_SMART_PTR_DETAIL_SP_COUNTED_IMPL_HPP_INCLUDED
         -:    2:#define BOOST_SMART_PTR_DETAIL_SP_COUNTED_IMPL_HPP_INCLUDED
@@ -68,12 +68,12 @@
         -:   63:
         -:   64:public:
         -:   65:
-        4:   66:    explicit sp_counted_impl_p( X * px ): px_( px )
+        8:   66:    explicit sp_counted_impl_p( X * px ): px_( px )
         -:   67:    {
         -:   68:#if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
         -:   69:        boost::sp_scalar_constructor_hook( px, sizeof(X), this );
         -:   70:#endif
-        4:   71:    }
+        8:   71:    }
         -:   72:
     #####:   73:    virtual void dispose() // nothrow
         -:   74:    {
